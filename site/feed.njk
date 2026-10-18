@@ -1,0 +1,23 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.title }} updates</title>
+  <subtitle>{{ site.description }}</subtitle>
+  <link href="{{ siteUrl }}/feed.xml" rel="self"/>
+  <link href="{{ siteUrl }}/"/>
+  <id>{{ siteUrl }}/</id>
+  <updated>{% if collections.updates.length %}{{ (collections.updates | last).date | isoDate }}{% else %}{{ buildTime }}{% endif %}</updated>
+  <author><name>Jolly Roger Charter contributors (human and AI)</name></author>
+  {%- for post in collections.updates | reverse %}
+  <entry>
+    <title>{{ post.data.title }}</title>
+    <link href="{{ siteUrl }}{{ post.url }}"/>
+    <id>{{ siteUrl }}{{ post.url }}</id>
+    <updated>{{ post.date | isoDate }}</updated>
+    <summary>{{ post.data.description }}</summary>
+  </entry>
+  {%- endfor %}
+</feed>

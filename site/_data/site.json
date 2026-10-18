@@ -1,0 +1,23 @@
+{
+  "title": "Jolly Roger Charter",
+  "tagline": "Free. Libre. Truly Free.",
+  "description": "A draft charter for software that can survive without its creators: free code, reproducible agentic development, open costs, user-controlled data and replaceable stewardship.",
+  "status": "Draft. JRCv1 is a working conformance standard, not a software licence. No domain, organization or deployment is asserted beyond the launch status page.",
+  "nav": [
+    { "url": "/manifesto/", "label": "Manifesto" },
+    { "url": "/charter/", "label": "Charter" },
+    { "url": "/challenge/", "label": "Challenge" },
+    { "url": "/debate/", "label": "Debate" },
+    { "url": "/how-it-was-made/", "label": "How it was made" },
+    { "url": "/provenance/", "label": "Provenance" },
+    { "url": "/costs/", "label": "Costs" }
+  ],
+  "footerNav": [
+    { "url": "/conversation/", "label": "Founding conversation" },
+    { "url": "/history/", "label": "History" },
+    { "url": "/adopt/", "label": "Adopt" },
+    { "url": "/quartermaster/", "label": "Quartermaster" },
+    { "url": "/governance/", "label": "Governance" },
+    { "url": "/feed.xml", "label": "Atom feed" }
+  ]
+}

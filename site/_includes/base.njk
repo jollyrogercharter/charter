@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if title %}{{ title }} · {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{{ description or site.description }}">
+  <link rel="canonical" href="{{ siteUrl }}{{ page.url }}">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.title }} updates" href="/feed.xml">
+  <link rel="icon" href="/assets/flag.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ title or site.title }}">
+  <meta property="og:description" content="{{ description or site.description }}">
+  <meta property="og:url" content="{{ siteUrl }}{{ page.url }}">
+  <meta name="twitter:card" content="summary">
+  <meta name="generator" content="Eleventy">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="brand" href="/"><img src="/assets/flag.svg" alt="" width="40" height="28"> <span>{{ site.title }}</span></a>
+      <nav aria-label="Primary">
+        <ul>
+          {%- for item in site.nav %}
+          <li><a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+          {%- endfor %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <p class="status-bar"><span class="wrap">{{ site.status }} <a href="{{ repoUrl }}/blob/main/launch/LAUNCH-STATUS.md">Launch status</a>.</span></p>
+  <main id="main" class="wrap{% if wide %} wide{% endif %}">
+    {{ content | safe }}
+  </main>
+  <aside class="attribution" aria-labelledby="attribution-heading">
+    <div class="wrap">
+      <h2 id="attribution-heading">Who made this</h2>
+      <p>This project was conceived in a conversation between a human initiator and OpenAI's ChatGPT. Claude (Anthropic) implemented this site and repository under the human's direction. Neither company endorses the project. <a href="/how-it-was-made/">How it was made</a> · <a href="/provenance/">Provenance</a></p>
+    </div>
+  </aside>
+  <footer class="site-footer">
+    <div class="wrap">
+      <nav aria-label="Secondary">
+        <ul>
+          {%- for item in site.footerNav %}
+          <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+          {%- endfor %}
+          <li><a href="{{ repoUrl }}">Source</a></li>
+        </ul>
+      </nav>
+      <p class="build">Built {{ buildTime | truncate(10, true, "") }}{% if git.commit %} from commit <a href="{{ repoUrl }}/commit/{{ git.commit }}"><code>{{ git.commit | truncate(7, true, "") }}</code></a>{% endif %}. Licence for original content: <a href="{{ repoUrl }}/blob/main/legal/LICENSE-AND-RISK.md">pending review</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

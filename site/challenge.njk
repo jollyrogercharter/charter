@@ -1,0 +1,19 @@
+---
+layout: base.njk
+title: Could your software survive without you?
+description: "The Jolly Roger reproduction challenge: rebuild, redeploy and take over a project without its creator."
+---
+<p class="kicker">The challenge</p>
+<h1>Could your software survive without you?</h1>
+<p class="lede">If it can't, help make it possible.</p>
+{% doc "community/THE-CHALLENGE.md", { dropTitle: true } %}
+
+<h2>Start with this project</h2>
+<p>The charter repository is the first test subject. Following only public instructions:</p>
+<ol>
+  <li>Clone the repository and run <code>npm ci && npm run build && npm test</code>. See <a href="{% sourceLink "DEPLOYMENT.md" %}"><code>DEPLOYMENT.md</code></a>.</li>
+  <li>Deploy <code>_site/</code> to any static host you control.</li>
+  <li>Find the cost ledger, the conformance criteria, the decision log and the original sources without asking anyone.</li>
+  <li>Report anything that still depends on the founder. <a href="{% sourceLink "OPEN-DEPENDENCIES.md" %}"><code>OPEN-DEPENDENCIES.md</code></a> lists the ones we already know about.</li>
+</ol>
+<p><a href="{{ repoUrl }}/issues/new?template=reproduction-challenge.md">Report an attempt</a>. Partial results and failures count, and they tend to be the most useful reports.</p>
