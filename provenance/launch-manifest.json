@@ -198,12 +198,12 @@
     "state": "not-provided",
     "note": "No ChatGPT export or human-approved public edition exists yet."
   },
-  "timestamp_state": "pending",
+  "timestamp_state": "verified",
   "opentimestamps_proof_path": "provenance/launch-digests.sha256.ots",
-  "bitcoin_attestation_time_utc": null,
+  "bitcoin_attestation_time_utc": "2026-10-18T04:45:37Z",
   "limitations": [
     "A digest proves only that bytes match; it cannot authenticate authorship or dates stated inside the files.",
-    "The OpenTimestamps proof is pending: calendars accepted it on 2026-10-18 but no Bitcoin attestation exists yet. Once verified, it shows the digest list existed no later than the attested block time, not when the ideas originated or who authored them.",
+    "The OpenTimestamps proof is verified: the digest list existed no later than Bitcoin block 971948 (block time 2026-10-18T04:45:37Z; block times can differ from real time by up to about two hours). It says nothing about when the ideas originated, who authored them, or whether anyone was first. Verification used public block explorers, not a local node.",
     "FOUNDING-ARCHIVE.md is a curated record, not a verbatim ChatGPT transcript."
   ],
   "timestamped_artifact": {
@@ -212,5 +212,16 @@
     "format": "sha256sum: received ZIP first, then the 36 files at the preservation commit",
     "stamped_utc": "2026-10-18T04:36:39Z",
     "client": "opentimestamps-client 0.7.2"
-  }
+  },
+  "bitcoin_attestation": {
+    "earliest_block_height": 971948,
+    "earliest_block_hash": "00000000000000000001a1a0d0e442759ec7b410244b70de0a53e599e844a09d",
+    "additional_blocks": [
+      971952,
+      971954,
+      971961
+    ],
+    "upgraded_utc": "2026-10-18T17:24Z"
+  },
+  "verification_method": "ots upgrade (opentimestamps-client 0.7.2), then provenance/check-ots.py: the proof's commitments were compared with block-header Merkle roots fetched separately from blockstream.info and mempool.space; all four attestations matched on both. Not verified against a locally run Bitcoin node."
 }

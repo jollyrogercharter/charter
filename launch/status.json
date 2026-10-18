@@ -1,13 +1,13 @@
 {
   "schema": "jrc-status-0.1",
-  "as_of_utc": "2026-10-18T05:00:00Z",
+  "as_of_utc": "2026-10-18T17:30Z",
   "states": {
     "implemented": "Exists and was verified on the date shown.",
     "pending": "Started or requested, but not complete.",
     "blocked": "Cannot proceed without a named person or decision.",
     "historical": "True when written; kept as a record, not a current claim."
   },
-  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, the founding transcript is not published, and the timestamp proof is not yet confirmed.",
+  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, and the founding transcript is not published. The founding digest list has a verified Bitcoin timestamp.",
   "items": [
     {
       "id": "repo",
@@ -115,11 +115,10 @@
       "id": "opentimestamps",
       "area": "Provenance",
       "title": "OpenTimestamps proof of the digest list",
-      "state": "pending",
+      "state": "implemented",
       "url": "https://jollyrogercharter.org/provenance/",
-      "evidence": "Submitted 2026-10-18T04:36Z. At 04:51Z a calendar reported inclusion in a Bitcoin transaction awaiting 6 confirmations. ots verify has not succeeded yet.",
-      "verified_utc": "2026-10-18T04:51Z",
-      "next": "Run ots upgrade, then ots verify; record the block time only if verify succeeds."
+      "evidence": "Verified 2026-10-18T17:24Z: attested in Bitcoin block 971948 (block time 2026-10-18T04:45:37Z) and three later blocks. Commitments checked against block headers from blockstream.info and mempool.space, not a local node. Proves existence no later than that time, not authorship or priority.",
+      "verified_utc": "2026-10-18T17:24Z"
     },
     {
       "id": "transcript",
