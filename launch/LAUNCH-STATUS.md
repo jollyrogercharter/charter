@@ -29,6 +29,7 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 | Economics | Public cost ledger | **implemented** | <https://jollyrogercharter.org/costs/> | Validated qm 0.1 ledger: $8.50 known cash plus 3 unknown AI-usage items; domain renewal kept as a forecast; human attention unmeasured. The build fails if the ledger is invalid. | 2026-10-18T07:00Z | — |
 | Economics | Quartermaster: ledger format and billing integrations | **pending** | <https://jollyrogercharter.org/spec/quartermaster/> | Ledger format qm 0.1 (draft), with validator, CSV import and summary tool. The cost page is now built from the validated ledger. No provider integrations: no credentials-free public sample data was available to build one against. | 2026-10-18T07:00Z | — |
 | Standard | JRCv1 conformance tool (jrc 0.1 draft) | **implemented** | <https://jollyrogercharter.org/check/> | Offline CLI with init, check, report and challenge commands and a JSON Schema. 23 CLI tests, 10 of them regression tests from an independent code review and an adversarial review. This repository's own self-assessment is published at /check/. | 2026-10-18T06:30Z | — |
+| Standard | WebMCP tools for AI browser agents | **pending** | <https://jollyrogercharter.org/agents/> | Seven read-only tools and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155, the modules and tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable. Native registration not yet verified: needs the flag or an origin-trial token. | 2026-10-18T18:30Z | Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial. |
 
 ## Needs the human
 
@@ -37,6 +38,7 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 3. **Founding conversation transcript** (blocked): Human exports the conversation; the agent drafts a redacted edition for review.
 4. **Charter discussion categories and seed RFCs** (blocked): Human creates the categories and approves the RFC text for posting.
 5. **Public announcements** (pending): Human reviews and posts from their own accounts.
+6. **WebMCP tools for AI browser agents** (pending): Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.
 
 ## Historical records
 

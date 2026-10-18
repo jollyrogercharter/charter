@@ -103,3 +103,7 @@ npx --yes --package=github:jollyrogercharter/charter jrc report --out jrc-report
 ```
 
 Spec: [`spec/JRC-MANIFEST.md`](spec/JRC-MANIFEST.md) · Schema: [`spec/jrc-0.1.schema.json`](spec/jrc-0.1.schema.json) · This repository's own assessment: [`jrc.json`](jrc.json), rendered at https://jollyrogercharter.org/check/.
+
+## For AI agents (WebMCP)
+
+The site registers seven read-only tools with WebMCP (`document.modelContext`) and publishes the same answers as static JSON under `/api/v1/`. See [`docs/WEBMCP.md`](docs/WEBMCP.md) and https://jollyrogercharter.org/agents/.

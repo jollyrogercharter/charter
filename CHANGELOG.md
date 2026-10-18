@@ -2,6 +2,16 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## Unreleased — WebMCP tools (PR D)
+
+- Seven read-only WebMCP tools registered through `document.modelContext.registerTool()`: `get_charter`, `get_project_status`, `assess_jrc_manifest`, `generate_adoption_plan`, `get_project_costs`, `get_open_challenges` and `get_provenance`. They use strict JSON Schemas and honest annotations, and every fact carries a `basis` label.
+- `lib/jrc/core.mjs`: the assessment engine split from its filesystem probe, so the browser runs the same engine as the CLI. Browser file evidence is `not-checked`, never `verified`.
+- `lib/capabilities/`: a shared capability layer, a data bundle (`/webmcp/data.json`) and a static read-only API (`/api/v1/*.json`, including the tool catalog), all built from repository files.
+- `site/assets/webmcp.js`: no framework. Feature detection, independent per-tool registration with AbortControllers, cancellation, legacy string input, and an inert fallback.
+- `/agents/` page and `docs/WEBMCP.md` developer guide.
+- 12 new tests (55 total): real-code catalog, schema, execution and consistency tests, plus `[simulated]` registration, failure, cancellation and fallback tests. Real Chrome 155 run of the tools; native registration not yet verified.
+- `www.jollyrogercharter.org` added as a custom domain.
+
 ## Unreleased — Quartermaster ledger foundation (PR C)
 
 - `spec/quartermaster/qm-0.1.schema.json` and `QM-LEDGER.md`. Five cost categories that are never summed together: cash, forecast, reserve, donated labour and user attention. Unknown amounts are `null`, never 0. Every entry references a dated source. Noncash time can only carry a price with a published valuation method.

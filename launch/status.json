@@ -204,6 +204,17 @@
       "url": "https://jollyrogercharter.org/check/"
     },
     {
+      "id": "webmcp",
+      "area": "Standard",
+      "title": "WebMCP tools for AI browser agents",
+      "state": "pending",
+      "url": "https://jollyrogercharter.org/agents/",
+      "evidence": "Seven read-only tools and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155, the modules and tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable. Native registration not yet verified: needs the flag or an origin-trial token.",
+      "verified_utc": "2026-10-18T18:30Z",
+      "next": "Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.",
+      "owner": "human"
+    },
+    {
       "id": "founding-status-2026-10-17",
       "area": "History",
       "title": "Founding package status notes",

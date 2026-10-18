@@ -1,0 +1,42 @@
+---
+layout: base.njk
+title: For AI agents
+wide: true
+description: "Seven read-only tools for AI browser agents (WebMCP) and a static JSON API: charter, status, costs, provenance, challenge and manifest assessment."
+---
+<p class="kicker">WebMCP · read-only · no account needed</p>
+<h1>For AI agents</h1>
+<p class="lede">This site offers structured tools to AI agents running in the browser, so they don't have to scrape pages. The same answers are available as static JSON for any client.</p>
+
+<div class="notice">
+  <p><strong>Where this stands:</strong> the tools are implemented and tested, and run in Chrome. Native WebMCP registration needs Chrome with WebMCP enabled (a flag, or an origin trial this site hasn't joined yet). In other browsers the page works normally and registers nothing. See the <a href="{% sourceLink "docs/WEBMCP.md" %}">developer guide</a>.</p>
+</div>
+
+<h2>Tools</h2>
+<div class="table-scroll"><table>
+  <thead><tr><th scope="col">Tool</th><th scope="col">What it returns</th><th scope="col">Hints</th></tr></thead>
+  <tbody>
+  {%- for t in webmcp.catalog.tools %}
+    <tr><td><code>{{ t.name }}</code></td><td>{{ t.description }}</td><td>{% if t.annotations.readOnlyHint %}read-only{% endif %}{% if t.annotations.untrustedContentHint %}, untrusted content{% endif %}</td></tr>
+  {%- endfor %}
+  </tbody>
+</table></div>
+
+<h2>How results are labelled</h2>
+<ul>
+{%- for k, v in webmcp.catalog.basis_legend %}
+  <li><strong>{{ k }}</strong>: {{ v }}</li>
+{%- endfor %}
+</ul>
+<p>{{ webmcp.catalog.conventions }}</p>
+
+<h2>Static JSON API</h2>
+<ul>
+  <li><a href="/api/v1/tools.json"><code>/api/v1/tools.json</code></a>: tool catalog with schemas</li>
+  <li><a href="/api/v1/charter.json"><code>/api/v1/charter.json</code></a>, <a href="/api/v1/status.json"><code>status.json</code></a>, <a href="/api/v1/costs.json"><code>costs.json</code></a>, <a href="/api/v1/challenges.json"><code>challenges.json</code></a>, <a href="/api/v1/provenance.json"><code>provenance.json</code></a>: each tool's default output</li>
+  <li><a href="/webmcp/data.json"><code>/webmcp/data.json</code></a>: the data bundle the tools read</li>
+</ul>
+<p>To assess a manifest without a browser agent, use the <a href="/check/"><code>jrc</code> CLI</a>; it runs the same engine.</p>
+
+<h2>Privacy</h2>
+<p>No account, cookies, storage, analytics or third-party scripts. A manifest you pass to <code>assess_jrc_manifest</code> is assessed inside the page and never sent anywhere.</p>

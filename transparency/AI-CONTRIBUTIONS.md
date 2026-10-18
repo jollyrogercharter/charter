@@ -25,6 +25,12 @@ This file is a provenance record, not a claim that a model or vendor endorses th
 - **Claude Sonnet sub-agents:** an independent code review and an adversarial review of `jrc` (their confirmed findings were fixed with regression tests), plus first drafts of `launch/RFC-DRAFTS-OVERNIGHT.md` and `launch/LAUNCH-BRIEFING.md`, which the main agent reviewed.
 - **Human initiator:** wrote the brief and authorization; merges and every external decision remain theirs.
 
+## WebMCP tools (2026-10-18)
+
+- **Claude Opus 5.5 in Claude Code** designed and built the WebMCP layer, the shared capability layer, the static API and the tests, and split the `jrc` engine for browser use. Run record: [`agent-runs/2026-10-18-webmcp.md`](agent-runs/2026-10-18-webmcp.md).
+- **Claude Sonnet sub-agent:** independent review of the WebMCP layer.
+- **Human initiator:** wrote the brief; native verification and the origin-trial decision remain theirs.
+
 ## Statement of honesty
 
 No human-only-authorship or model-only-authorship claims. Publish accessible prompts, inputs, tests and changes where lawful and safe. Mark redactions and unknowns. Do not try to expose undisclosed private chain-of-thought or claim access to it.

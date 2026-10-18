@@ -25,7 +25,7 @@
     "serve": "eleventy --serve",
     "manifest": "node scripts/hash-manifest.mjs",
     "status": "node scripts/render-status.mjs",
-    "test": "npm run build && node --test test/*.test.mjs",
+    "test": "npm run build && node --test test/*.test.mjs; s=$?; rm -f _site/assets/.webmcp-test-*.mjs; exit $s",
     "jrc": "node bin/jrc.mjs"
   },
   "devDependencies": {

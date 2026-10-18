@@ -24,6 +24,7 @@ const DOC_ROUTES = {
   "spec/quartermaster/QM-LEDGER.md": "/spec/quartermaster/",
   "spec/quartermaster/qm-0.1.schema.json": "/spec/quartermaster/qm-0.1.schema.json",
   "launch/costs.json": "/costs/ledger.json",
+  "docs/WEBMCP.md": "/agents/",
 };
 
 const md = markdownIt({ html: false, linkify: true, typographer: false });
@@ -96,6 +97,10 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "MANIFESTO.md": "downloads/MANIFESTO.md", "CHARTER.md": "downloads/CHARTER.md" });
   eleventyConfig.addPassthroughCopy({ "provenance/launch-manifest.json": "provenance/launch-manifest.json" });
   eleventyConfig.addPassthroughCopy({ "spec/jrc-0.1.schema.json": "spec/jrc-0.1.schema.json", "jrc.json": "check/jrc.json", "spec/quartermaster/qm-0.1.schema.json": "spec/quartermaster/qm-0.1.schema.json", "launch/costs.json": "costs/ledger.json" });
+  // Platform-neutral modules only: the browser runs the same engine as the CLI. Node-only files (check.mjs, init.mjs) stay out.
+  for (const f of ["jrc/core.mjs", "jrc/validate.mjs", "jrc/report.mjs", "jrc/constants.mjs", "jrc/challenge.mjs", "qm/expenses.mjs", "capabilities/capabilities.mjs", "capabilities/tools.mjs", "capabilities/input.mjs"]) {
+    eleventyConfig.addPassthroughCopy({ [`lib/${f}`]: `js/lib/${f}` });
+  }
   eleventyConfig.addWatchTarget("./*.md");
 
   return {
