@@ -70,8 +70,8 @@ export function renderDoc(srcPath, { dropTitle = false, shiftHeadings = 0 } = {}
 function gitInfo() {
   try {
     return {
-      commit: execSync("git rev-parse HEAD", { encoding: "utf8" }).trim(),
-      date: execSync("git log -1 --format=%cI", { encoding: "utf8" }).trim(),
+      commit: execSync("git rev-parse HEAD", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(),
+      date: execSync("git log -1 --format=%cI", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(),
     };
   } catch {
     return { commit: null, date: null };
