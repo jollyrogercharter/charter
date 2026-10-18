@@ -47,4 +47,14 @@ Do not edit the file and reuse its prior proof; timestamp a new immutable revisi
 - Review the contributor and AI-run logs separately; model identity and human authorship rely on available records and attestations, not on SHA-256 alone.
 - Do not interpret any record as a legal originality certificate, an OpenAI signature, or evidence that prior independent conceptions didn't exist.
 
+## No Bitcoin node? Check against two public explorers
+
+`ots verify` needs a local Bitcoin Core node. Without one, `provenance/check-ots.py` (run with the Python that has the `opentimestamps` package, for example the one inside a pipx-installed `opentimestamps-client`) checks the proof's commitments against block headers fetched from blockstream.info and mempool.space:
+
+```bash
+python provenance/check-ots.py provenance/launch-digests.sha256 provenance/launch-digests.sha256.ots
+```
+
+This is weaker than your own node: you trust that the two explorers report the real chain. It's how the founding digest list was verified on 2026-10-18 (see `launch-manifest.json`).
+
 Source: https://github.com/opentimestamps/opentimestamps-client
