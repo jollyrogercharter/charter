@@ -62,7 +62,7 @@ Each claim has an `id`, a plain-language `statement`, an `evidence` array and a 
 | `E-WEAK-EVIDENCE` | Evidence is the manifest itself, the whole project directory, or an empty file. |
 | `E-UNREADABLE` | A hashed evidence file can't be read. |
 | `E-HASH` | `sha256` doesn't match the file. |
-| `E-MISLEADING` | Prose (names, statements, notes, gaps, limitations) implies an authority JRCv1 doesn't have: certified, accredited, endorsed, officially, awarded, audited by, guaranteed or fully compliant. Text is Unicode-normalised first. A negation within the three preceding words ("not certified", "no one has certified it") is allowed. Paths, URLs and commands aren't scanned. |
+| `E-MISLEADING` | Prose (names, statements, notes, gaps, limitations) implies an authority JRCv1 doesn't have: certified, accredited, endorsed, officially, awarded, audited by, guaranteed or fully compliant. Text is Unicode-normalised first. A negation directly before the word, optionally with auxiliaries ("not certified", "no one has certified it", "not yet officially certified"), is allowed. Affirming phrases such as "no doubt" or "not only" are not negations. Paths, URLs and commands aren't scanned. |
 | `E-PRIVACY` | Something that looks like an email address, token, API key, private key, bearer credential, password, home-directory path, or a secret in a URL. `git@host:repo` remotes and CI runner paths are allowed. |
 | `E-CONTROL` | Control, zero-width or bidirectional-override characters anywhere, or line breaks in names, identifiers, paths and URLs. These can hide or forge text in reports and terminals. |
 | `E-CONFUSABLE` | A word mixes Latin with Cyrillic or Greek letters. |

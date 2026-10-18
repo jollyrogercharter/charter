@@ -23,6 +23,10 @@ function loadBundle(signal) {
       if (!r.ok) throw new Error(`could not load ${DATA_URL} (${r.status})`);
       return r.json();
     })
+    .then((b) => {
+      if (b?.bundle_version !== "1" || !b.charter || !b.status || !b.ledger || !b.provenance) throw new Error(`${DATA_URL} is not a version-1 data bundle`);
+      return b;
+    })
     .catch((e) => {
       bundlePromise = null;
       throw e;
@@ -38,12 +42,13 @@ async function sha256(text) {
 // Chrome before 155 could pass input as a JSON string; accept both forms.
 function normalizeInput(input) {
   if (typeof input !== "string") return input ?? {};
+  if (input.trim() === "") return {};
   try { return JSON.parse(input); } catch { return input; }
 }
 
 export function executor(tool) {
-  return async (input, options = {}) => {
-    const { signal } = options;
+  return async (input, options) => {
+    const signal = options?.signal;
     try {
       return await runTool(tool, normalizeInput(input), { signal, loadBundle, sha256 });
     } catch (e) {
@@ -55,9 +60,14 @@ export function executor(tool) {
 
 export async function registerJrcTools(modelContext, { signal } = {}) {
   const outcome = { registered: [], failed: [], controllers: new Map() };
+  if (signal?.aborted) {
+    outcome.failed = TOOLS.map((t) => ({ name: t.name, error: "AbortError", message: "registration signal was already aborted" }));
+    return outcome;
+  }
   await Promise.all(TOOLS.map(async (tool) => {
     const controller = new AbortController();
-    signal?.addEventListener("abort", () => controller.abort(signal.reason), { once: true });
+    // The listener is removed when this tool's own controller aborts, so long-lived outer signals don't accumulate listeners.
+    signal?.addEventListener("abort", () => controller.abort(signal.reason), { once: true, signal: controller.signal });
     try {
       await modelContext.registerTool(
         { name: tool.name, title: tool.title, description: tool.description, inputSchema: tool.inputSchema, annotations: tool.annotations, execute: executor(tool) },

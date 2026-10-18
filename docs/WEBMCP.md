@@ -23,10 +23,11 @@ The two manifest tools are marked `untrustedContentHint: true` because their out
 
 ### Result conventions
 
-- `{ ok: true, tool, tools_version, data_commit, … }` on success. On failure, `{ ok: false, tool, error: { code, message, details? } }`, with codes `INVALID_INPUT`, `INPUT_TOO_LARGE`, `NOT_FOUND` or `TOOL_FAILED`. Cancellation rejects with `AbortError` instead of returning.
+- `{ ok: true, tool, tools_version, data_commit, … }` on success. On failure, `{ ok: false, tool, error: { code, message, details? } }`, with codes `INVALID_INPUT`, `INPUT_TOO_LARGE`, `OUTPUT_TOO_LARGE` (a hard 8K-character cap), `NOT_FOUND` or `TOOL_FAILED`. Cancellation rejects with `AbortError` instead of returning.
 - Every fact carries a **`basis`**:
   - `verified`: anyone can re-check it by a reproducible method (hash, block header).
   - `self-reported`: a claim, not checked independently.
+  - `unchecked`: claimed with file evidence the browser couldn't read.
   - `missing`: not done or unknown.
   - `estimate`: a forecast.
   - `not-applicable`.
@@ -34,7 +35,9 @@ The two manifest tools are marked `untrustedContentHint: true` because their out
   The legend is in `/api/v1/tools.json`.
 - `null` means unknown, never zero. A pending timestamp is never `verified`.
 - Results link to evidence (`references`) instead of embedding documents. Default outputs stay near Chrome's ~1.5K guidance (the test budget is 2,200 characters); filters return detail.
-- `assess_jrc_manifest` runs **in the page**. The manifest isn't uploaded anywhere. File evidence can't be read from the browser, so it comes back as `not-checked`, counts as a claim, and is never shown as verified. For hash verification, run `jrc check` where the files are.
+- `assess_jrc_manifest` runs **in the page**. The manifest isn't uploaded anywhere. File evidence can't be read from the browser, so it comes back as `not-checked`: the pillar's basis is `unchecked`, `summary.file_evidence_not_checked` counts it, and the adoption plan's first step says to run `jrc check` where the files are. It's never shown as verified.
+- `canonical_json_sha256` hashes `JSON.stringify` of the supplied object. The CLI's `manifest.sha256` hashes the file's bytes, so the two differ by design.
+- Text taken from the supplied manifest is clipped to 120 characters and wrapped as `{ text, source: "supplied manifest (untrusted)" }`. It never appears in the tool's own advice fields.
 
 ## Architecture
 
@@ -95,6 +98,7 @@ Static files, built on every deploy. A test checks that each one equals the tool
 | Failures and cancellation | `NotAllowedError` → `failed`; a duplicate → `partial`; per-tool and outer abort unregister; aborted execution rejects | **Simulated** |
 | Fallback | No `modelContext`, or a non-function `registerTool` | **Simulated** |
 | Pages | Every page loads `/assets/webmcp.js`; no third-party scripts; no tracking APIs; no Node built-ins in served modules | Real build output |
+| Review regressions | 10 tests from an independent review: unchecked evidence, ReDoS, output clipping and capping, ZIP digest basis, hash naming, pre-aborted signal and listener release, prototype-named parameters, affirming pseudo-negations, self-asserted independence, malformed bundle | Real code; 2 simulated. Each was confirmed to fail on the pre-fix commit. |
 
 The simulated `modelContext` follows the spec's IDL and algorithms (name rules, duplicates, signals, JSON serialization, `executeTool` errors). The tests load the **built** `webmcp.js` and the **served** module copies, not the sources.
 

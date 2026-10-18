@@ -9,7 +9,7 @@ Factual record of changes. Dates are UTC. Nothing here has been deployed unless 
 - `lib/capabilities/`: a shared capability layer, a data bundle (`/webmcp/data.json`) and a static read-only API (`/api/v1/*.json`, including the tool catalog), all built from repository files.
 - `site/assets/webmcp.js`: no framework. Feature detection, independent per-tool registration with AbortControllers, cancellation, legacy string input, and an inert fallback.
 - `/agents/` page and `docs/WEBMCP.md` developer guide.
-- 12 new tests (55 total): real-code catalog, schema, execution and consistency tests, plus `[simulated]` registration, failure, cancellation and fallback tests. Real Chrome 155 run of the tools; native registration not yet verified.
+- 22 new tests (65 total): real-code catalog, schema, execution and consistency tests; `[simulated]` registration, failure, cancellation and fallback tests; and 10 regression tests from an independent review (including a ReDoS in the shared email pattern, which affected the CLI). Real Chrome 155 run of the tools; native registration not yet verified.
 - `www.jollyrogercharter.org` added as a custom domain.
 
 ## Unreleased — Quartermaster ledger foundation (PR C)
