@@ -2,7 +2,13 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
-## Unreleased — branch `feat/launch-site`
+## 2026-10-18 — First public deployment
+
+- Repository published at https://github.com/jollyrogercharter/charter; launch PR #1 merged (`bef3c90`).
+- Site deployed by Cloudflare Pages (free plan) from `main` to https://jollyrogercharter.org and https://jollyrogercharter.pages.dev. Served provenance manifest verified byte-identical to the repository.
+- `jollyrogercharter.org` registered through Cloudflare Registrar (expires 2027-10-18).
+
+## 2026-10-18 — Launch branch (merged in PR #1)
 
 ### 2026-10-18 — Launch session (Claude Opus 5.5, directed by the human initiator)
 
