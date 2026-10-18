@@ -6,7 +6,8 @@
   "license": "CC0-1.0",
   "type": "module",
   "bin": {
-    "jrc": "bin/jrc.mjs"
+    "jrc": "bin/jrc.mjs",
+    "qm": "bin/qm.mjs"
   },
   "files": [
     "bin/",

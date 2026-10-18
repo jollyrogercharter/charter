@@ -7,7 +7,7 @@ import path from "node:path";
 import { renderStatus } from "../scripts/render-status.mjs";
 
 const SITE = "_site";
-const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/how-it-was-made/", "/conversation/", "/conversation/archive/", "/provenance/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/", "/check/", "/spec/"];
+const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/how-it-was-made/", "/conversation/", "/conversation/archive/", "/provenance/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/", "/check/", "/spec/", "/spec/quartermaster/"];
 const FOUNDING_LINE = "If we can explain how to build it, we should explain how to run it. If we can explain how to run it, we should explain what it costs. And if someone can make it better or cheaper, they should be free to try.";
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => {
@@ -133,13 +133,11 @@ test("status has one source and every view agrees with it", () => {
   }
 });
 
-test("cost ledger never invents figures", () => {
-  const c = JSON.parse(read("launch/costs.json"));
-  for (const e of [...c.billed, ...c.ai_usage]) {
-    assert.ok(e.amount === null || typeof e.amount === "number", e.item);
-    assert.ok(e.source && e.status, `${e.item} needs source and status`);
-  }
-  for (const e of c.noncash_attention) assert.ok(e.valuation === null || e.method, `${e.item}: a valuation needs a method`);
+test("costs page shows the validated ledger and never invents figures", () => {
+  const page = text(read(routeFile("/costs/")));
+  assert.match(page, /known cash spending/);
+  assert.ok(existsSync(path.join(SITE, "costs/ledger.json")));
+  assert.equal(read(path.join(SITE, "costs/ledger.json")), read("launch/costs.json"), "published ledger is byte-identical to the source");
 });
 
 test("no secrets or personal data in tracked files or build output", () => {

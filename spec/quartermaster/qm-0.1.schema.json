@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jollyrogercharter.org/spec/quartermaster/qm-0.1.schema.json",
+  "title": "Quartermaster expense ledger, version 0.1 draft",
+  "description": "Public, redacted operating-cost snapshot. Cash, forecasts, reserves and noncash time are separate categories and are never summed together. Draft; not a billing integration.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "qm",
+    "project",
+    "currency",
+    "as_of_utc",
+    "sources",
+    "entries"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "qm": {
+      "const": "0.1"
+    },
+    "project": {
+      "type": "string",
+      "minLength": 1
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "as_of_utc": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?Z$"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "retrieved_utc"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "kind": {
+            "enum": [
+              "invoice",
+              "registrar",
+              "provider-dashboard",
+              "provider-api",
+              "manual",
+              "estimate"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retrieved_utc": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?Z$"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^https://\\S+$"
+          }
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "category",
+              "item",
+              "provider",
+              "amount",
+              "status",
+              "source",
+              "privacy"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              },
+              "item": {
+                "type": "string",
+                "minLength": 1
+              },
+              "provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "amount": {
+                "oneOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Known amount, or null for unknown. Never 0 for unknown."
+              },
+              "date": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "period_end": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "recurrence": {
+                "enum": [
+                  "one-time",
+                  "monthly",
+                  "yearly"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              },
+              "attribution": {
+                "type": "string",
+                "minLength": 1
+              },
+              "privacy": {
+                "enum": [
+                  "public",
+                  "aggregated",
+                  "redacted"
+                ]
+              },
+              "category": {
+                "enum": [
+                  "cash",
+                  "forecast",
+                  "reserve"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "category",
+              "item",
+              "provider",
+              "amount",
+              "hours",
+              "status",
+              "source",
+              "privacy"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              },
+              "item": {
+                "type": "string",
+                "minLength": 1
+              },
+              "provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "amount": {
+                "oneOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Known amount, or null for unknown. Never 0 for unknown."
+              },
+              "date": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "period_end": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "recurrence": {
+                "enum": [
+                  "one-time",
+                  "monthly",
+                  "yearly"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              },
+              "attribution": {
+                "type": "string",
+                "minLength": 1
+              },
+              "privacy": {
+                "enum": [
+                  "public",
+                  "aggregated",
+                  "redacted"
+                ]
+              },
+              "category": {
+                "enum": [
+                  "donated-labor",
+                  "user-attention"
+                ]
+              },
+              "hours": {
+                "oneOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Known amount, or null for unknown. Never 0 for unknown."
+              },
+              "valuation_method": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "if": {
+              "properties": {
+                "amount": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "amount"
+              ]
+            },
+            "then": {
+              "required": [
+                "valuation_method"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
