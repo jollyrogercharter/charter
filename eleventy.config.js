@@ -98,7 +98,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "provenance/launch-manifest.json": "provenance/launch-manifest.json" });
   eleventyConfig.addPassthroughCopy({ "spec/jrc-0.1.schema.json": "spec/jrc-0.1.schema.json", "jrc.json": "check/jrc.json", "spec/quartermaster/qm-0.1.schema.json": "spec/quartermaster/qm-0.1.schema.json", "launch/costs.json": "costs/ledger.json" });
   // Platform-neutral modules only: the browser runs the same engine as the CLI. Node-only files (check.mjs, init.mjs) stay out.
-  for (const f of ["jrc/core.mjs", "jrc/validate.mjs", "jrc/report.mjs", "jrc/constants.mjs", "jrc/challenge.mjs", "qm/expenses.mjs", "capabilities/capabilities.mjs", "capabilities/tools.mjs", "capabilities/input.mjs"]) {
+  for (const f of ["jrc/core.mjs", "jrc/validate.mjs", "jrc/report.mjs", "jrc/constants.mjs", "jrc/challenge.mjs", "qm/expenses.mjs", "capabilities/capabilities.mjs", "capabilities/tools.mjs", "capabilities/input.mjs", "assess/snapshot.mjs", "assess/github.mjs", "assess/evaluate.mjs", "assess/artifacts.mjs", "assess/session.mjs"]) {
     eleventyConfig.addPassthroughCopy({ [`lib/${f}`]: `js/lib/${f}` });
   }
   eleventyConfig.addWatchTarget("./*.md");

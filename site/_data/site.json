@@ -7,6 +7,7 @@
   "nav": [
     { "url": "/manifesto/", "label": "Manifesto" },
     { "url": "/charter/", "label": "Charter" },
+    { "url": "/adopt/", "label": "Adopt" },
     { "url": "/check/", "label": "Check" },
     { "url": "/challenge/", "label": "Challenge" },
     { "url": "/debate/", "label": "Debate" },
@@ -18,7 +19,6 @@
     { "url": "/status/", "label": "Status" },
     { "url": "/conversation/", "label": "Founding conversation" },
     { "url": "/history/", "label": "History" },
-    { "url": "/adopt/", "label": "Adopt" },
     { "url": "/quartermaster/", "label": "Quartermaster" },
     { "url": "/agents/", "label": "For AI agents" },
     { "url": "/governance/", "label": "Governance" },

@@ -1,6 +1,6 @@
 # WebMCP Developer Guide
 
-jollyrogercharter.org registers seven **read-only** tools with [WebMCP](https://webmachinelearning.github.io/webmcp/) (`document.modelContext`), so an AI agent in the browser can query the charter, status, costs and provenance, and assess a `jrc.json`, through structured calls instead of scraping pages. The same tools are available to any client as static JSON at `/api/v1/`.
+jollyrogercharter.org registers thirteen **read-only** tools with [WebMCP](https://webmachinelearning.github.io/webmcp/) (`document.modelContext`). Through structured calls instead of scraping, an AI agent in the browser can query the charter, status, costs and provenance, assess a `jrc.json`, and assess a public GitHub repository and prepare its adoption. The seven project tools are also available to any client as static JSON at `/api/v1/`. The six repository tools are described in [`docs/ADOPT.md`](ADOPT.md).
 
 **Status:**
 - Implemented and tested in Node, including a spec-modelled *simulated* `modelContext`.
@@ -18,6 +18,12 @@ jollyrogercharter.org registers seven **read-only** tools with [WebMCP](https://
 | `get_project_costs` | `category?` | Quartermaster ledger: categories never summed together, `null` = unknown | read-only |
 | `get_open_challenges` | `step?` | The 9 challenge steps, this project's reproduction status, open ways to help | read-only |
 | `get_provenance` | `path?` | Digest summary, timestamp state with method, transcript state; with `path`, one file's digest | read-only |
+| `assess_repository` | `repository` + `ref?`, or `snapshot` | Each pillar's status (evidenced / partially-evidenced / missing / not-applicable / unknown), concerns, next step | read-only, **untrusted content**, reads GitHub |
+| `prepare_adoption_roadmap` | same | Ordered steps: dependencies, then impact, then effort | read-only, **untrusted content**, reads GitHub |
+| `generate_jrc_manifest` | same | Candidate `jrc.json` (never `evidenced`), checked by the engine, plus a GitHub new-file link | read-only, **untrusted content**, reads GitHub |
+| `prepare_contribution` | same + `kind` | PR description, checklist, new-files patch or challenge log, plus links; never submits | read-only, **untrusted content**, reads GitHub |
+| `run_challenge_checks` | same | Challenge steps safe from public files; steps that need code to run are `not-attempted` | read-only, **untrusted content**, reads GitHub |
+| `generate_assessment_report` | same + `format?` | The full reproducible report (Markdown or JSON) | read-only, **untrusted content**, reads GitHub |
 
 The two manifest tools are marked `untrustedContentHint: true` because their output echoes text supplied by whoever called them.
 
@@ -94,7 +100,7 @@ Static files, built on every deploy. A test checks that each one equals the tool
 | Schemas | Strict Ajv compiles every schema; the input validator rejects everything Ajv rejects | Real code |
 | Execution | Every tool on repository data; budget; basis labels; filters; NOT_FOUND / INVALID_INPUT / INPUT_TOO_LARGE | Real code and data |
 | Consistency | `assess_jrc_manifest` equals `jrc report` (summary, levels, error codes) on four manifests; costs equal `qm summary`; the static API equals the tools; a pending proof is never labelled verified | Real code and CLI |
-| Registration | All 7 register; `executeTool` equals the Node path; legacy string input; `DataError` for non-object input | **Simulated** `modelContext` |
+| Registration | All 13 register; `executeTool` equals the Node path; legacy string input; `DataError` for non-object input | **Simulated** `modelContext` |
 | Failures and cancellation | `NotAllowedError` → `failed`; a duplicate → `partial`; per-tool and outer abort unregister; aborted execution rejects | **Simulated** |
 | Fallback | No `modelContext`, or a non-function `registerTool` | **Simulated** |
 | Pages | Every page loads `/assets/webmcp.js`; no third-party scripts; no tracking APIs; no Node built-ins in served modules | Real build output |
@@ -106,7 +112,7 @@ The simulated `modelContext` follows the spec's IDL and algorithms (name rules, 
 
 1. Use Chrome 149 or newer. Enable `chrome://flags/#enable-webmcp-testing` and relaunch. Production visitors would instead need the origin trial, see below.
 2. `npm run build`, then serve `_site/` on `localhost` (a secure context): `cd _site && python3 -m http.server 8765`.
-3. Open http://localhost:8765/. In DevTools: `document.documentElement.dataset.webmcp` should be `"registered"`, and `(await document.modelContext.getTools()).map(t => t.name)` should list the seven tools. The DevTools **Application → WebMCP** panel shows them too.
+3. Open http://localhost:8765/. In DevTools: `document.documentElement.dataset.webmcp` should be `"registered"`, and `(await document.modelContext.getTools()).map(t => t.name)` should list the thirteen tools. The DevTools **Application → WebMCP** panel shows them too.
 4. Execute one: `await document.modelContext.executeTool((await document.modelContext.getTools()).find(t => t.name === "get_provenance"), {})`.
 5. Or drive it with an agent: the [Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd) or GoogleChromeLabs' [example extension](https://github.com/GoogleChromeLabs/webmcp-extension/).
 

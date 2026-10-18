@@ -8,6 +8,9 @@ import { blocksPublication, checkManifest, loadManifest, sha256Hex } from "../li
 import { TOOL } from "../lib/jrc/constants.mjs";
 import { initManifest } from "../lib/jrc/init.mjs";
 import { buildReport, reportBadge, reportMarkdown } from "../lib/jrc/report.mjs";
+import { collectLocalSnapshot } from "../lib/assess/local.mjs";
+import { allArtifacts, AssessError, createSession } from "../lib/assess/session.mjs";
+import { parseRepository } from "../lib/assess/github.mjs";
 
 const USAGE = `jrc ${TOOL.version} \u2014 offline JRCv1 (draft) conformance tool
 
@@ -18,10 +21,13 @@ Usage:
                                               Write a reproducible assessment report
   jrc challenge [--out FILE] [--project NAME] [--repository URL]
                                               Print or write a Jolly Roger Challenge log template
+  jrc assess [dir|github-url] [--ref REF] [--snapshot FILE] [--save-snapshot FILE] [--out DIR] [--format md|json]
+                                              Scan a repository's public evidence and plan adoption
 
 manifest defaults to ./jrc.json; evidence paths resolve relative to its directory.
 Exit codes: 0 ok (incomplete is fine) \u00b7 1 invalid manifest or evidence \u00b7 2 usage error.
-jrc never fetches URLs or runs commands listed in a manifest.`;
+jrc never fetches URLs or runs commands listed in a manifest, and never runs repository code.
+jrc assess reads api.github.com and raw.githubusercontent.com only when given a GitHub URL.`;
 
 const safe = (s) => String(s).replace(/[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2028\u2029\u2066-\u2069]/g, "\uFFFD");
 const fail = (msg, code = 2) => { process.stderr.write(`jrc: ${safe(msg)}\n`); return code; };
@@ -43,8 +49,9 @@ function printFindings(findings) {
   for (const f of findings) process.stderr.write(`${f.severity.padEnd(7)} ${f.code.padEnd(18)} ${safe(f.at)}: ${safe(f.message)}\n`);
 }
 
-export function main(argv) {
+export async function main(argv) {
   try {
+    if (argv[0] === "assess") return await assess(argv.slice(1));
     return run(argv);
   } catch (e) {
     return fail(`unexpected error: ${e.code ?? e.message}`, 1);
@@ -61,6 +68,7 @@ function run(argv) {
       options: {
         name: { type: "string" }, stdout: { type: "boolean" }, json: { type: "boolean" },
         format: { type: "string" }, out: { type: "string" }, project: { type: "string" }, repository: { type: "string" },
+        ref: { type: "string" }, snapshot: { type: "string" }, "save-snapshot": { type: "string" },
         help: { type: "boolean", short: "h" },
       },
     });
@@ -145,5 +153,59 @@ function run(argv) {
   return fail(`unknown command "${cmd}"\n\n${USAGE}`);
 }
 
+async function assess(rest) {
+  let parsed;
+  try {
+    parsed = parseArgs({ args: rest, allowPositionals: true, options: { ref: { type: "string" }, snapshot: { type: "string" }, "save-snapshot": { type: "string" }, out: { type: "string" }, format: { type: "string" } } });
+  } catch (e) {
+    return fail(e.message);
+  }
+  const { values: o, positionals: pos } = parsed;
+  if (pos.length > 1) return fail("assess takes one directory or GitHub URL");
+  if (o.snapshot && pos.length) return fail("give a target or --snapshot, not both");
+  const fmt = o.format ?? "md";
+  if (!["md", "json"].includes(fmt)) return fail(`unknown --format ${fmt} (md, json)`);
+  const session = createSession({ fetch: globalThis.fetch, sha256: async (b) => sha256Hex(b) });
+  let input;
+  if (o.snapshot) {
+    const { manifest: snapshot, error } = loadManifest(path.resolve(o.snapshot));
+    if (error) return fail(error, 1);
+    input = { snapshot };
+  } else if (pos[0] && parseRepository(pos[0]) && !existsSync(pos[0])) {
+    input = { repository: pos[0], ...(o.ref ? { ref: o.ref } : {}) };
+  } else {
+    const dir = path.resolve(pos[0] ?? ".");
+    if (!existsSync(dir) || !statSync(dir).isDirectory()) return fail(`not a directory or GitHub URL: ${pos[0] ?? "."}`);
+    if (o.ref) return fail("--ref only applies to GitHub URLs");
+    input = { snapshot: await collectLocalSnapshot(dir) };
+  }
+  let result;
+  try { result = await session.assess(input); }
+  catch (e) {
+    if (!(e instanceof AssessError)) throw e;
+    for (const d of e.details ?? []) process.stderr.write(`error   ${safe(d.at)}: ${safe(d.message)}\n`);
+    return fail(e.message, 1);
+  }
+  const { files } = allArtifacts(result);
+  if (o["save-snapshot"]) {
+    const err = writeNew(o["save-snapshot"], files["jrc-snapshot.json"]);
+    if (err) return fail(err, 1);
+  }
+  if (o.out !== undefined) {
+    if (!o.out) return fail("--out needs a directory");
+    if (lexists(o.out) && !lstatSync(o.out).isDirectory()) return fail(`--out ${o.out} exists and is not a directory`);
+    try { mkdirSync(o.out, { recursive: true }); } catch (e) { return fail(`cannot create ${o.out}: ${e.code ?? e.message}`, 1); }
+    for (const [name, text] of Object.entries(files)) {
+      const target = path.join(o.out, name);
+      if (lexists(target) && lstatSync(target).isSymbolicLink()) return fail(`${target} is a symlink; refusing to write through it`, 1);
+      try { writeFileSync(target, text); } catch (e) { return fail(`cannot write ${target}: ${e.code ?? e.message}`, 1); }
+    }
+    process.stdout.write(`Wrote ${Object.keys(files).length} files to ${o.out}. Nothing was published; review them before using any.\n`);
+  } else {
+    process.stdout.write(fmt === "json" ? files["jrc-assessment.json"] : files["JRC-ASSESSMENT.md"]);
+  }
+  return 0;
+}
+
 const invoked = (() => { try { return realpathSync(process.argv[1]) === fileURLToPath(import.meta.url); } catch { return false; } })();
-if (invoked) process.exitCode = main(process.argv.slice(2));
+if (invoked) process.exitCode = await main(process.argv.slice(2));

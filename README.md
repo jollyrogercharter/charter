@@ -106,4 +106,15 @@ Spec: [`spec/JRC-MANIFEST.md`](spec/JRC-MANIFEST.md) · Schema: [`spec/jrc-0.1.s
 
 ## For AI agents (WebMCP)
 
-The site registers seven read-only tools with WebMCP (`document.modelContext`) and publishes the same answers as static JSON under `/api/v1/`. See [`docs/WEBMCP.md`](docs/WEBMCP.md) and https://jollyrogercharter.org/agents/.
+The site registers thirteen read-only tools with WebMCP (`document.modelContext`) and publishes the project tools' answers as static JSON under `/api/v1/`. See [`docs/WEBMCP.md`](docs/WEBMCP.md) and https://jollyrogercharter.org/agents/.
+
+## Adopt JRCv1: assess a repository
+
+At https://jollyrogercharter.org/adopt/ (or `jrc assess`), point the tool at a public GitHub repository. Each pillar comes back as evidenced, partially evidenced, missing, not applicable or unknown, with the reason and evidence links at the exact commit. You also get an ordered roadmap and files to review: a candidate `jrc.json`, a checklist, a new-files patch, a PR description and a challenge log. Nothing is published for you. Every assessment can be reproduced offline from its saved snapshot.
+
+```bash
+npx --yes --package=github:jollyrogercharter/charter jrc assess https://github.com/OWNER/REPO --out jrc-adopt
+npx --yes --package=github:jollyrogercharter/charter jrc assess --snapshot jrc-adopt/jrc-snapshot.json   # reproduce
+```
+
+How it works, its limits and how to reproduce the demo: [`docs/ADOPT.md`](docs/ADOPT.md).

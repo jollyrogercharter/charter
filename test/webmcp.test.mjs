@@ -11,12 +11,19 @@ import { MAX_MANIFEST_BYTES, runTool, toolCatalog, TOOLS } from "../lib/capabili
 import { buildBundle } from "../lib/capabilities/bundle.mjs";
 import { sha256Hex } from "../lib/jrc/check.mjs";
 import { summarize } from "../lib/qm/expenses.mjs";
+import { createSession } from "../lib/assess/session.mjs";
+import { fakeGithub, sha256Bytes } from "./helpers/fake-github.mjs";
 
 const SITE = "_site";
 const read = (p) => readFileSync(p, "utf8");
 const json = (p) => JSON.parse(read(p));
 const bundle = JSON.parse(read(path.join(SITE, "webmcp/data.json")));
-const ctx = { loadBundle: async () => bundle, sha256: async (t) => sha256Hex(t) };
+const gh = fakeGithub({ "example-org/tidepool": { dir: "test/fixtures/repos/complete", spdx: "MIT" } });
+const session = createSession({ fetch: gh.fetch, sha256: sha256Bytes, now: () => new Date("2026-10-18T12:00:00Z") });
+const ctx = { loadBundle: async () => bundle, sha256: async (t) => sha256Hex(t), session };
+const REPO = "https://github.com/example-org/tidepool";
+const REPO_TOOLS = ["assess_repository", "prepare_adoption_roadmap", "generate_jrc_manifest", "prepare_contribution", "run_challenge_checks", "generate_assessment_report"];
+const minimal = (t) => (REPO_TOOLS.includes(t.name) ? { repository: REPO, ...(t.name === "prepare_contribution" ? { kind: "checklist" } : {}) } : t.inputSchema.required ? { manifest: json("jrc.json") } : {});
 const tool = (name) => TOOLS.find((t) => t.name === name);
 const run = (name, input = {}) => runTool(tool(name), input, ctx);
 const fixture = (n) => json(`test/fixtures/jrc/${n}/jrc.json`);
@@ -26,14 +33,14 @@ const OUTPUT_BUDGET = 2200;
 
 test("catalog: names, descriptions and annotations follow the spec and Chrome guidance", () => {
   const cat = toolCatalog();
-  assert.deepEqual(cat.tools.map((t) => t.name).sort(), ["assess_jrc_manifest", "generate_adoption_plan", "get_charter", "get_open_challenges", "get_project_costs", "get_project_status", "get_provenance"]);
+  assert.deepEqual(cat.tools.map((t) => t.name).sort(), ["assess_jrc_manifest", "assess_repository", "generate_adoption_plan", "generate_assessment_report", "generate_jrc_manifest", "get_charter", "get_open_challenges", "get_project_costs", "get_project_status", "get_provenance", "prepare_adoption_roadmap", "prepare_contribution", "run_challenge_checks"]);
   for (const t of cat.tools) {
     assert.match(t.name, /^[A-Za-z0-9_.-]{1,30}$/, "spec name charset; Chrome suggests at most 30 chars");
     assert.ok(t.description.length > 0 && t.description.length <= 500, `${t.name} description length`);
     for (const [p, s] of Object.entries(t.inputSchema.properties ?? {})) assert.ok((s.description ?? "").length <= 150, `${t.name}.${p} description`);
     assert.equal(t.annotations.readOnlyHint, true, `${t.name} is read-only`);
     assert.equal(t.annotations.consequentialHint, false);
-    assert.equal(t.annotations.untrustedContentHint, ["assess_jrc_manifest", "generate_adoption_plan"].includes(t.name), `${t.name} untrusted hint`);
+    assert.equal(t.annotations.untrustedContentHint, ["assess_jrc_manifest", "generate_adoption_plan", ...REPO_TOOLS].includes(t.name), `${t.name} untrusted hint`);
   }
   assert.deepEqual(json(path.join(SITE, "api/v1/tools.json")), JSON.parse(JSON.stringify(cat)), "published catalog matches the code");
 });
@@ -41,13 +48,16 @@ test("catalog: names, descriptions and annotations follow the spec and Chrome gu
 test("schemas compile under strict Ajv and agree with the input validator", () => {
   const ajv = new Ajv2020({ strict: true });
   const bad = { get_charter: [{ pillar: "nope" }, { extra: 1 }], get_project_status: [{ state: "done" }, { id: "Bad Id!" }, { area: "x".repeat(41) }], get_project_costs: [{ category: "misc" }], get_open_challenges: [{ step: "../x" }], get_provenance: [{ path: "x".repeat(201) }], assess_jrc_manifest: [{}, { manifest: "a string" }, { manifest: [] }], generate_adoption_plan: [{}, { manifest: 5 }] };
+  for (const n of REPO_TOOLS) bad[n] = [{ repository: 5 }, { repository: "x".repeat(201) }, { repository: REPO, ref: "a b" }, { snapshot: "s" }, { repository: REPO, extra: 1 }];
+  bad.prepare_contribution.push({ repository: REPO }, { repository: REPO, kind: "open-pr" });
+  bad.generate_assessment_report.push({ repository: REPO, format: "html" });
   for (const t of TOOLS) {
     const v = ajv.compile(t.inputSchema);
     for (const input of bad[t.name]) {
       assert.equal(v(input), false, `${t.name} schema rejects ${JSON.stringify(input)}`);
       assert.ok(validateInput(t.inputSchema, input).length > 0, `${t.name} validator rejects ${JSON.stringify(input)}`);
     }
-    assert.ok(v(t.inputSchema.required ? { manifest: fixture("valid") } : {}), `${t.name} accepts minimal input`);
+    assert.ok(v(REPO_TOOLS.includes(t.name) ? minimal(t) : t.inputSchema.required ? { manifest: fixture("valid") } : {}), `${t.name} accepts minimal input`);
   }
 });
 
@@ -55,9 +65,10 @@ test("schemas compile under strict Ajv and agree with the input validator", () =
 
 test("every tool runs on the published data, stays within budget and labels its basis", async () => {
   for (const t of TOOLS) {
-    const r = await run(t.name, t.inputSchema.required ? { manifest: json("jrc.json") } : {});
+    const r = await run(t.name, minimal(t));
     assert.equal(r.ok, true, `${t.name}: ${JSON.stringify(r.error)}`);
-    assert.ok(JSON.stringify(r).length <= OUTPUT_BUDGET, `${t.name} output ${JSON.stringify(r).length} chars`);
+    assert.ok(JSON.stringify(r).length <= (t.maxOutput ?? OUTPUT_BUDGET * 2), `${t.name} output ${JSON.stringify(r).length} chars`);
+    if (!t.maxOutput && !REPO_TOOLS.includes(t.name)) assert.ok(JSON.stringify(r).length <= OUTPUT_BUDGET, `${t.name} output ${JSON.stringify(r).length} chars`);
     assert.match(JSON.stringify(r), /"basis/, `${t.name} labels basis`);
     assert.doesNotMatch(JSON.stringify(r), /\bcertified\b/i, `${t.name} never says certified`);
   }
@@ -162,7 +173,7 @@ async function loadBrowserModule() {
     assert.equal(url, "/webmcp/data.json", "only same-origin static data is fetched");
     return { ok: true, status: 200, json: async () => JSON.parse(read(path.join(SITE, "webmcp/data.json"))) };
   };
-  const src = read(path.join(SITE, "assets/webmcp.js")).replace('"/js/lib/capabilities/tools.mjs"', JSON.stringify(pathToFileURL(path.resolve(SITE, "js/lib/capabilities/tools.mjs")).href));
+  const src = read(path.join(SITE, "assets/webmcp.js")).replace(/"\/js\/lib\/([\w/.-]+)"/g, (_, p) => JSON.stringify(pathToFileURL(path.resolve(SITE, "js/lib", p)).href));
   const tmp = path.join(mkdtempSync(path.join(tmpdir(), "jrc-webmcp-")), "webmcp.mjs");
   writeFileSync(tmp, src);
   return import(pathToFileURL(tmp).href);
@@ -184,11 +195,12 @@ test("[simulated] registers all tools; executeTool returns the same results as t
   const doc = fakeDoc(mc);
   const out = await mod.init(doc);
   assert.equal(doc.documentElement.dataset.webmcp, "registered");
-  assert.equal(out.registered.length, 7);
+  assert.equal(out.registered.length, TOOLS.length);
   const listed = await mc.getTools();
   for (const t of listed) assert.doesNotThrow(() => JSON.parse(t.inputSchema), `${t.name} schema serializes`);
   for (const t of TOOLS) {
-    const input = t.inputSchema.required ? { manifest: json("jrc.json") } : {};
+    if (REPO_TOOLS.includes(t.name)) continue;
+    const input = minimal(t);
     const viaBrowser = JSON.parse(await mc.executeTool({ name: t.name }, input));
     assert.deepEqual(viaBrowser, JSON.parse(JSON.stringify(await run(t.name, input))), `${t.name}: browser path equals Node path`);
   }
@@ -210,7 +222,7 @@ test("[simulated] registration failures are isolated and reported", async () => 
   await mc.registerTool({ name: "get_charter", description: "someone else's tool", execute: async () => ({}) });
   const partialDoc = fakeDoc(mc);
   const p = await mod.init(partialDoc);
-  assert.equal(p.registered.length, 6);
+  assert.equal(p.registered.length, TOOLS.length - 1);
   assert.deepEqual(p.failed.map((f) => [f.name, f.error]), [["get_charter", "InvalidStateError"]]);
   assert.equal(partialDoc.documentElement.dataset.webmcp, "partial");
 });
@@ -220,9 +232,9 @@ test("[simulated] cancellation: aborting unregisters tools and aborts executions
   const mc = new FakeModelContext();
   const outer = new AbortController();
   const out = await mod.registerJrcTools(mc, { signal: outer.signal });
-  assert.equal((await mc.getTools()).length, 7);
+  assert.equal((await mc.getTools()).length, TOOLS.length);
   out.controllers.get("get_provenance").abort();
-  assert.equal((await mc.getTools()).length, 6, "per-tool controller unregisters one tool");
+  assert.equal((await mc.getTools()).length, TOOLS.length - 1, "per-tool controller unregisters one tool");
   outer.abort();
   assert.equal((await mc.getTools()).length, 0, "outer signal unregisters the rest");
 
@@ -319,8 +331,8 @@ test("review: [simulated] a pre-aborted registration signal registers nothing an
   outer.signal.addEventListener = (type, fn, opts) => { added++; opts?.signal?.addEventListener("abort", () => removed++); return realAdd(type, fn, opts); };
   const o2 = await mod.registerJrcTools(new FakeModelContext(), { signal: outer.signal });
   for (const ctrl of o2.controllers.values()) ctrl.abort();
-  assert.equal(added, 7);
-  assert.equal(removed, 7, "listeners on the outer signal are released when tools unregister");
+  assert.equal(added, TOOLS.length);
+  assert.equal(removed, TOOLS.length, "listeners on the outer signal are released when tools unregister");
 });
 
 test("review: prototype member names are not accepted as parameters", async () => {

@@ -26,7 +26,8 @@
     "manifest": "node scripts/hash-manifest.mjs",
     "status": "node scripts/render-status.mjs",
     "test": "npm run build && node --test test/*.test.mjs",
-    "jrc": "node bin/jrc.mjs"
+    "jrc": "node bin/jrc.mjs",
+    "demo": "node scripts/render-demo.mjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "3.1.6",

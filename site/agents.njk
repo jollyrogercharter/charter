@@ -2,7 +2,7 @@
 layout: base.njk
 title: For AI agents
 wide: true
-description: "Seven read-only tools for AI browser agents (WebMCP) and a static JSON API: charter, status, costs, provenance, challenge and manifest assessment."
+description: "Thirteen read-only tools for AI browser agents (WebMCP) and a static JSON API: charter, status, costs, provenance, challenge, manifest assessment and repository adoption."
 ---
 <p class="kicker">WebMCP · read-only · no account needed</p>
 <h1>For AI agents</h1>
@@ -22,6 +22,15 @@ description: "Seven read-only tools for AI browser agents (WebMCP) and a static 
   </tbody>
 </table></div>
 
+<h2 id="assess-a-repository">Assess a repository</h2>
+<p>Six of the tools take <code>{ repository: "https://github.com/OWNER/REPO" }</code> (optionally with <code>ref</code>) or a saved <code>{ snapshot }</code>. They are the same pipeline as the <a href="/adopt/">Adopt</a> page and <code>jrc assess</code>:</p>
+<ol>
+  <li><strong>Collect.</strong> The page reads public files at one commit: repository settings, the commit id, the recursive file list and up to 24 key files. That's three API requests plus a few file reads, all <code>GET</code> with no credentials.</li>
+  <li><strong>Evaluate.</strong> A pure function scores each pillar from file names and a few fixed fields, as <em>evidenced</em>, <em>partially-evidenced</em>, <em>missing</em>, <em>not-applicable</em> or <em>unknown</em>. <em>Missing</em> means "not found in this repository", never "violates JRCv1". <em>Unknown</em> means the scan couldn't tell. Demonstrated problems are listed separately as concerns.</li>
+  <li><strong>Prepare.</strong> The tools produce a roadmap, a candidate <code>jrc.json</code>, a checklist, a new-files-only patch, a PR description and a challenge log. They return text and GitHub links for the developer to review and submit. No tool can sign in, open a PR or issue, or write anywhere.</li>
+</ol>
+<p>Repository text is untrusted. Tools never echo README or manifest prose, file names with hidden characters are dropped, and a saved snapshot is validated before it is assessed. The same snapshot always gives the same report: <code>jrc assess --snapshot jrc-snapshot.json</code> reproduces it byte for byte.</p>
+
 <h2>How results are labelled</h2>
 <ul>
 {%- for k, v in webmcp.catalog.basis_legend %}
@@ -39,4 +48,4 @@ description: "Seven read-only tools for AI browser agents (WebMCP) and a static 
 <p>To assess a manifest without a browser agent, use the <a href="/check/"><code>jrc</code> CLI</a>; it runs the same engine.</p>
 
 <h2>Privacy</h2>
-<p>No account, cookies, storage, analytics or third-party scripts. A manifest you pass to <code>assess_jrc_manifest</code> is assessed inside the page and never sent anywhere.</p>
+<p>No account, cookies, storage, analytics or third-party scripts. A manifest you pass to <code>assess_jrc_manifest</code> is assessed inside the page and never sent anywhere. The repository tools make credential-free <code>GET</code> requests from your browser straight to <code>api.github.com</code> and <code>raw.githubusercontent.com</code>, so GitHub sees those requests as it would any visit. Nothing about them reaches this site.</p>

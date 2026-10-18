@@ -1,5 +1,6 @@
 // Registers the site's read-only JRC tools with WebMCP (document.modelContext) when the browser supports it; otherwise does nothing.
 import { runTool, TOOLS } from "/js/lib/capabilities/tools.mjs";
+import { createSession } from "/js/lib/assess/session.mjs";
 
 const DATA_URL = "/webmcp/data.json";
 let bundlePromise = null;
@@ -34,10 +35,13 @@ function loadBundle(signal) {
   return untilAborted(bundlePromise, signal);
 }
 
+const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 async function sha256(text) {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)));
 }
+
+// Shared with the /adopt/ page, so a person and an agent assessing the same repository reuse one snapshot.
+export const session = createSession({ fetch: (url, opts) => globalThis.fetch(url, opts), sha256: async (bytes) => hex(await crypto.subtle.digest("SHA-256", bytes)) });
 
 // Chrome before 155 could pass input as a JSON string; accept both forms.
 function normalizeInput(input) {
@@ -50,7 +54,7 @@ export function executor(tool) {
   return async (input, options) => {
     const signal = options?.signal;
     try {
-      return await runTool(tool, normalizeInput(input), { signal, loadBundle, sha256 });
+      return await runTool(tool, normalizeInput(input), { signal, loadBundle, sha256, session });
     } catch (e) {
       if (signal?.aborted || e?.name === "AbortError") throw e;
       return { ok: false, tool: tool.name, error: { code: "TOOL_FAILED", message: String(e?.message ?? e) } };

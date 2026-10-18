@@ -2,6 +2,16 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## Unreleased — Adoption journey (PR E)
+
+- `/adopt/` assesses a public GitHub repository, a `jrc.json` or a saved snapshot in the browser. It reports each pillar as evidenced, partially-evidenced, missing, not-applicable or unknown, explains every check, and links evidence at the pinned commit. It shows progress and offers the report (JSON and Markdown), a candidate `jrc.json`, a checklist, a new-files patch, a PR description, a challenge log and the snapshot to download. *Raise the Flag* moves below it, unchanged.
+- `lib/assess/`: a collector for constrained, credential-free GitHub reads (3 API requests plus key files, pinned to one commit, host allowlist, byte caps), a local collector, a pure deterministic evaluator (23 checks, contradictions kept apart from absences), artifact generators, and one shared session for the page, the tools and the CLI.
+- Six read-only WebMCP tools: `assess_repository`, `prepare_adoption_roadmap`, `generate_jrc_manifest`, `prepare_contribution`, `run_challenge_checks`, `generate_assessment_report`. They prepare contributions and never submit them.
+- `jrc assess [dir|github-url] [--ref] [--snapshot] [--save-snapshot] [--out] [--format]`.
+- `docs/ADOPT.md`; `docs/demo/` holds two live assessments of this repository that regenerate byte-for-byte (`npm run demo`).
+- 23 new tests (88 total): five fixture repositories (complete, partial, contradictory, missing, not-applicable); a runtime-built hostile repository (prompt injection, bidi and zero-width names, symlink escape, private data, HTML in file names, hostile JSON keys); invalid manifests and snapshots; constrained-fetch tests against a fake GitHub; CLI, tool and page byte-equality; patch `git apply --check`; candidate `jrc check`. The adversarial tests were mutation-checked.
+- `assessManifest` takes an optional `now`, so evaluating a snapshot doesn't depend on the day it's run.
+
 ## Unreleased — WebMCP tools (PR D)
 
 - Seven read-only WebMCP tools registered through `document.modelContext.registerTool()`: `get_charter`, `get_project_status`, `assess_jrc_manifest`, `generate_adoption_plan`, `get_project_costs`, `get_open_challenges` and `get_provenance`. They use strict JSON Schemas and honest annotations, and every fact carries a `basis` label.

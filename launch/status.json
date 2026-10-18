@@ -215,6 +215,16 @@
       "owner": "human"
     },
     {
+      "id": "adopt",
+      "area": "Standard",
+      "title": "Adoption journey",
+      "state": "pending",
+      "url": "https://jollyrogercharter.org/adopt/",
+      "evidence": "On draft branch feat/adopt, not deployed. Scans public GitHub files at one commit (or a local checkout) and reports each pillar as evidenced, partially-evidenced, missing, not-applicable or unknown, with a roadmap and reviewable files. Live demo of this repository reproduced from its snapshot. Tested in Node with fixture, hostile and mutation tests; the page hasn't been driven in a real browser yet.",
+      "verified_utc": "2026-10-18T21:00Z",
+      "next": "Human review of the draft PR; check /adopt/ in a browser; merge after the stack below it."
+    },
+    {
       "id": "founding-status-2026-10-17",
       "area": "History",
       "title": "Founding package status notes",
