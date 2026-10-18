@@ -64,4 +64,12 @@ Stale public claims found: `site/debate.njk` (Discussions "not yet enabled"); `s
 
 ## Progress log
 
-Entries are added as work proceeds.
+- 04:51Z: Verified the starting state (table above).
+- ~05:10Z: PR A pushed, draft [#4](https://github.com/jollyrogercharter/charter/pull/4). CI green.
+- ~05:40Z: `jrc` core committed (12c5ec9); two Sonnet reviewers dispatched.
+- ~06:30Z: Review findings fixed in e623d39 with 10 regression tests. PR B pushed, draft [#5](https://github.com/jollyrogercharter/charter/pull/5), stacked on #4. CI green, including the Node 20/24 matrix.
+- ~07:00Z: PR C pushed, draft [#6](https://github.com/jollyrogercharter/charter/pull/6), stacked on #5.
+- 17:24Z: Clean-clone end-to-end demo passed. OpenTimestamps upgraded and verified (block 971948) via public explorers; committed to #4 and merged forward through #5 and #6.
+- 17:35Z: Issues #7–#12 filed for human-only items. Run record and `launch/OVERNIGHT-REPORT.md` written.
+
+**Deviation:** status.json was edited on all three branches. Merging #4 → #5 → #6 forward kept them consistent; merge in that order.

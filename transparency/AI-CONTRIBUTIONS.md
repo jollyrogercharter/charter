@@ -14,6 +14,17 @@ This file is a provenance record, not a claim that a model or vendor endorses th
 - **Claude Sonnet sub-agent** (dispatched by the above): first drafts of `launch/RFC-SEEDS.md` and `launch/CONTENT-DRAFTS.md`, reviewed by the main agent. The human hasn't reviewed them yet.
 - **Human initiator:** issued the instruction and owns every decision listed under "Needs the human" in `launch/LAUNCH-STATUS.md`. Commits are authored under the initiator's GitHub identity because they ran on the initiator's machine. The AI authorship of that work is recorded here.
 
+## Overnight build (2026-10-18)
+
+- **Claude Opus 5.5 in Claude Code**, under the initiator's written authorization (draft PRs only), built:
+  - status single-sourcing (PR #4);
+  - the `jrc` conformance CLI, its schema and the adoption pages (PR #5);
+  - the Quartermaster qm 0.1 ledger (PR #6);
+  - verification of the timestamp proof.
+  Run record: [`agent-runs/2026-10-18-overnight.md`](agent-runs/2026-10-18-overnight.md).
+- **Claude Sonnet sub-agents:** an independent code review and an adversarial review of `jrc` (their confirmed findings were fixed with regression tests), plus first drafts of `launch/RFC-DRAFTS-OVERNIGHT.md` and `launch/LAUNCH-BRIEFING.md`, which the main agent reviewed.
+- **Human initiator:** wrote the brief and authorization; merges and every external decision remain theirs.
+
 ## Statement of honesty
 
 No human-only-authorship or model-only-authorship claims. Publish accessible prompts, inputs, tests and changes where lawful and safe. Mark redactions and unknowns. Do not try to expose undisclosed private chain-of-thought or claim access to it.
