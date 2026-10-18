@@ -1,6 +1,6 @@
 # Launch Status
 
-**Current state:** the repository is public at https://github.com/jollyrogercharter/charter. `main` holds only the preserved founding package; the site and launch work are on `feat/launch-site`, not merged yet. Nothing has been deployed to a web host, registered, purchased, timestamped or posted. This is a draft, not a production launch.
+**Current state:** the repository is public at https://github.com/jollyrogercharter/charter. `main` holds only the preserved founding package; the site and launch work are on `feat/launch-site`, not merged yet. `jollyrogercharter.org` is registered (Cloudflare Registrar). Nothing has been deployed to a web host, timestamped or posted. This is a draft, not a production launch.
 
 Code on GitHub: **yes** (`main` = `e59cf86`, `feat/launch-site` = pushed with this commit). Website deployed: **no**.
 
@@ -12,8 +12,7 @@ Code on GitHub: **yes** (`main` = `e59cf86`, `feat/launch-site` = pushed with th
 | CI workflow | **Pushed, not yet run** | — | — | $0 | Triggers on PRs and pushes to `main`; the branch push alone doesn't trigger it | Runs when the PR opens |
 | GitHub organization | **Complete** | https://github.com/jollyrogercharter | One admin (human initiator) | $0 (free plan) | Created by the human in the GitHub UI; `GET /orgs/jollyrogercharter` → `plan: free`. 2FA requirement **not enabled** | Enable required 2FA; invite a second owner |
 | Repository push | **Complete** | https://github.com/jollyrogercharter/charter | Org admins | $0 | Created with `gh repo create` on 2026-10-18 at the human's request (Claude in Chrome was not connected); local and remote SHAs matched after push | Open PR `feat/launch-site` → `main`; add branch protection |
-| Domain availability | **Partly checked** | — | — | — | PIR RDAP returned 404 for all five `.org` candidates (the control `wikipedia.org` returned 200). Registrar availability and price **not checked** | Human checks at a registrar; brings price + renewal back for approval |
-| Domain purchase | **Blocked: approval** | — | — | unknown | — | Checkout approval gate |
+| Domain registration | **Complete** | `jollyrogercharter.org` (no site yet) | Human initiator's Cloudflare account | not yet recorded | PIR RDAP: registrar Cloudflare, Inc., registered 2026-10-18T03:54Z, expires 2027-10-18 | Record price + auto-renew; connect Pages |
 | Hosting / HTTPS | **Blocked: human** | — | — | $0 intended | `DEPLOYMENT.md` | Human connects Cloudflare Pages (or picks another host) |
 | Founding transcript | **Blocked: source** | — | — | $0 | Site shows "Transcript pending human review"; archive labelled as a summary | Human exports the ChatGPT conversation |
 | OpenTimestamps proof (founding package) | **Not requested** | — | — | $0 | `timestamp_state: "not-requested"` | Human approves sending digests to public calendar servers |
@@ -32,7 +31,7 @@ In order of what unblocks the most:
 
 1. **Secure the org.** Settings → Authentication security → require 2FA; invite a second trusted owner; protect `main` (require a PR review and passing CI).
 2. **Open and merge the launch PR** (`feat/launch-site` → `main`) after review. CI runs on the PR.
-3. **Check the domain at a registrar** you control. Bring back the first-year price, the renewal price, any privacy fee, the DNS provider and the auto-renew setting for checkout approval.
+3. **Record the domain cost.** Add the price paid, renewal price and auto-renew state to `launch/costs.json` (no account IDs).
 4. **Pick a host and connect it.** Cloudflare Pages on the free plan is the candidate. The steps are in `DEPLOYMENT.md`.
 5. **Decide on OpenTimestamps for the founding package.** It sends only SHA-256 digests to public calendar servers. Once you approve, the agent installs the official client in an isolated environment, stamps, and records the state as `pending`.
 6. **Export the founding ChatGPT conversation** (Settings → Data controls → Export). Keep the ZIP private. The agent will extract this one conversation locally and draft a redacted edition for your review.
