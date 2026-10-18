@@ -9,7 +9,7 @@ Factual record of changes. Dates are UTC. Nothing here has been deployed unless 
 - Six read-only WebMCP tools: `assess_repository`, `prepare_adoption_roadmap`, `generate_jrc_manifest`, `prepare_contribution`, `run_challenge_checks`, `generate_assessment_report`. They prepare contributions and never submit them.
 - `jrc assess [dir|github-url] [--ref] [--snapshot] [--save-snapshot] [--out] [--format]`.
 - `docs/ADOPT.md`; `docs/demo/` holds two live assessments of this repository that regenerate byte-for-byte (`npm run demo`).
-- 23 new tests (88 total): five fixture repositories (complete, partial, contradictory, missing, not-applicable); a runtime-built hostile repository (prompt injection, bidi and zero-width names, symlink escape, private data, HTML in file names, hostile JSON keys); invalid manifests and snapshots; constrained-fetch tests against a fake GitHub; CLI, tool and page byte-equality; patch `git apply --check`; candidate `jrc check`. The adversarial tests were mutation-checked.
+- 36 new tests (101 total): five fixture repositories (complete, partial, contradictory, missing, not-applicable); a runtime-built hostile repository (prompt injection, bidi and zero-width names, symlink escape, private data, HTML in file names, hostile JSON keys); invalid manifests and snapshots; constrained-fetch tests against a fake GitHub; CLI, tool and page byte-equality; patch `git apply --check`; candidate `jrc check`. The adversarial tests were mutation-checked. 12 more regression tests come from an independent review of the first commit; each failed before its fix.
 - `assessManifest` takes an optional `now`, so evaluating a snapshot doesn't depend on the day it's run.
 
 ## Unreleased — WebMCP tools (PR D)

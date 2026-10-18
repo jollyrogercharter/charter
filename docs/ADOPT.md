@@ -94,7 +94,13 @@ Each **pillar** is then:
 | | `multiple-stewards` | | CODEOWNERS with two or more owners. One owner is `contradicted` |
 | | `open-proposals` | | Issues or discussions on, or issue/PR templates |
 
-Paths under `node_modules/`, `vendor/`, `third_party/`, `fixtures/` and `testdata/` are ignored: copies of other projects aren't this project's evidence. Checks look at file names and a few fixed fields, plus README, licence and CODEOWNERS text matched against fixed patterns. No repository prose is ever copied into a result.
+Paths under `node_modules/`, `vendor/`, `third_party/`, `fixtures/` and `testdata/` are ignored: copies of other projects aren't this project's evidence. Checks look at file names and a few fixed fields, plus README, licence and CODEOWNERS text matched against fixed patterns. Repository file *contents* are never copied into a result. File *paths* are, because they are the evidence. Paths are untrusted, and before they are cited:
+
+- names containing hidden characters (control, format, bidirectional, zero-width, tag, variation-selector or filler) are dropped;
+- sentence-like path segments (more than 64 characters, or more than three spaces) are never cited;
+- in Markdown, brackets and parentheses are escaped so a name can't retarget a link.
+
+Symlinks and submodules are never followed. A check whose only match is one comes back `not-checked`.
 
 ## Roadmap
 
@@ -130,7 +136,8 @@ The log names its author as an automated tool, "not an independent reviewer".
 
 | Threat | Handling | Test |
 |---|---|---|
-| Prompt injection in README, file names or `jrc.json` | Text is never echoed; outcomes depend only on fixed patterns; tools set `untrustedContentHint` | Injected text changes no outcome and appears in no output |
+| Prompt injection in README, file names or `jrc.json` | File contents are never echoed; sentence-like path segments aren't cited; outcomes depend only on fixed patterns; tools set `untrustedContentHint` | Injected text changes no outcome and appears in no output |
+| Truncated or unread files | A file that's in the tree but wasn't read in full makes the checks that depend on it `not-checked`, never `not-found` | Unread README, CODEOWNERS, package.json and deployment docs |
 | Hidden or bidirectional characters, look-alikes | Such paths are dropped and counted; the manifest goes through E-CONTROL, E-CONFUSABLE | `skipped_paths` and output scans |
 | Private data (emails, tokens) in manifests or file names | E-PRIVACY concern without echoing; such paths are left out of the candidate | The address appears in no output |
 | Hostile JSON keys | JSON paths with unusual keys are rewritten as `.<unusual key>` | Concern paths are checked |

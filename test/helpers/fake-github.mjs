@@ -11,7 +11,7 @@ const walk = (root, rel = "") => readdirSync(path.join(root, rel)).sort().flatMa
   return [{ path: p, mode: "100644", type: "blob", size: st.size }];
 });
 
-export function fakeGithub(repos, { rateLimited = false, truncated = false, redirectOffsite = false, failRaw = false } = {}) {
+export function fakeGithub(repos, { rateLimited = false, truncated = false, redirectOffsite = false, failRaw = false, moved = false } = {}) {
   const requests = [];
   const commitOf = (key) => createHash("sha1").update(`commit:${key}`).digest("hex");
   const json = (v, status = 200) => new Response(JSON.stringify(v), { status, headers: { "content-type": "application/json" } });
@@ -19,6 +19,7 @@ export function fakeGithub(repos, { rateLimited = false, truncated = false, redi
     requests.push({ url, method: opts.method ?? "GET", credentials: opts.credentials, accept: opts.headers?.Accept });
     const u = new URL(url);
     if (rateLimited && u.host === "api.github.com") return new Response("{}", { status: 403, headers: { "x-ratelimit-remaining": "0" } });
+    if (moved && u.host === "api.github.com") return new Response("", { status: 301, headers: { location: "https://api.github.com/repositories/1" } });
     if (u.host === "api.github.com") {
       const m = u.pathname.match(/^\/repos\/([^/]+)\/([^/]+)(\/.*)?$/);
       const key = m && `${m[1]}/${m[2]}`;

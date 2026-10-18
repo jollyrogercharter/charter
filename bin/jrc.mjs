@@ -171,7 +171,7 @@ async function assess(rest) {
     const { manifest: snapshot, error } = loadManifest(path.resolve(o.snapshot));
     if (error) return fail(error, 1);
     input = { snapshot };
-  } else if (pos[0] && parseRepository(pos[0]) && !existsSync(pos[0])) {
+  } else if (pos[0] && /^(https?:\/\/)?(www\.)?github\.com\//i.test(pos[0]) && parseRepository(pos[0])) {
     input = { repository: pos[0], ...(o.ref ? { ref: o.ref } : {}) };
   } else {
     const dir = path.resolve(pos[0] ?? ".");
@@ -195,10 +195,11 @@ async function assess(rest) {
     if (!o.out) return fail("--out needs a directory");
     if (lexists(o.out) && !lstatSync(o.out).isDirectory()) return fail(`--out ${o.out} exists and is not a directory`);
     try { mkdirSync(o.out, { recursive: true }); } catch (e) { return fail(`cannot create ${o.out}: ${e.code ?? e.message}`, 1); }
+    const existing = Object.keys(files).map((n) => path.join(o.out, n)).filter(lexists);
+    if (existing.length) return fail(`refusing to overwrite ${existing.join(", ")}; choose an empty --out directory`, 1);
     for (const [name, text] of Object.entries(files)) {
-      const target = path.join(o.out, name);
-      if (lexists(target) && lstatSync(target).isSymbolicLink()) return fail(`${target} is a symlink; refusing to write through it`, 1);
-      try { writeFileSync(target, text); } catch (e) { return fail(`cannot write ${target}: ${e.code ?? e.message}`, 1); }
+      const err = writeNew(path.join(o.out, name), text);
+      if (err) return fail(err, 1);
     }
     process.stdout.write(`Wrote ${Object.keys(files).length} files to ${o.out}. Nothing was published; review them before using any.\n`);
   } else {
