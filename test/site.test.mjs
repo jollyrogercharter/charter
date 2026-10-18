@@ -89,6 +89,13 @@ test("provenance state is internally consistent", () => {
   if (m.timestamp_state !== "not-requested") assert.ok(m.opentimestamps_proof_path && existsSync(m.opentimestamps_proof_path), "claimed proof file must exist");
   if (m.timestamp_state === "verified") assert.ok(m.bitcoin_attestation_time_utc, "verified needs an attestation time");
   else assert.equal(m.bitcoin_attestation_time_utc, null);
+  if (m.timestamped_artifact) {
+    const buf = readFileSync(m.timestamped_artifact.path);
+    assert.equal(createHash("sha256").update(buf).digest("hex"), m.timestamped_artifact.sha256, "stamped file changed after stamping");
+    const lines = buf.toString().trim().split("\n");
+    assert.equal(lines[0], `${m.received_package.sha256}  ${m.received_package.file}`);
+    assert.deepEqual(lines.slice(1), m.files.map((f) => `${f.sha256}  ${f.path}`));
+  }
   if (m.founding_transcript.state !== "not-provided") assert.ok(existsSync(m.founding_transcript.path));
   assert.ok(text(read(routeFile("/provenance/"))).includes(m.timestamp_state));
 });
@@ -102,6 +109,12 @@ test("manifest digests match the preservation commit", (t) => {
     assert.equal(buf.length, f.bytes, f.path);
     assert.equal(createHash("sha256").update(buf).digest("hex"), f.sha256, f.path);
   }
+});
+
+test("licence and notice are present and linked", () => {
+  assert.match(read("LICENSE"), /CC0 1\.0 Universal/);
+  assert.ok(existsSync("NOTICE.md"));
+  for (const f of htmlFiles) assert.match(read(f), /blob\/main\/LICENSE">CC0 1\.0</, `${f} footer licence link`);
 });
 
 test("cost ledger never invents figures", () => {
