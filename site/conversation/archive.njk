@@ -1,0 +1,11 @@
+---
+layout: base.njk
+title: Founding archive (curated summary)
+description: "Curated founding archive. An editorial consolidation, not a verbatim ChatGPT transcript."
+---
+<p class="kicker">Curated summary · not a transcript</p>
+<h1>Founding archive</h1>
+<div class="notice">
+  <p><strong>This is not a verbatim transcript.</strong> It's an editorial consolidation of the founding human–ChatGPT discussion, assembled from the modular founding documents. Wording was edited and turns were merged or left out. SHA-256 of the file as received: <span class="hash">{% for f in provenance.files %}{% if f.path == "FOUNDING-ARCHIVE.md" %}{{ f.sha256 }}{% endif %}{% endfor %}</span>.</p>
+</div>
+{% doc "FOUNDING-ARCHIVE.md", { dropTitle: true } %}

@@ -85,3 +85,7 @@ A new proposed JRCv1 component is **Proof of Origin and Development History**. W
 - [Source-transcript and redaction policy](transparency/CONVERSATION-PUBLICATION.md)
 
 **Current status:** no true conversation-source export or human-approved public transcript has been provided to this package; no independent timestamp has been issued or verified here.
+
+## Website and launch state
+
+The static website in `site/` is generated from these Markdown files: `npm ci && npm test` builds it into `_site/` and checks it. See [`DEPLOYMENT.md`](DEPLOYMENT.md) for hosting anywhere, [`launch/LAUNCH-STATUS.md`](launch/LAUNCH-STATUS.md) for what is and isn't live, [`OPEN-DEPENDENCIES.md`](OPEN-DEPENDENCIES.md) for what still depends on the founder, and [`CHANGELOG.md`](CHANGELOG.md) for history.

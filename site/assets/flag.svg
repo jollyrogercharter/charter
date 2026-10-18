@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-labelledby="t">
+  <title id="t">Jolly Roger Charter flag: a white skull over two crossed bars, one ending in a pen nib and one in a wrench ring, on a dark field</title>
+  <rect width="200" height="140" rx="4" fill="#16202e"/>
+  <g stroke="#f7f2e8" stroke-width="9" stroke-linecap="round">
+    <line x1="52" y1="118" x2="148" y2="62"/>
+    <line x1="148" y1="118" x2="52" y2="62"/>
+  </g>
+  <path d="M146 116 l14 10 -4 -16z" fill="#f7f2e8"/>
+  <circle cx="52" cy="118" r="10" fill="#f7f2e8"/>
+  <circle cx="52" cy="118" r="4" fill="#16202e"/>
+  <path d="M100 20c-22 0-36 14-36 33 0 11 5 19 12 24v11h48V77c7-5 12-13 12-24 0-19-14-33-36-33z" fill="#f7f2e8"/>
+  <circle cx="86" cy="54" r="8.5" fill="#16202e"/>
+  <circle cx="114" cy="54" r="8.5" fill="#16202e"/>
+  <path d="M100 63l-5 9h10z" fill="#16202e"/>
+  <g stroke="#16202e" stroke-width="2.5"><line x1="88" y1="80" x2="88" y2="88"/><line x1="96" y1="80" x2="96" y2="88"/><line x1="104" y1="80" x2="104" y2="88"/><line x1="112" y1="80" x2="112" y2="88"/></g>
+  <rect x="0" y="0" width="6" height="140" fill="#9e1b1b"/>
+</svg>

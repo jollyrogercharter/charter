@@ -1,0 +1,209 @@
+{
+  "schema_version": "jrc-provenance-draft-0.1",
+  "status": "REAL_DIGESTS_OF_FOUNDING_PACKAGE",
+  "description": "SHA-256 digests of the founding launch package as received and committed verbatim. Integrity evidence for these exact bytes only; says nothing about when the ideas originated, who authored them, or whether anyone was first.",
+  "hashed_at_utc": "2026-10-18T03:37:08Z",
+  "preservation_commit": "e59cf86b5bbd198c7ba7403ccfdfdfab8c9bc97c",
+  "received_package": {
+    "file": "Jolly_Roger_Claude_Launch_Package.zip",
+    "bytes": 105560,
+    "sha256": "f7272299dc6a6a342460a805ddd9a8d0781b186291ee51d57fcfd94f560154eb",
+    "in_repository": false,
+    "note": "Original ZIP is kept outside Git; every entry under jolly-roger-charter/ was byte-compared to the preservation commit."
+  },
+  "files": [
+    {
+      "path": ".github/ISSUE_TEMPLATE/charter-rfc.md",
+      "bytes": 433,
+      "sha256": "0357e6b0efec4495ab35d2d3374aac8f3d91cea86c9b629b13869e0fbfdbab65"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/reproduction-challenge.md",
+      "bytes": 434,
+      "sha256": "b346a1c778db3835be81ba14421189f0a62fe8d251a38df548ff7bdb70e24bad"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/what-would-make-this-fail.md",
+      "bytes": 403,
+      "sha256": "5bec1e96785c94ee6c20a67ef2f79c0ab6f1bf999c1d65831d067943bf8b1961"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 3035,
+      "sha256": "012c1880167cfbebb102c654a4dde680c4516e77c2c9b2d2826c210d53395368"
+    },
+    {
+      "path": "CHARTER.md",
+      "bytes": 3728,
+      "sha256": "2ef0a92396f4c0490ba2f66cc06b790c4d9e2577d212e374c7cd99927ca06eca"
+    },
+    {
+      "path": "CLAUDE-LAUNCH-HANDOFF.md",
+      "bytes": 23524,
+      "sha256": "f378c1ab6000e0547b7307e4fe5b9158472ecb029c018ccb967b52a7aa4e5f35"
+    },
+    {
+      "path": "DECISIONS-AND-QUESTIONS.md",
+      "bytes": 8389,
+      "sha256": "c2abb76278ecb9b8111fb5c9f5bb8e05ad475a0f1c8308c25a8188ad8c07e7d0"
+    },
+    {
+      "path": "FOUNDING-ARCHIVE.md",
+      "bytes": 72220,
+      "sha256": "9527520c159a8e2f6e45e4cc0a6a6f359d44d9b2bac64b6db0357ad00bbad9c9"
+    },
+    {
+      "path": "MANIFESTO.md",
+      "bytes": 9291,
+      "sha256": "1e8e66764f6745d642d65e236a6c4103321f521f7ef2572ea95db40f046a502a"
+    },
+    {
+      "path": "PASTE-INTO-CLAUDE.md",
+      "bytes": 4251,
+      "sha256": "cc58da9111587f2c70f55fd92ca24ef83089ff0d251a664370833239e0674ae4"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7821,
+      "sha256": "2b5e5381a9896fa6d5541c4362411d1fcc16452fd3c91e465ff46c8b08103518"
+    },
+    {
+      "path": "SOURCES.md",
+      "bytes": 2839,
+      "sha256": "3e25ec3392609cb61d8cfdfe62521fdeda78dbc66875eec7743617b42ff3ac34"
+    },
+    {
+      "path": "community/GOVERNANCE-AND-DEBATE.md",
+      "bytes": 3355,
+      "sha256": "2dad3ce35e235a1d188df2e721f4250a25fd0ebbe3a1d0a5a303399d811a0867"
+    },
+    {
+      "path": "community/THE-CHALLENGE.md",
+      "bytes": 2305,
+      "sha256": "c172a9535b37056dd7757f55507f8c00ec524304dc5c47512044385497a0f323"
+    },
+    {
+      "path": "launch/LAUNCH-STATUS.md",
+      "bytes": 1817,
+      "sha256": "263a89d99a9e21e355ee6c196f6e26d6a7b8863cd01c4d32605ba1123b8c74a0"
+    },
+    {
+      "path": "launch/NEXT-ACTIONS.md",
+      "bytes": 2541,
+      "sha256": "b28c01e5623bc2b0e0bd62c4670f2449d77106f52708ce869a0a77f512c37c30"
+    },
+    {
+      "path": "launch/OPERATIONS-LEDGER.md",
+      "bytes": 1596,
+      "sha256": "2ab115b3f899bdbef9f60a1e8f3bc2296c02de89ffbc93f13a0525f1ab6c849c"
+    },
+    {
+      "path": "launch/ORGANIC-MARKETING-PLAN.md",
+      "bytes": 6547,
+      "sha256": "3de411ba1992d04c176aa13daa27013e2503a8c05ccdd7de17669bb6bf0ae696"
+    },
+    {
+      "path": "legal/LICENSE-AND-RISK.md",
+      "bytes": 3838,
+      "sha256": "07fb457975291971f9f69c46aaa22cbd43a3c857f660668eb8ad88fe83f735d8"
+    },
+    {
+      "path": "product/QUARTERMASTER.md",
+      "bytes": 5001,
+      "sha256": "3bbabaa8c85ba4fd02729af0d0dbd2535a46456c69ca4ec1821ed9cfe1802c58"
+    },
+    {
+      "path": "provenance/README.md",
+      "bytes": 8835,
+      "sha256": "71aab9c5c71d1a9246c283e5bb8269bc5ad728de68d1ad13b1c3b6e83a882d9c"
+    },
+    {
+      "path": "provenance/VERIFY.md",
+      "bytes": 2526,
+      "sha256": "39c6945117f5706ce357051ba0967a31ba028e9454a288080eeb41c3c7c68357"
+    },
+    {
+      "path": "provenance/proof-manifest.example.json",
+      "bytes": 773,
+      "sha256": "6321a3d40ca6ffb20bd293f3c1344b12537091921e2c5bc1949222a434002ff3"
+    },
+    {
+      "path": "research/PRECEDENTS.md",
+      "bytes": 3391,
+      "sha256": "6de821ef974724e15b94bca45234936389a46451e6e837fd7ef0517db9bcd702"
+    },
+    {
+      "path": "standard/AGENTIC-REPRODUCIBILITY.md",
+      "bytes": 2878,
+      "sha256": "8d7051372a5ba1353a9719dfe04f830be6b6001e55dcbe15d8108629236b9c07"
+    },
+    {
+      "path": "standard/CONFORMANCE.md",
+      "bytes": 3325,
+      "sha256": "5c3add7a397b3ec53d0f375563454d5446d6fbf4993e84e4a082c9bc40b00747"
+    },
+    {
+      "path": "standard/DATA-SOVEREIGNTY.md",
+      "bytes": 2757,
+      "sha256": "c91acf2b3599cf1e5cb2e99a5bfaeda9b36f9e7c0ed78f25c9ef5bb12f015531"
+    },
+    {
+      "path": "standard/HUMAN-ATTENTION.md",
+      "bytes": 8493,
+      "sha256": "5e68195fd11e27cf5465da10305ec476e810e32e8e0d6804f7213d412c703297"
+    },
+    {
+      "path": "standard/OPEN-ECONOMICS.md",
+      "bytes": 4286,
+      "sha256": "149749b3809d0882ea5882df0d846036499184887023a3919b300d8f2c48842c"
+    },
+    {
+      "path": "strategy/MESSAGING-AND-HISTORY.md",
+      "bytes": 3934,
+      "sha256": "225d32ff23a448b10c35a9149d918529c2324ea00a304de5a05c7b9a1da20128"
+    },
+    {
+      "path": "strategy/ORGANIC-LAUNCH.md",
+      "bytes": 4879,
+      "sha256": "b6d5808e16ab3ed10eca347a5327a64f298fbca06ad6dc2be4f7bffc57aebcf3"
+    },
+    {
+      "path": "templates/open-infrastructure.example.yaml",
+      "bytes": 1415,
+      "sha256": "831f3ab2100f20bcdcb49095b4fdec2de37ca53c50dde4f65a80e3ca9483815e"
+    },
+    {
+      "path": "transparency/AI-CONTRIBUTIONS.md",
+      "bytes": 1237,
+      "sha256": "7c3ceab55a502a6ca9f04a0edc986c226850aa754fa1a66df2a0cf53c3f8edf0"
+    },
+    {
+      "path": "transparency/AI-PROVENANCE-POLICY.md",
+      "bytes": 4666,
+      "sha256": "23855596082e107285e56b1efcf85e5a4bd11b107552ede44c48b0b9f6ad79fb"
+    },
+    {
+      "path": "transparency/CONVERSATION-PUBLICATION.md",
+      "bytes": 5098,
+      "sha256": "7cedf20898944ce6734388db00ada8791b73271f8310bebc934b94e0255cd63e"
+    },
+    {
+      "path": "website/SITE-SPEC.md",
+      "bytes": 5903,
+      "sha256": "d90f97862172505e22eced51f0a476f506f3c21ca9e61487c110c748367798c8"
+    }
+  ],
+  "founding_transcript": {
+    "path": "conversation/FOUNDING-SESSION.md",
+    "state": "not-provided",
+    "note": "No ChatGPT export or human-approved public edition exists yet."
+  },
+  "timestamp_state": "not-requested",
+  "opentimestamps_proof_path": null,
+  "bitcoin_attestation_time_utc": null,
+  "limitations": [
+    "A digest proves only that bytes match; it cannot authenticate authorship or dates stated inside the files.",
+    "No independent timestamp has been requested, so these digests establish nothing about time beyond the Git history, which is mutable.",
+    "FOUNDING-ARCHIVE.md is a curated record, not a verbatim ChatGPT transcript."
+  ]
+}

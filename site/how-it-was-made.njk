@@ -1,0 +1,38 @@
+---
+layout: base.njk
+title: How it was made
+description: "Open agentic development: who and what built this, the prompts, the build, and what isn't published."
+---
+<p class="kicker">Process transparency</p>
+<h1>How it was made</h1>
+<blockquote>
+  <p>This project was conceived through a conversation between a human initiator and ChatGPT, and its initial implementation was directed to Claude. We embrace AI-assisted creation and openly credit it. We publish the decisions, prompts, code, build process and costs that can responsibly be shared. We don't present AI work as secretly human-made, and we don't claim access to hidden model reasoning or private information.</p>
+</blockquote>
+
+<h2>Contributions</h2>
+{% doc "transparency/AI-CONTRIBUTIONS.md", { dropTitle: true, shiftHeadings: 1 } %}
+
+<h2>Agent run records</h2>
+<ul>
+  <li><a href="{% sourceLink "transparency/agent-runs/2026-10-17-launch.md" %}">2026-10-17 launch session</a>: Claude Opus 5.5 in Claude Code. Records the tasks, commands, tests, decisions and what was left for the human.</li>
+  <li>The prompt that started the session: <a href="{% sourceLink "CLAUDE-LAUNCH-HANDOFF.md" %}"><code>CLAUDE-LAUNCH-HANDOFF.md</code></a>, along with the <a href="{% sourceLink "PASTE-INTO-CLAUDE.md" %}">paste-in brief</a> that ChatGPT drafted for it.</li>
+  <li>The plan the agent wrote before building anything: <a href="{% sourceLink "plan.md" %}"><code>plan.md</code></a>.</li>
+</ul>
+
+<h2>Rebuild this site yourself</h2>
+<pre><code>git clone {{ repoUrl }}.git
+cd charter
+npm ci
+npm test        # builds _site/ and runs the checks
+</code></pre>
+<p>It needs Node 20 or newer. No accounts, API keys or network services are needed after <code>npm ci</code>. <a href="{% sourceLink "DEPLOYMENT.md" %}"><code>DEPLOYMENT.md</code></a> covers hosting it anywhere, and <a href="{% sourceLink "CHANGELOG.md" %}"><code>CHANGELOG.md</code></a> lists what changed.</p>
+
+<h2>What isn't published, and why</h2>
+<ul>
+  <li><strong>Model internals.</strong> Hidden system prompts and private reasoning aren't available to us, so we can't publish them, and we don't pretend otherwise.</li>
+  <li><strong>The raw ChatGPT account export.</strong> It covers unrelated private chats. Only a human-reviewed, single-conversation edition will be published. See <a href="/conversation/">the founding conversation</a>.</li>
+  <li><strong>Credentials and account identifiers.</strong> These are never committed.</li>
+</ul>
+
+<h2>Policy</h2>
+{% doc "transparency/AI-PROVENANCE-POLICY.md", { dropTitle: true, shiftHeadings: 1 } %}

@@ -1,0 +1,20 @@
+{
+  "name": "jolly-roger-charter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Founding documents and static website for the Jolly Roger Charter (JRCv1 draft).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "manifest": "node scripts/hash-manifest.mjs",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "3.1.6",
+    "markdown-it": "14.3.2"
+  }
+}

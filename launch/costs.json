@@ -1,0 +1,19 @@
+{
+  "as_of_utc": "2026-10-18T03:40:00Z",
+  "currency": "USD",
+  "billing_integrations": "not-yet-connected",
+  "note": "Manual entries only. A null amount means unknown, not zero. Noncash attention is reported separately and never added to billed totals.",
+  "billed": [
+    { "item": "GitHub organization and public repository", "provider": "GitHub", "amount": 0, "status": "active", "source": "Free plan, verified via the GitHub API on 2026-10-18." },
+    { "item": "Domain jollyrogercharter.org (1 year)", "provider": "Cloudflare Registrar", "amount": null, "status": "registered", "source": "Registered 2026-10-18T03:54Z, expires 2027-10-18 (PIR RDAP). Purchased by the human initiator; amount paid not yet recorded." },
+    { "item": "Static hosting", "provider": "Cloudflare Pages (candidate)", "amount": null, "status": "not-deployed", "source": "Free plan intended; nothing connected." },
+    { "item": "Paid advertising", "provider": "None", "amount": 0, "status": "policy", "source": "Zero paid media by charter policy." }
+  ],
+  "ai_usage": [
+    { "item": "Founding ideation", "provider": "OpenAI ChatGPT", "amount": null, "status": "unknown", "source": "Plan and usage not disclosed to this record." },
+    { "item": "Launch implementation session, 2026-10-17", "provider": "Anthropic Claude (Claude Code)", "amount": null, "status": "unknown", "source": "The agent cannot see the account's billing; the human may add real usage." }
+  ],
+  "noncash_attention": [
+    { "item": "Human initiator direction and review", "hours": null, "valuation": null, "status": "not-measured", "source": "No method adopted; see standard/HUMAN-ATTENTION.md and the attention-accounting RFC." }
+  ]
+}
