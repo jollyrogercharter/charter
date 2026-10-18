@@ -2,6 +2,12 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## Unreleased — status truthfulness (PR A)
+
+- `launch/status.json` is now the single source for status claims. `launch/LAUNCH-STATUS.md` is generated from it (`npm run status`), and the new `/status/` page and the home page read it. A test fails if any of them drift.
+- Fixed stale public claims: Discussions are enabled; the timestamp proof is pending, not unissued; the AI contributions log now matches what was actually done. Founding status lines are kept and marked *historical* rather than rewritten.
+- `OPEN-DEPENDENCIES.md` rows 1–3, 6 and 10 updated to the verified state.
+
 ## 2026-10-18 — CC0 dedication
 
 - Added `LICENSE` (official CC0 1.0 Universal legal code) and `NOTICE.md` (scope and exclusions), by the human initiator's decision. Footer, `package.json`, `OPEN-DEPENDENCIES.md`, `DECISIONS-AND-QUESTIONS.md` and `legal/LICENSE-AND-RISK.md` updated. No legal review yet.

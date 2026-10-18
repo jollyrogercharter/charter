@@ -13,6 +13,7 @@
     { "url": "/costs/", "label": "Costs" }
   ],
   "footerNav": [
+    { "url": "/status/", "label": "Status" },
     { "url": "/conversation/", "label": "Founding conversation" },
     { "url": "/history/", "label": "History" },
     { "url": "/adopt/", "label": "Adopt" },

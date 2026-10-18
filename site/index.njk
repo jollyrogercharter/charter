@@ -41,6 +41,10 @@ description: "Free. Libre. Truly Free. A draft charter for software that can sur
 <p>We didn't invent software freedom. GNU, SQLite, Creative Commons and many others came first. <a href="/history/">The history page</a> credits them and says what we're adding.</p>
 
 <h2>Where things stand</h2>
-<div class="notice">
-  <p><strong>This is a draft.</strong> JRCv1 is a proposed conformance standard, not a software licence, and nothing has been independently certified. No founding transcript has been published yet, and no timestamp proof has been issued. The <a href="/provenance/">provenance page</a> lists every digest and its state, and the <a href="/costs/">costs page</a> lists every expense, including the ones we don't know yet.</p>
-</div>
+<p>{{ status.summary }}</p>
+<ul>
+{%- for i in status.items %}{% if i.state != "historical" and i.state != "implemented" %}
+  <li><span class="badge {{ i.state }}">{{ i.state }}</span> {{ i.title }}</li>
+{%- endif %}{% endfor %}
+</ul>
+<p><a href="/status/">Full status, with evidence and dates</a>. JRCv1 is a proposed conformance standard, not a software licence, and nothing here has been independently certified.</p>

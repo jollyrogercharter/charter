@@ -6,7 +6,7 @@ This file is a provenance record, not a claim that a model or vendor endorses th
 
 - **Human initiator:** proposed the philosophy, anti-copyright stance, AT Protocol/user sovereignty, agentic reproducibility, radical operating-cost transparency, infrastructure-cost PRs, Human Attention Accounting, pirate identity, public conversation, AI-led launch and zero-paid-media adoption.
 - **OpenAI ChatGPT:** conversational ideation, research assistance, edited manifesto/charter, founding repository docs, early conformance model, Quartermaster concept and initial Claude launch instructions. Specific model/process details should be filled in only from reliably captured information.
-- **Anthropic Claude:** requested as subsequent launch operator. External launch steps (organization, domain, deployment, posts) have **not** been executed.
+- **Anthropic Claude:** launch operator from 2026-10-17. The human initiator created the GitHub organization and bought the domain; Claude built and pushed the repository, opened the PRs (the human merged them) and configured Cloudflare Pages at the human's direction. No social posts have been made. Current state: [`launch/status.json`](../launch/status.json).
 
 ## Launch implementation (2026-10-17/18)
 
