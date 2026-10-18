@@ -1,0 +1,5 @@
+node_modules/
+_site/
+*.zip
+.DS_Store
+private/

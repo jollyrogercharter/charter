@@ -1,0 +1,48 @@
+# EXAMPLE ONLY. Not deployed, executable infrastructure or real expenses.
+# The public specification and operational configuration would be versioned and linked.
+schema_version: "0.1-draft"
+project: "example-application"
+report_period: "2026-10"
+currency: "USD"
+status: "illustrative-not-measured"
+costs:
+  - id: compute
+    source_type: "provider-api"
+    label: "Compute / hosting"
+    amount: 300.00
+    value_type: "estimate"
+    last_updated: null
+  - id: ai
+    source_type: "provider-api"
+    label: "AI usage and agent development"
+    amount: 250.00
+    value_type: "estimate"
+    last_updated: null
+  - id: human
+    source_type: "manual"
+    label: "Support and maintenance labor"
+    amount: 600.00
+    value_type: "illustrative-allocation"
+    last_updated: null
+  - id: distribution
+    source_type: "manual"
+    label: "App distribution and fees"
+    amount: 100.00
+    value_type: "estimate"
+    last_updated: null
+  - id: reserves
+    source_type: "policy"
+    label: "Maintenance reserve"
+    amount: 250.00
+    value_type: "proposed-reserve"
+    last_updated: null
+public_disclosure:
+  expose_provider_account_ids: false
+  expose_credentials: false
+  redact_user_identifying_costs: true
+  show_invoice_reconciliation: true
+proposal_requirements:
+  require_security_review: true
+  require_reliability_check: true
+  require_migration_rollback_plan: true
+  require_post_deployment_measurement: true

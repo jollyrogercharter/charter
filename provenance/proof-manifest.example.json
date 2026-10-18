@@ -1,0 +1,21 @@
+{
+  "schema_version": "jrc-provenance-draft-0.1",
+  "status": "EXAMPLE_ONLY_NOT_A_REAL_PROOF",
+  "artifact_path": "conversation/FOUNDING-SESSION.md",
+  "sha256": "REPLACE_WITH_REAL_HEX_DIGEST",
+  "source_type": "human-reviewed ChatGPT conversation extract",
+  "public_edition": "pending-human-review",
+  "source_export_held_privately": true,
+  "transcript_redactions": "reviewed and documented when published",
+  "first_published_utc": null,
+  "git_commit": null,
+  "public_shared_snapshot_url": null,
+  "opentimestamps_proof_path": null,
+  "timestamp_state": "not-requested",
+  "bitcoin_attestation_time_utc": null,
+  "verification_method": null,
+  "limitations": [
+    "This sample is illustrative only",
+    "Timestamp cannot prove authorship or global firstness"
+  ]
+}
