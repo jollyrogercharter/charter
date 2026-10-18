@@ -2,6 +2,15 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## Unreleased — jrc conformance tool (PR B)
+
+- `jrc` 0.1 draft (`bin/jrc.mjs`, `lib/jrc/`): `init`, `check`, `report` (JSON, Markdown, self-reported SVG badge) and `challenge`. Offline, no runtime dependencies, Node 20+.
+- `spec/jrc-0.1.schema.json` (JSON Schema 2020-12) and `spec/JRC-MANIFEST.md`. A test checks that the schema and the built-in validator agree.
+- 13 CLI tests with fixtures covering valid, partial, malformed, misleading, privacy-leaking, path-escaping (including via symlinks), hash-mismatched and fake-independent manifests, plus a test that manifest commands are never executed.
+- This repository's own self-assessment, `jrc.json`, is published with its report and badge at `/check/`.
+- New pages: `/check/` (5-minute quickstart) and `/spec/`. `/adopt/` is rewritten as *Raise the Flag*, covering what a report means and what it doesn't. `/challenge/` gains a downloadable log template and a no-founder reporting path.
+- CI also runs `jrc check` on this repository, plus a Node 20/24 compatibility job.
+
 ## Unreleased — status truthfulness (PR A)
 
 - `launch/status.json` is now the single source for status claims. `launch/LAUNCH-STATUS.md` is generated from it (`npm run status`), and the new `/status/` page and the home page read it. A test fails if any of them drift.

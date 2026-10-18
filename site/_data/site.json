@@ -6,6 +6,7 @@
   "nav": [
     { "url": "/manifesto/", "label": "Manifesto" },
     { "url": "/charter/", "label": "Charter" },
+    { "url": "/check/", "label": "Check" },
     { "url": "/challenge/", "label": "Challenge" },
     { "url": "/debate/", "label": "Debate" },
     { "url": "/how-it-was-made/", "label": "How it was made" },
