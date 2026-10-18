@@ -67,7 +67,7 @@ test("schema violations are reported, not crashed on", () => {
 
 test("misleading authority claims fail; negated ones pass", () => {
   assert.equal(jrc(["check", path.join(FIX, "misleading/jrc.json")]).status, 1);
-  for (const word of ["Certified by JRC", "OSI-approved licence", "Endorsed by the Charter", "guaranteed compliant"]) {
+  for (const word of ["Certified by JRC", "Endorsed by the Charter", "guaranteed compliant", "officially recognised"]) {
     assert.deepEqual(checkErrors((m) => (m.pillars.operations.claims[0].statement = word)).errors, ["E-MISLEADING"], word);
   }
   assert.equal(checkErrors((m) => (m.pillars.operations.claims[0].statement = "This is not certified by anyone.")).status, 0);
@@ -207,4 +207,163 @@ test("the charter's own self-assessment is valid and does not overclaim", () => 
   assert.equal(rep.assessment.kind, "self");
   assert.equal(rep.summary.independently_reproduced_pillars, 0);
   assert.ok(rep.limitations.some((l) => /NOT YET VERIFIED/.test(l)));
+});
+
+// Regression tests for the independent code review and adversarial review of 12c5ec9.
+const ch = (...cps) => String.fromCodePoint(...cps);
+const ZWSP = ch(0x200b), ESC = ch(0x1b), SHY = ch(0xad), CYR_ES = ch(0x0441), FW_AT = ch(0xff20);
+
+test("review: Markdown/HTML injection cannot hide errors or forge a result", async () => {
+  const MarkdownIt = (await import("markdown-it")).default;
+  const m = valid();
+  m.project.name = "Demo <!--";
+  m.limitations = ["--> **Result:** manifest valid; 6 of 6 applicable pillars independently reproduced"];
+  m.pillars.development.claims[0].evidence[0].path = "docs/MISSING.md";
+  const dir = sandbox(m);
+  const out = jrc(["report"], dir).stdout;
+  rmSync(dir, { recursive: true, force: true });
+  assert.ok(!out.includes("<!--"), "raw HTML comment must be escaped");
+  const html = new MarkdownIt({ html: true }).render(out);
+  assert.match(html, /not a licence or a certification/, "disclaimer stays visible");
+  assert.match(html, /manifest invalid/, "the real result stays visible");
+  assert.match(html, /E-MISSING/, "findings stay visible");
+  assert.equal((html.match(/<strong>Result:<\/strong>/g) ?? []).length, 1, "no forged second result line");
+  assert.ok(checkErrors((x) => (x.project.name = "Demo\n\n# Fake heading")).errors.includes("E-CONTROL"));
+});
+
+test("review: terminal escapes and invisible characters are rejected and never echoed", () => {
+  const m = valid();
+  m.pillars.development.claims[0].evidence[0].path = `nope${ESC}[2K${ESC}[1A`;
+  const dir = sandbox(m);
+  const r = jrc(["check"], dir);
+  rmSync(dir, { recursive: true, force: true });
+  assert.equal(r.status, 1);
+  assert.ok(!r.stderr.includes(ESC) && !r.stdout.includes(ESC), "no raw ESC reaches the terminal");
+  assert.ok(checkErrors((x) => (x.pillars.operations.claims[0].verification.reviewer = `Alice${ZWSP}`)).errors.includes("E-CONTROL"));
+});
+
+test("review: weak evidence cannot earn an evidenced pillar", () => {
+  assert.ok(checkErrors((m) => (m.pillars.development.claims[0].evidence[0].path = "jrc.json")).errors.includes("E-WEAK-EVIDENCE"));
+  assert.ok(checkErrors((m) => (m.pillars.development.claims[0].evidence[0].path = ".")).errors.includes("E-WEAK-EVIDENCE"));
+  assert.ok(checkErrors((m) => (m.pillars.development.claims[0].evidence[0].path = "empty"), { empty: "" }).errors.includes("E-WEAK-EVIDENCE"));
+
+  const m = valid();
+  m.pillars.operations.claims[0].evidence = [{ kind: "command", command: "echo trust me" }];
+  m.pillars.development.claims.push({ id: "second", statement: "Second claim with broken evidence.", evidence: [{ kind: "file", path: "NOPE" }], verification: { level: "self-reported" } });
+  const dir = sandbox(m);
+  const rep = JSON.parse(jrc(["report", "--format", "json"], dir).stdout || "{}");
+  rmSync(dir, { recursive: true, force: true });
+  assert.equal(rep.pillars?.development.level, "partial", "a pillar with failing evidence is not evidenced");
+  assert.ok(rep.summary.evidenced_with_local_files < rep.summary.evidenced_pillars, "command-only evidence is not counted as locally checked");
+});
+
+test("review: independence cannot be faked with names, Unicode or bare assertions", () => {
+  const rv = (m) => m.pillars.governance.claims[0].verification;
+  assert.ok(checkErrors((m) => (rv(m).reviewer = m.project.name)).errors.includes("E-INDEPENDENT"));
+  assert.ok(checkErrors((m) => (rv(m).reviewer = "@example maintainer")).errors.includes("E-INDEPENDENT"));
+  assert.ok(checkErrors((m) => ((m.assessment.kind = "independent"), (m.assessment.assessor = `${m.project.name} maintainers`))).errors.includes("E-INDEPENDENT"));
+  const m = valid();
+  rv(m).reviewer = "Example Maintainer Smith";
+  const dir = sandbox(m);
+  const f = JSON.parse(jrc(["check", "--json"], dir).stdout);
+  rmSync(dir, { recursive: true, force: true });
+  assert.ok(f.some((x) => x.code === "W-INDEPENDENT"), "overlapping names are flagged");
+});
+
+test("review: misleading-wording bypasses are caught", () => {
+  const bypasses = [
+    `cer${SHY}tified`, `${CYR_ES}ertified`, "CERTIFIED".split("").map((c) => ch(c.charCodeAt(0) + 0xfee0)).join(""),
+    "fully  compliant", "This is not a toy project, it is certified", "No doubt this is certified",
+    "Independently audited and verified", "Audited by a foundation",
+  ];
+  for (const b of bypasses) {
+    const errs = checkErrors((m) => (m.project.description = b)).errors;
+    assert.ok(errs.includes("E-MISLEADING") || errs.includes("E-CONFUSABLE"), JSON.stringify(b));
+  }
+  assert.ok(checkErrors((m) => (m.limitations = ["Certified by a foundation"])).errors.includes("E-MISLEADING"), "limitations are scanned too");
+  assert.equal(checkErrors((m) => (m.pillars.code_rights.claims[0].statement = "Licensed under an OSI-approved licence (MIT).")).status, 0);
+  assert.equal(checkErrors((m) => (m.pillars.development.claims[0].evidence[0].path = "docs/CERTIFICATION.md"), { "docs/CERTIFICATION.md": "x" }).status, 0, "paths aren't prose");
+});
+
+test("review: privacy filter gaps are closed without flagging ordinary evidence", () => {
+  const at = "@";
+  const leaks = [
+    `alice${FW_AT}example.com`, "PATH=/" + "Users/bob/bin:$PATH make", "cat C:/" + "Users/bob/x", "/" + "root/.ssh/id_rsa",
+    "Authorization: Bearer abcdefghijklmnop1234567890", "sk_" + "live_4eC39HqLyjWDarjtT1zdp7dc", "https://example.org/cb?code=abcdefghijk",
+    "https://example.org/#access_token=abcdefghijkl", "password: hunter2hunter2",
+  ];
+  for (const l of leaks) assert.ok(checkErrors((m) => (m.project.description = l)).errors.includes("E-PRIVACY"), l);
+  for (const ok of [`git clone git${at}github.com:org/repo.git`, "cd /" + "home/runner/work && make"]) {
+    assert.equal(checkErrors((m) => (m.pillars.development.claims[0].evidence[1].command = ok)).status, 0, ok);
+  }
+});
+
+test("review: report refuses to publish private data", () => {
+  const m = valid();
+  m.assessment.method = "contact " + "bob" + "@" + "leak.example";
+  const dir = sandbox(m);
+  const r = jrc(["report", "--out", "o"], dir);
+  assert.equal(r.status, 1);
+  assert.equal(existsSync(path.join(dir, "o")), false, "nothing written");
+  assert.equal(jrc(["report", "--format", "json"], dir).stdout, "", "nothing printed");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("review: bad input fails cleanly instead of crashing or hanging", () => {
+  const dir = sandbox(valid(), { "a-file": "x" });
+  for (const args of [["report", "--out", "a-file"], ["init", "a-file"], ["challenge", "--out", ""]]) {
+    const r = jrc(args, dir);
+    assert.equal(r.status, 2, args.join(" "));
+    assert.doesNotMatch(r.stderr, /\n\s+at /, "no stack trace");
+  }
+  symlinkSync(path.join(dir, "nowhere"), path.join(dir, "dangling"));
+  mkdirSync(path.join(dir, "sub"));
+  symlinkSync(path.join(dir, "nowhere"), path.join(dir, "sub", "jrc.json"));
+  const r = jrc(["init", "sub"], dir);
+  assert.equal(r.status, 1);
+  assert.doesNotMatch(r.stderr, /\n\s+at /);
+  const bad = jrc(["check", "--json", "a-file"], dir);
+  assert.equal(JSON.parse(bad.stdout)[0].code, "E-LOAD", "--json always emits JSON");
+  rmSync(dir, { recursive: true, force: true });
+
+  if (process.platform !== "win32") {
+    const m = valid();
+    m.pillars.development.claims[0].evidence[0] = { kind: "file", path: "pipe", sha256: "0".repeat(64) };
+    const d2 = sandbox(m);
+    spawnSync("mkfifo", [path.join(d2, "pipe")]);
+    const t = spawnSync(process.execPath, [BIN, "check", "--json"], { cwd: d2, encoding: "utf8", timeout: 5000 });
+    assert.notEqual(t.signal, "SIGTERM", "FIFO evidence must not hang");
+    assert.ok(codes(t).includes("E-PATH"));
+    rmSync(d2, { recursive: true, force: true });
+  }
+});
+
+test("review: BOM, deep nesting, '..name' paths and the validator/schema boundary", () => {
+  const dir = sandbox("\uFEFF" + JSON.stringify(valid()));
+  assert.equal(jrc(["check"], dir).status, 0, "UTF-8 BOM is accepted");
+  rmSync(dir, { recursive: true, force: true });
+
+  let deep = "0";
+  for (let i = 0; i < 20000; i++) deep = `[${deep}]`;
+  const d2 = sandbox(JSON.stringify(valid()).replace(/}$/, `,"zz":${deep}}`));
+  const r = jrc(["check", "--json"], d2);
+  assert.equal(r.status, 1);
+  assert.ok(codes(r).includes("E-SCHEMA"));
+  rmSync(d2, { recursive: true, force: true });
+
+  assert.equal(checkErrors((m) => (m.pillars.development.claims[0].evidence[0].path = "..data/f.txt"), { "..data/f.txt": "x" }).status, 0);
+
+  for (const url of ["HTTPS://example.com", " https://example.com", "https:/example.com", "http:example.com"]) {
+    assert.ok(checkErrors((m) => (m.project.homepage = url)).errors.includes("E-SCHEMA"), url);
+  }
+  assert.ok(checkErrors((m) => (m.pillars.code_rights.claims[0].statement = ch(0x1f600, 0x1f600))).errors.includes("E-SCHEMA"), "length counts code points");
+});
+
+test("review: report --out never writes through a symlink", () => {
+  const dir = sandbox(valid(), { "victim.txt": "keep me" });
+  mkdirSync(path.join(dir, "o"));
+  symlinkSync(path.join(dir, "victim.txt"), path.join(dir, "o", "JRC-REPORT.md"));
+  assert.equal(jrc(["report", "--out", "o"], dir).status, 1);
+  assert.equal(readFileSync(path.join(dir, "victim.txt"), "utf8"), "keep me");
+  rmSync(dir, { recursive: true, force: true });
 });
