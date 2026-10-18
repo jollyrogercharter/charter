@@ -68,11 +68,10 @@
       "id": "www",
       "area": "Infrastructure",
       "title": "www.jollyrogercharter.org",
-      "state": "blocked",
-      "evidence": "No DNS record, so the www address does not resolve.",
-      "verified_utc": "2026-10-18T04:51Z",
-      "next": "Add www as a second custom domain in Cloudflare Pages, or a redirect rule to the apex.",
-      "owner": "human"
+      "state": "implemented",
+      "evidence": "Added as a second Cloudflare Pages custom domain (CNAME www → jollyrogercharter.pages.dev) at the human's request. Serves the site over HTTPS; canonical links point to the apex domain.",
+      "verified_utc": "2026-10-18T17:55Z",
+      "url": "https://www.jollyrogercharter.org"
     },
     {
       "id": "mirror-host",
