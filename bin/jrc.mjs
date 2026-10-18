@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { challengeMarkdown } from "../lib/jrc/challenge.mjs";
-import { blocksPublication, checkManifest, loadManifest } from "../lib/jrc/check.mjs";
+import { blocksPublication, checkManifest, loadManifest, sha256Hex } from "../lib/jrc/check.mjs";
 import { TOOL } from "../lib/jrc/constants.mjs";
 import { initManifest } from "../lib/jrc/init.mjs";
 import { buildReport, reportBadge, reportMarkdown } from "../lib/jrc/report.mjs";
@@ -98,7 +98,7 @@ function run(argv) {
       if (!o.json) {
         if (!result.schemaOk) process.stdout.write(`${path.basename(file)}: INVALID (schema errors)\n`);
         else {
-          const r = buildReport(manifest, raw, result, path.basename(file));
+          const r = buildReport(manifest, sha256Hex(raw), result, path.basename(file));
           const s = r.summary;
           process.stdout.write(`${path.basename(file)}: ${errors.length ? "INVALID" : "valid"} \u2014 ${s.evidenced_pillars}/${s.applicable_pillars} applicable pillars evidenced, ${s.partial_pillars} partly, ${s.exploring_pillars} exploring (${s.basis}); ${errors.length} errors, ${s.warnings} warnings\n`);
         }
@@ -110,7 +110,7 @@ function run(argv) {
       printFindings(result.findings.filter((f) => f.code === "E-PRIVACY" || f.code === "E-CONTROL"));
       return fail("refusing to write a report that would publish private data or hidden characters; fix the manifest first", 1);
     }
-    const r = buildReport(manifest, raw, result, path.relative(root, file) || path.basename(file));
+    const r = buildReport(manifest, sha256Hex(raw), result, path.relative(root, file) || path.basename(file));
     const outputs = { json: JSON.stringify(r, null, 2) + "\n", md: reportMarkdown(r), badge: reportBadge(r) };
     const names = { json: "jrc-report.json", md: "JRC-REPORT.md", badge: "jrc-badge.svg" };
     if (o.out !== undefined) {
