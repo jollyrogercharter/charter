@@ -2,6 +2,16 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## 2026-10-18 — CC0 dedication
+
+- Added `LICENSE` (official CC0 1.0 Universal legal code) and `NOTICE.md` (scope and exclusions), by the human initiator's decision. Footer, `package.json`, `OPEN-DEPENDENCIES.md`, `DECISIONS-AND-QUESTIONS.md` and `legal/LICENSE-AND-RISK.md` updated. No legal review yet.
+
+## 2026-10-18 — OpenTimestamps proof and domain cost
+
+- Added `provenance/launch-digests.sha256` (frozen SHA-256 list of the received ZIP and the 36 founding files) and its OpenTimestamps proof `provenance/launch-digests.sha256.ots`, submitted 2026-10-18T04:36Z to four public calendars. State: **pending**, no Bitcoin attestation yet.
+- Recorded the domain cost: $8.50 first year, renews $11.20/yr with auto-renew on.
+- Branch protection: ruleset `protect-main` requires a PR and a passing `build-and-test` check.
+
 ## 2026-10-18 — First public deployment
 
 - Repository published at https://github.com/jollyrogercharter/charter; launch PR #1 merged (`bef3c90`).

@@ -1,6 +1,6 @@
 # Rights, Licensing, Trust and Risk (Decision Pending)
 
-**This is general planning, not legal advice or a final licensed release.**
+**This is general planning, not legal advice.** Update 2026-10-18: the charter repository is now dedicated under CC0 1.0 by the initiator's decision; see `../NOTICE.md`. The review steps below still apply.
 
 ## What is being proposed
 

@@ -81,3 +81,8 @@ Captured October 17, 2026. **Confirmed** means the user explicitly favored the c
 - Continue to distinguish philosophical freedom from exclusive IP claims. Timestamps establish existence no later than the attested time, **not** authorship, undisputed priority, OpenAI certification, or the original dates claimed inside the conversation.
 - Human-controlled ChatGPT export is still needed to prepare a true transcript. The existing edited founding archive must not be relabeled as a verbatim ChatGPT export. Sensitive raw account exports remain private; publication requires explicit human approval of the exact public edition.
 - New specification and status: [`provenance/README.md`](provenance/README.md), [`provenance/VERIFY.md`](provenance/VERIFY.md) and illustrative [`provenance/proof-manifest.example.json`](provenance/proof-manifest.example.json). **No completed origin proof or ChatGPT-hosted certificate is included.**
+
+## Decision: CC0 for this repository (October 18, 2026)
+
+- The human initiator chose CC0 1.0 Universal for all original content in the charter repository (`LICENSE`, scope and exclusions in `NOTICE.md`), ahead of the legal review this register recommended. Review is still wanted.
+- CC0 section 4(a) does not waive patent rights. Acceptable for this documents-and-website repository; the licence for future software such as Quartermaster stays open (CC0 plus a patent pledge, or Apache-2.0), as seed RFC 2 proposes.

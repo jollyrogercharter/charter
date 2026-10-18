@@ -111,6 +111,12 @@ test("manifest digests match the preservation commit", (t) => {
   }
 });
 
+test("licence and notice are present and linked", () => {
+  assert.match(read("LICENSE"), /CC0 1\.0 Universal/);
+  assert.ok(existsSync("NOTICE.md"));
+  for (const f of htmlFiles) assert.match(read(f), /blob\/main\/LICENSE">CC0 1\.0</, `${f} footer licence link`);
+});
+
 test("cost ledger never invents figures", () => {
   const c = JSON.parse(read("launch/costs.json"));
   for (const e of [...c.billed, ...c.ai_usage]) {

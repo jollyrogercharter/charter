@@ -50,7 +50,7 @@
           <li><a href="{{ repoUrl }}">Source</a></li>
         </ul>
       </nav>
-      <p class="build">Built {{ buildTime | truncate(10, true, "") }}{% if git.commit %} from commit <a href="{{ repoUrl }}/commit/{{ git.commit }}"><code>{{ git.commit | truncate(7, true, "") }}</code></a>{% endif %}. Licence for original content: <a href="{{ repoUrl }}/blob/main/legal/LICENSE-AND-RISK.md">pending review</a>.</p>
+      <p class="build">Built {{ buildTime | truncate(10, true, "") }}{% if git.commit %} from commit <a href="{{ repoUrl }}/commit/{{ git.commit }}"><code>{{ git.commit | truncate(7, true, "") }}</code></a>{% endif %}. Original content dedicated to the public domain under <a href="{{ repoUrl }}/blob/main/LICENSE">CC0 1.0</a>, with <a href="{{ repoUrl }}/blob/main/NOTICE.md">exclusions</a>.</p>
     </div>
   </footer>
 </body>
