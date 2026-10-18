@@ -4,7 +4,7 @@
   "billing_integrations": "not-yet-connected",
   "note": "Manual entries only. A null amount means unknown, not zero. Noncash attention is reported separately and never added to billed totals.",
   "billed": [
-    { "item": "GitHub organization", "provider": "GitHub", "amount": null, "status": "not-created", "source": "Org not yet created; free plan intended." },
+    { "item": "GitHub organization and public repository", "provider": "GitHub", "amount": 0, "status": "active", "source": "Free plan, verified via the GitHub API on 2026-10-18." },
     { "item": "Domain jollyrogercharter.org", "provider": "Registrar not chosen", "amount": null, "status": "not-purchased", "source": "Registration price and renewal unverified; awaits human checkout approval." },
     { "item": "Static hosting", "provider": "Cloudflare Pages (candidate)", "amount": null, "status": "not-deployed", "source": "Free plan intended; nothing connected." },
     { "item": "Paid advertising", "provider": "None", "amount": 0, "status": "policy", "source": "Zero paid media by charter policy." }

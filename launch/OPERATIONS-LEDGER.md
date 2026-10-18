@@ -1,11 +1,11 @@
 # Launch Operations Ledger
 
-**Status (2026-10-18 03:50 UTC): no registrations, purchases or deployments have occurred.** Every row below reflects a verified check, not an assumption. The machine-readable cost data the site shows is in `launch/costs.json`.
+**Status (2026-10-18): GitHub org and public repo exist (free). No domain registration, purchase or web deployment has occurred.** Every row below reflects a verified check, not an assumption. The machine-readable cost data the site shows is in `launch/costs.json`.
 
 | Resource | Desired | Actual | Status | Cost (USD) | Evidence and next action |
 |---|---|---|---|---:|---|
-| GitHub organization | `jollyrogercharter` | None | Not created | $0 intended | `GET /users/jollyrogercharter` → 404 on 2026-10-18 03:34 UTC (not proof it can be registered). Human creates the org in the UI |
-| Main repo | `charter` | Local only, branches `main` + `feat/launch-site` | Not pushed | $0 | Local commits `e59cf86`…; push awaits human approval |
+| GitHub organization | `jollyrogercharter` | https://github.com/jollyrogercharter | Created by human, free plan; 2FA not yet required | $0 | Verified via `GET /orgs/jollyrogercharter` 2026-10-18. Owner: human initiator (sole admin) — add a backup owner |
+| Main repo | `charter` | https://github.com/jollyrogercharter/charter (public) | Pushed `main` + `feat/launch-site` | $0 | Created 2026-10-18 via `gh repo create` at the human's request; SHAs verified against remote |
 | Domain | `jollyrogercharter.org` | None | Not registered | unknown | PIR RDAP → 404 on 2026-10-18 03:34 UTC (control 200). Registrar price/renewal unchecked; needs checkout approval |
 | Static hosting | Cloudflare Pages Free candidate | None | Not deployed | $0 intended | `DEPLOYMENT.md`; human connects the repo |
 | OpenTimestamps | Founding package digests | None | Not requested | $0 | Awaits approval to submit digests to public calendars |
