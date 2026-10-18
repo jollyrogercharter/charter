@@ -14,7 +14,7 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 | Infrastructure | Continuous integration | **implemented** | <https://github.com/jollyrogercharter/charter/actions> | build-and-test passes on main and pull requests. | 2026-10-18T04:51Z | — |
 | Infrastructure | Domain jollyrogercharter.org | **implemented** | <https://jollyrogercharter.org> | Cloudflare Registrar; registered 2026-10-18; $8.50 first year, renews $11.20/yr, auto-renew on. | 2026-10-18T04:40Z | — |
 | Infrastructure | Hosting and HTTPS | **implemented** | <https://jollyrogercharter.org> | Cloudflare Pages free plan, auto-deploys from main. HTTP redirects to HTTPS with a 301. Served provenance manifest matches the repository byte for byte. | 2026-10-18T04:51Z | — |
-| Infrastructure | www.jollyrogercharter.org | **blocked** | — | No DNS record, so the www address does not resolve. | 2026-10-18T04:51Z | Add www as a second custom domain in Cloudflare Pages, or a redirect rule to the apex. |
+| Infrastructure | www.jollyrogercharter.org | **implemented** | <https://www.jollyrogercharter.org> | Added as a second Cloudflare Pages custom domain (CNAME www → jollyrogercharter.pages.dev) at the human's request. Serves the site over HTTPS; canonical links point to the apex domain. | 2026-10-18T17:55Z | — |
 | Infrastructure | Second, independent host | **pending** | — | DEPLOYMENT.md documents alternatives; none deployed. | 2026-10-18T04:51Z | Anyone can deploy a mirror from a fork; the project has not done so yet. |
 | Rights | CC0 1.0 dedication | **implemented** | <https://github.com/jollyrogercharter/charter/blob/main/NOTICE.md> | LICENSE holds the official CC0 1.0 text; NOTICE.md lists exclusions. Decided by the human initiator without counsel. | 2026-10-18T04:51Z | — |
 | Rights | Legal review of the dedication | **pending** | — | No counsel has reviewed it. | 2026-10-18T04:51Z | Find a volunteer or paid open-source licensing reviewer. |
@@ -33,11 +33,10 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 ## Needs the human
 
 1. **Second organization owner** (pending): Invitee accepts; then raise required approvals on main to 1.
-2. **www.jollyrogercharter.org** (blocked): Add www as a second custom domain in Cloudflare Pages, or a redirect rule to the apex.
-3. **Legal review of the dedication** (pending): Find a volunteer or paid open-source licensing reviewer.
-4. **Founding conversation transcript** (blocked): Human exports the conversation; the agent drafts a redacted edition for review.
-5. **Charter discussion categories and seed RFCs** (blocked): Human creates the categories and approves the RFC text for posting.
-6. **Public announcements** (pending): Human reviews and posts from their own accounts.
+2. **Legal review of the dedication** (pending): Find a volunteer or paid open-source licensing reviewer.
+3. **Founding conversation transcript** (blocked): Human exports the conversation; the agent drafts a redacted edition for review.
+4. **Charter discussion categories and seed RFCs** (blocked): Human creates the categories and approves the RFC text for posting.
+5. **Public announcements** (pending): Human reviews and posts from their own accounts.
 
 ## Historical records
 
