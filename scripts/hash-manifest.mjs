@@ -29,10 +29,11 @@ const manifest = {
     : previous.received_package ?? null,
   files,
   founding_transcript: { path: "conversation/FOUNDING-SESSION.md", state: "not-provided", note: "No ChatGPT export or human-approved public edition exists yet." },
-  timestamp_state: "not-requested",
-  opentimestamps_proof_path: null,
-  bitcoin_attestation_time_utc: null,
-  limitations: [
+  timestamp_state: previous.timestamp_state ?? "not-requested",
+  timestamped_artifact: previous.timestamped_artifact ?? null,
+  opentimestamps_proof_path: previous.opentimestamps_proof_path ?? null,
+  bitcoin_attestation_time_utc: previous.bitcoin_attestation_time_utc ?? null,
+  limitations: previous.limitations ?? [
     "A digest proves only that bytes match; it cannot authenticate authorship or dates stated inside the files.",
     "No independent timestamp has been requested, so these digests establish nothing about time beyond the Git history, which is mutable.",
     "FOUNDING-ARCHIVE.md is a curated record, not a verbatim ChatGPT transcript.",

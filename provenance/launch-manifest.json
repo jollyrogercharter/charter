@@ -198,12 +198,19 @@
     "state": "not-provided",
     "note": "No ChatGPT export or human-approved public edition exists yet."
   },
-  "timestamp_state": "not-requested",
-  "opentimestamps_proof_path": null,
+  "timestamp_state": "pending",
+  "opentimestamps_proof_path": "provenance/launch-digests.sha256.ots",
   "bitcoin_attestation_time_utc": null,
   "limitations": [
     "A digest proves only that bytes match; it cannot authenticate authorship or dates stated inside the files.",
-    "No independent timestamp has been requested, so these digests establish nothing about time beyond the Git history, which is mutable.",
+    "The OpenTimestamps proof is pending: calendars accepted it on 2026-10-18 but no Bitcoin attestation exists yet. Once verified, it shows the digest list existed no later than the attested block time, not when the ideas originated or who authored them.",
     "FOUNDING-ARCHIVE.md is a curated record, not a verbatim ChatGPT transcript."
-  ]
+  ],
+  "timestamped_artifact": {
+    "path": "provenance/launch-digests.sha256",
+    "sha256": "e87e615c54ebfaaaeb65d5e4130fbc147075d705ff3441768e98dedcdcb8bbf5",
+    "format": "sha256sum: received ZIP first, then the 36 files at the preservation commit",
+    "stamped_utc": "2026-10-18T04:36:39Z",
+    "client": "opentimestamps-client 0.7.2"
+  }
 }

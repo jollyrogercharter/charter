@@ -5,7 +5,7 @@
   "note": "Manual entries only. A null amount means unknown, not zero. Noncash attention is reported separately and never added to billed totals.",
   "billed": [
     { "item": "GitHub organization and public repository", "provider": "GitHub", "amount": 0, "status": "active", "source": "Free plan, verified via the GitHub API on 2026-10-18." },
-    { "item": "Domain jollyrogercharter.org (1 year)", "provider": "Cloudflare Registrar", "amount": null, "status": "registered", "source": "Registered 2026-10-18T03:54Z, expires 2027-10-18 (PIR RDAP). Purchased by the human initiator; amount paid not yet recorded." },
+    { "item": "Domain jollyrogercharter.org (1 year)", "provider": "Cloudflare Registrar", "amount": 8.5, "status": "registered", "source": "First-year price $8.50 per Cloudflare invoice dated 2026-10-17 (confirmed by the human initiator). Renews at $11.20/yr; auto-renew on. Expires 2027-10-17 per the registrar, 2027-10-18 UTC per PIR RDAP." },
     { "item": "Static hosting", "provider": "Cloudflare Pages", "amount": 0, "status": "active", "source": "Free plan; project jollyrogercharter, deployed from main on 2026-10-18." },
     { "item": "Paid advertising", "provider": "None", "amount": 0, "status": "policy", "source": "Zero paid media by charter policy." }
   ],
