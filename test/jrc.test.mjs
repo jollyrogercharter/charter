@@ -165,6 +165,7 @@ test("init never overwrites and produces a manifest that checks", () => {
   assert.ok(m.pillars.code_rights.candidates.includes("LICENSE"));
   assert.ok(Object.values(m.pillars).every((p) => p.claims.length === 0), "candidates are never turned into claims");
   assert.equal(jrc(["check"], dir).status, 0);
+  assert.ok(JSON.parse(jrc(["check", "--json"], dir).stdout).some((f) => f.code === "W-PLACEHOLDER"), "unedited starter is flagged");
   rmSync(dir, { recursive: true, force: true });
 });
 
