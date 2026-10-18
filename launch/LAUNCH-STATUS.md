@@ -32,6 +32,6 @@ In order of what unblocks the most:
 1. **Second owner:** `odupree1988` has been invited as an org owner (pending acceptance). Done already: org 2FA required; `main` protected by ruleset `protect-main` (PR + `build-and-test` required, no force-push or deletion). Raise required approvals to 1 once a second maintainer is active.
 2. **Export the founding ChatGPT conversation** (Settings → Data controls → Export). Keep the ZIP private. The agent will extract this one conversation locally and draft a redacted edition for your review.
 3. **Approve the RFC text** in `launch/RFC-SEEDS.md` for posting to GitHub Discussions (now enabled), and review `launch/CONTENT-DRAFTS.md` for posting from your own accounts.
-4. **Legal review of the CC0 dedication** when practical. The dedication was applied by the human initiator's decision on 2026-10-18 without counsel.
+4. **Merge the CC0 dedication PR** (decided by the human initiator 2026-10-18), then get legal review when practical; it was decided without counsel.
 
 Update this file with true state at each milestone. Do not use checkbox theater.
