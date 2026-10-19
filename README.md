@@ -106,7 +106,7 @@ Spec: [`spec/JRC-MANIFEST.md`](spec/JRC-MANIFEST.md) · Schema: [`spec/jrc-0.1.s
 
 ## For AI agents (WebMCP)
 
-The site registers thirteen read-only tools with WebMCP (`document.modelContext`) and publishes the project tools' answers as static JSON under `/api/v1/`. See [`docs/WEBMCP.md`](docs/WEBMCP.md) and https://jollyrogercharter.org/agents/.
+Twenty-nine read-only and prepare-only capabilities are available to any agent through a local MCP server (`node bin/jrc-mcp.mjs`), the CLI (`jrc tool NAME`), WebMCP in the browser, and static JSON under `/api/v1/`. Nothing posts, publishes or signs in. See [`docs/AGENT-INTEROP.md`](docs/AGENT-INTEROP.md), [`docs/WEBMCP.md`](docs/WEBMCP.md) and https://jollyrogercharter.org/agents/.
 
 ## Adopt JRCv1: assess a repository
 

@@ -1,5 +1,7 @@
 # WebMCP Developer Guide
 
+> **Update 2026-10-19:** there are now 29 tools (read-only and prepare-only), also served by a local MCP server and the CLI. See [`AGENT-INTEROP.md`](AGENT-INTEROP.md) for the full list and safety model. The sections below describe the original browser layer, which is unchanged.
+
 jollyrogercharter.org registers thirteen **read-only** tools with [WebMCP](https://webmachinelearning.github.io/webmcp/) (`document.modelContext`). Through structured calls instead of scraping, an AI agent in the browser can query the charter, status, costs and provenance, assess a `jrc.json`, and assess a public GitHub repository and prepare its adoption. The seven project tools are also available to any client as static JSON at `/api/v1/`. The six repository tools are described in [`docs/ADOPT.md`](ADOPT.md).
 
 **Status:**
@@ -112,7 +114,7 @@ The simulated `modelContext` follows the spec's IDL and algorithms (name rules, 
 
 1. Use Chrome 149 or newer. Enable `chrome://flags/#enable-webmcp-testing` and relaunch. Production visitors would instead need the origin trial, see below.
 2. `npm run build`, then serve `_site/` on `localhost` (a secure context): `cd _site && python3 -m http.server 8765`.
-3. Open http://localhost:8765/. In DevTools: `document.documentElement.dataset.webmcp` should be `"registered"`, and `(await document.modelContext.getTools()).map(t => t.name)` should list the thirteen tools. The DevTools **Application → WebMCP** panel shows them too.
+3. Open http://localhost:8765/. In DevTools: `document.documentElement.dataset.webmcp` should be `"registered"`, and `(await document.modelContext.getTools()).map(t => t.name)` should list all 29 tools. The DevTools **Application → WebMCP** panel shows them too.
 4. Execute one: `await document.modelContext.executeTool((await document.modelContext.getTools()).find(t => t.name === "get_provenance"), {})`.
 5. Or drive it with an agent: the [Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd) or GoogleChromeLabs' [example extension](https://github.com/GoogleChromeLabs/webmcp-extension/).
 
