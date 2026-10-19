@@ -1,0 +1,161 @@
+{
+  "lexicon": 1,
+  "id": "org.jollyrogercharter.assessment",
+  "description": "A JRCv1 assessment of a software project, published by whoever made it. It records claims and scan results; it is not a certification. PROPOSED draft (jrc lexicons 0.1). Not yet published under the _lexicon DNS record; field names may change through RFC.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A JRCv1 assessment of a software project, published by whoever made it. It records claims and scan results; it is not a certification.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "subject",
+          "standard",
+          "kind",
+          "basis",
+          "pillars",
+          "tool",
+          "independenceVerified",
+          "createdAt"
+        ],
+        "properties": {
+          "subject": {
+            "type": "ref",
+            "ref": "#subject"
+          },
+          "standard": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Standard and manifest spec, e.g. JRCv1/0.1."
+          },
+          "kind": {
+            "type": "string",
+            "knownValues": [
+              "self",
+              "independent",
+              "automated-scan"
+            ],
+            "maxLength": 32,
+            "description": "Who assessed: the project itself, an unaffiliated person, or an automated scan."
+          },
+          "basis": {
+            "type": "string",
+            "knownValues": [
+              "self-reported",
+              "automated-scan",
+              "independent-claim"
+            ],
+            "maxLength": 32
+          },
+          "pillars": {
+            "type": "array",
+            "maxLength": 6,
+            "items": {
+              "type": "ref",
+              "ref": "#pillarResult"
+            }
+          },
+          "tool": {
+            "type": "ref",
+            "ref": "#tool"
+          },
+          "reportUri": {
+            "type": "string",
+            "format": "uri",
+            "description": "Where the full report is published."
+          },
+          "reportSha256": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 64
+          },
+          "independenceVerified": {
+            "type": "boolean",
+            "description": "Always false unless an unaffiliated reviewer's own published record confirms it. Software alone never sets this to true."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "required": [
+        "repository"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 512
+        },
+        "commit": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "manifestSha256": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 64
+        }
+      }
+    },
+    "pillarResult": {
+      "type": "object",
+      "required": [
+        "pillar",
+        "status"
+      ],
+      "properties": {
+        "pillar": {
+          "type": "string",
+          "knownValues": [
+            "code_rights",
+            "development",
+            "data",
+            "operations",
+            "economics",
+            "governance"
+          ],
+          "maxLength": 32
+        },
+        "status": {
+          "type": "string",
+          "knownValues": [
+            "evidenced",
+            "partially-evidenced",
+            "missing",
+            "not-applicable",
+            "unknown"
+          ],
+          "maxLength": 32
+        },
+        "concerns": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 32
+        }
+      }
+    }
+  }
+}

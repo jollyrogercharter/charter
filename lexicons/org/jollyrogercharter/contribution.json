@@ -1,0 +1,66 @@
+{
+  "lexicon": 1,
+  "id": "org.jollyrogercharter.contribution",
+  "description": "A contribution someone made to the movement or to a project working toward JRCv1: an RFC, criticism, reproduction attempt, fix or review. PROPOSED draft (jrc lexicons 0.1). Not yet published under the _lexicon DNS record; field names may change through RFC.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A contribution someone made to the movement or to a project working toward JRCv1: an RFC, criticism, reproduction attempt, fix or review.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "kind",
+          "title",
+          "subject",
+          "createdAt"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "knownValues": [
+              "rfc",
+              "criticism",
+              "response",
+              "reproduction",
+              "code",
+              "documentation",
+              "translation",
+              "cost-saving",
+              "review"
+            ],
+            "maxLength": 32
+          },
+          "title": {
+            "type": "string",
+            "maxGraphemes": 200,
+            "maxLength": 2000
+          },
+          "subject": {
+            "type": "string",
+            "format": "uri",
+            "description": "What it's about: a repository, issue, discussion or record."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Where the contribution itself lives."
+          },
+          "summary": {
+            "type": "string",
+            "maxGraphemes": 1000,
+            "maxLength": 10000
+          },
+          "aiAssisted": {
+            "type": "boolean",
+            "description": "Whether AI tools materially helped make it."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}
