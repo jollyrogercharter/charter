@@ -7,15 +7,27 @@
   "type": "module",
   "bin": {
     "jrc": "bin/jrc.mjs",
-    "qm": "bin/qm.mjs"
+    "qm": "bin/qm.mjs",
+    "jrc-mcp": "bin/jrc-mcp.mjs"
   },
   "files": [
-    "bin/",
-    "lib/",
-    "spec/",
-    "README.md",
+    "CHARTER.md",
+    "DECISIONS-AND-QUESTIONS.md",
     "LICENSE",
-    "NOTICE.md"
+    "NOTICE.md",
+    "OPEN-DEPENDENCIES.md",
+    "README.md",
+    "SECURITY.md",
+    "bin/",
+    "community/opportunities.json",
+    "launch/RFC-DRAFTS-OVERNIGHT.md",
+    "launch/RFC-SEEDS.md",
+    "launch/costs.json",
+    "launch/status.json",
+    "lexicons/",
+    "lib/",
+    "provenance/launch-manifest.json",
+    "spec/"
   ],
   "engines": {
     "node": ">=20"
@@ -31,6 +43,7 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "3.1.6",
+    "@atproto/lexicon": "0.7.15",
     "ajv": "8.20.0",
     "markdown-it": "14.3.2"
   }

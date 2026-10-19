@@ -3,6 +3,7 @@ import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { entriesFromCsv, summarize, validateLedger } from "../lib/qm/expenses.mjs";
+import { callTool, nodeContext } from "../lib/capabilities/node-runtime.mjs";
 
 const USAGE = `qm 0.1 - Quartermaster expense ledger tools (draft)
 
@@ -12,6 +13,9 @@ Usage:
   qm csv2json ENTRIES.csv --header HEADER.json
                                      Build a ledger from a CSV of entries plus a JSON header
                                      (qm, project, currency, as_of_utc, sources)
+  qm compare A.json B.json           Compare two infrastructure configurations (estimates, whole cents)
+  qm savings MODEL.json [--pr]       Net savings and break-even from {current, proposed, migration,
+                                     horizon_months}; --pr prints a propose-a-saving PR body
 
 Exit codes: 0 ok, 1 invalid ledger or input, 2 usage error.
 qm reads local files only. It never calls a billing API or asks for credentials.`;
@@ -31,11 +35,11 @@ function report(errors) {
 export function main(argv) {
   let parsed;
   try {
-    parsed = parseArgs({ args: argv, allowPositionals: true, options: { json: { type: "boolean" }, header: { type: "string" }, help: { type: "boolean", short: "h" } } });
+    parsed = parseArgs({ args: argv, allowPositionals: true, options: { json: { type: "boolean" }, header: { type: "string" }, pr: { type: "boolean" }, help: { type: "boolean", short: "h" } } });
   } catch (e) {
     return fail(e.message);
   }
-  const { values: o, positionals: [cmd, file] } = parsed;
+  const { values: o, positionals: [cmd, file, file2] } = parsed;
   if (!cmd || o.help) { out(USAGE + "\n"); return cmd || o.help ? 0 : 2; }
   if (!file) return fail(`${cmd} needs a file\n\n${USAGE}`);
 
@@ -63,8 +67,25 @@ export function main(argv) {
     out(JSON.stringify(ledger, null, 2) + "\n");
     return 0;
   }
+  if (cmd === "compare" || cmd === "savings") {
+    const a = readJson(file);
+    if (a.error) return fail(a.error, 1);
+    let name = "estimate_savings", input = a.value;
+    if (cmd === "compare") {
+      if (!file2) return fail("compare needs two files");
+      const b = readJson(file2);
+      if (b.error) return fail(b.error, 1);
+      name = "compare_infrastructure_costs";
+      input = { a: a.value, b: b.value };
+    } else if (o.pr) name = "prepare_cost_reduction_pr";
+    return callTool(name, input, nodeContext()).then((r) => {
+      if (o.pr && r.ok) out(r.body + "\n");
+      else out(JSON.stringify(r, null, 2) + "\n");
+      return r.ok ? 0 : 1;
+    });
+  }
   return fail(`unknown command "${cmd}"\n\n${USAGE}`);
 }
 
 const invoked = (() => { try { return realpathSync(process.argv[1]) === fileURLToPath(import.meta.url); } catch { return false; } })();
-if (invoked) process.exitCode = main(process.argv.slice(2));
+if (invoked) process.exitCode = await main(process.argv.slice(2));

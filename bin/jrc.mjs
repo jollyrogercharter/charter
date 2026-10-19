@@ -11,6 +11,9 @@ import { buildReport, reportBadge, reportMarkdown } from "../lib/jrc/report.mjs"
 import { collectLocalSnapshot } from "../lib/assess/local.mjs";
 import { allArtifacts, AssessError, createSession } from "../lib/assess/session.mjs";
 import { parseRepository } from "../lib/assess/github.mjs";
+import { readFileSync } from "node:fs";
+import { callTool, nodeContext } from "../lib/capabilities/node-runtime.mjs";
+import { TOOLS } from "../lib/capabilities/tools.mjs";
 
 const USAGE = `jrc ${TOOL.version} \u2014 offline JRCv1 (draft) conformance tool
 
@@ -21,6 +24,11 @@ Usage:
                                               Write a reproducible assessment report
   jrc challenge [--out FILE] [--project NAME] [--repository URL]
                                               Print or write a Jolly Roger Challenge log template
+  jrc tool list                               List every capability (the same tools WebMCP and MCP expose)
+  jrc tool NAME [--input FILE|-]              Run one capability with JSON input; prints the JSON result
+  jrc provenance verify FILE...               Check local files against the published founding digests
+  jrc provenance status                       Timestamp proof state: absent, pending or verified, and by whom
+  jrc atproto lexicons                        Print the proposed org.jollyrogercharter Lexicons
   jrc assess [dir|github-url] [--ref REF] [--snapshot FILE] [--save-snapshot FILE] [--out DIR] [--format md|json]
                                               Scan a repository's public evidence and plan adoption
 
@@ -60,6 +68,9 @@ export async function main(argv) {
 
 function run(argv) {
   const [cmd, ...rest] = argv;
+  if (cmd === "tool") return toolCommand(rest);
+  if (cmd === "provenance") return provenanceCommand(rest);
+  if (cmd === "atproto") return atprotoCommand(rest);
   let parsed;
   try {
     parsed = parseArgs({
@@ -151,6 +162,49 @@ function run(argv) {
   }
 
   return fail(`unknown command "${cmd}"\n\n${USAGE}`);
+}
+
+async function runAndPrint(name, input) {
+  const r = await callTool(name, input, nodeContext());
+  process.stdout.write(JSON.stringify(r, null, 2) + "\n");
+  return r.ok ? 0 : 1;
+}
+
+async function toolCommand(rest) {
+  const [name, ...more] = rest;
+  if (!name) return fail("tool needs a name, or 'list'");
+  if (name === "list") {
+    for (const t of TOOLS) process.stdout.write(`${t.name.padEnd(30)} ${t.title}\n`);
+    return 0;
+  }
+  if (!TOOLS.some((t) => t.name === name)) return fail(`unknown tool "${name}"; run: jrc tool list`);
+  let parsed;
+  try { parsed = parseArgs({ args: more, options: { input: { type: "string" } } }); } catch (e) { return fail(e.message); }
+  let input = {};
+  if (parsed.values.input !== undefined) {
+    let text;
+    try { text = parsed.values.input === "-" ? readFileSync(0, "utf8") : readFileSync(parsed.values.input, "utf8"); }
+    catch (e) { return fail(`cannot read input: ${e.code ?? e.message}`, 1); }
+    try { input = JSON.parse(text.replace(/^\ufeff/, "")); } catch (e) { return fail(`input is not valid JSON: ${e.message}`, 1); }
+  }
+  return runAndPrint(name, input);
+}
+
+async function provenanceCommand(rest) {
+  const [sub, ...files] = rest;
+  if (sub === "status") return runAndPrint("get_timestamp_status", {});
+  if (sub !== "verify" || !files.length) return fail("usage: jrc provenance verify FILE... | jrc provenance status");
+  const items = [];
+  for (const f of files) {
+    if (!existsSync(f) || !statSync(f).isFile()) return fail(`not a file: ${f}`, 1);
+    items.push({ path: path.relative(process.cwd(), path.resolve(f)).split(path.sep).join("/"), sha256: sha256Hex(readFileSync(f)) });
+  }
+  return runAndPrint("verify_hashes", { items });
+}
+
+async function atprotoCommand(rest) {
+  if (rest[0] === "lexicons") return runAndPrint("get_atproto_lexicons", rest[1] ? { nsid: rest[1] } : {});
+  return fail("usage: jrc atproto lexicons [NSID]  (records: jrc tool export_atproto_record --input FILE)");
 }
 
 async function assess(rest) {
