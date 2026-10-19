@@ -331,7 +331,7 @@ test("hostile: injected text, hidden characters, symlinks and secrets never reac
   const session = createSession({ fetch: async () => { throw new Error("no network"); }, sha256: sha256Bytes });
   const run = runWith(session);
   const outputs = [JSON.stringify(r), ...Object.values(allArtifacts({ snapshot: snap, report: r }).files).filter((t) => !t.includes('"jrc_snapshot"'))];
-  for (const t of TOOLS.filter((x) => x.needsSession)) {
+  for (const t of TOOLS.filter((x) => x.needsSession && x.name !== "export_atproto_record")) {
     const kinds = t.name === "prepare_contribution" ? ["pr-description", "checklist", "patch", "challenge-log"] : [undefined];
     for (const kind of kinds) {
       const o = await run(t.name, { snapshot: snap, ...(kind ? { kind } : {}) });

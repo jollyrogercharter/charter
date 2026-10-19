@@ -25,7 +25,7 @@ function loadBundle(signal) {
       return r.json();
     })
     .then((b) => {
-      if (b?.bundle_version !== "1" || !b.charter || !b.status || !b.ledger || !b.provenance) throw new Error(`${DATA_URL} is not a version-1 data bundle`);
+      if (b?.bundle_version !== "1" || !b.charter || !b.status || !b.ledger || !b.provenance || !Array.isArray(b.debates) || !b.opportunities || !b.lexicons) throw new Error(`${DATA_URL} is not a version-1 data bundle`);
       return b;
     })
     .catch((e) => {

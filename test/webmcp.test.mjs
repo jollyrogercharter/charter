@@ -8,7 +8,7 @@ import { pathToFileURL } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import { validateInput } from "../lib/capabilities/input.mjs";
 import { MAX_MANIFEST_BYTES, runTool, toolCatalog, TOOLS } from "../lib/capabilities/tools.mjs";
-import { buildBundle } from "../lib/capabilities/bundle.mjs";
+import { loadNodeBundle } from "../lib/capabilities/node-bundle.mjs";
 import { sha256Hex } from "../lib/jrc/check.mjs";
 import { summarize } from "../lib/qm/expenses.mjs";
 import { createSession } from "../lib/assess/session.mjs";
@@ -23,7 +23,17 @@ const session = createSession({ fetch: gh.fetch, sha256: sha256Bytes, now: () =>
 const ctx = { loadBundle: async () => bundle, sha256: async (t) => sha256Hex(t), session };
 const REPO = "https://github.com/example-org/tidepool";
 const REPO_TOOLS = ["assess_repository", "prepare_adoption_roadmap", "generate_jrc_manifest", "prepare_contribution", "run_challenge_checks", "generate_assessment_report"];
-const minimal = (t) => (REPO_TOOLS.includes(t.name) ? { repository: REPO, ...(t.name === "prepare_contribution" ? { kind: "checklist" } : {}) } : t.inputSchema.required ? { manifest: json("jrc.json") } : {});
+const ORIGINAL = ["assess_jrc_manifest", "generate_adoption_plan", "get_charter", "get_open_challenges", "get_project_costs", "get_project_status", "get_provenance", ...REPO_TOOLS];
+const cfg = { name: "current", currency: "USD", items: [{ id: "hosting", unit_cost: 0, quantity: 1, period: "monthly", assumption: "Free plan" }] };
+const challenge = { project: "Demo", repository: "https://github.com/example-org/tidepool", commit: "abc1234", attempted_by: "A tester", affiliated: false, steps: [{ id: "clean-build", status: "passed" }] };
+const EXT_MINIMAL = {
+  get_debate: { id: "rfc-1" }, draft_community_post: { kind: "rfc", title: "Test RFC" }, prepare_challenge_submission: challenge, find_opportunities: { skills: ["writing"] },
+  compare_infrastructure_costs: { a: cfg, b: { ...cfg, name: "b" } }, estimate_savings: { current: cfg, proposed: cfg, horizon_months: 12 }, prepare_cost_reduction_pr: { current: cfg, proposed: cfg, horizon_months: 12, title: "Test" },
+  verify_hashes: { items: [{ sha256: "0".repeat(64) }] }, export_atproto_record: { kind: "adoption", adoption: { repository: "https://github.com/x/y", declared_at: "2026-10-19T00:00:00Z" } },
+  prepare_atproto_publication: { record: { $type: "org.jollyrogercharter.contribution", kind: "rfc", title: "t", subject: "https://github.com/x/y", createdAt: "2026-10-19T00:00:00Z" } },
+};
+const minimal = (t) => (EXT_MINIMAL[t.name] ?? (REPO_TOOLS.includes(t.name) ? { repository: REPO, ...(t.name === "prepare_contribution" ? { kind: "checklist" } : {}) } : ORIGINAL.includes(t.name) && t.inputSchema.required ? { manifest: json("jrc.json") } : {}));
+const PREPARE_ONLY = new Set(["draft_community_post", "prepare_challenge_submission", "prepare_cost_reduction_pr", "export_atproto_record", "prepare_atproto_publication"]);
 const tool = (name) => TOOLS.find((t) => t.name === name);
 const run = (name, input = {}) => runTool(tool(name), input, ctx);
 const fixture = (n) => json(`test/fixtures/jrc/${n}/jrc.json`);
@@ -33,31 +43,50 @@ const OUTPUT_BUDGET = 2200;
 
 test("catalog: names, descriptions and annotations follow the spec and Chrome guidance", () => {
   const cat = toolCatalog();
-  assert.deepEqual(cat.tools.map((t) => t.name).sort(), ["assess_jrc_manifest", "assess_repository", "generate_adoption_plan", "generate_assessment_report", "generate_jrc_manifest", "get_charter", "get_open_challenges", "get_project_costs", "get_project_status", "get_provenance", "prepare_adoption_roadmap", "prepare_contribution", "run_challenge_checks"]);
+  assert.deepEqual(cat.tools.map((t) => t.name).sort(), [...ORIGINAL, "list_debates", "get_debate", "find_opportunities", "draft_community_post", "prepare_challenge_submission", "explain_costs", "compare_infrastructure_costs", "estimate_savings", "prepare_cost_reduction_pr", "get_provenance_manifest", "verify_hashes", "get_timestamp_status", "explain_evidence_limitations", "get_atproto_lexicons", "export_atproto_record", "prepare_atproto_publication"].sort());
   for (const t of cat.tools) {
     assert.match(t.name, /^[A-Za-z0-9_.-]{1,30}$/, "spec name charset; Chrome suggests at most 30 chars");
     assert.ok(t.description.length > 0 && t.description.length <= 500, `${t.name} description length`);
     for (const [p, s] of Object.entries(t.inputSchema.properties ?? {})) assert.ok((s.description ?? "").length <= 150, `${t.name}.${p} description`);
     assert.equal(t.annotations.readOnlyHint, true, `${t.name} is read-only`);
     assert.equal(t.annotations.consequentialHint, false);
-    assert.equal(t.annotations.untrustedContentHint, ["assess_jrc_manifest", "generate_adoption_plan", ...REPO_TOOLS].includes(t.name), `${t.name} untrusted hint`);
+    if (ORIGINAL.includes(t.name)) assert.equal(t.annotations.untrustedContentHint, ["assess_jrc_manifest", "generate_adoption_plan", ...REPO_TOOLS].includes(t.name), `${t.name} untrusted hint`);
   }
   assert.deepEqual(json(path.join(SITE, "api/v1/tools.json")), JSON.parse(JSON.stringify(cat)), "published catalog matches the code");
 });
 
 test("schemas compile under strict Ajv and agree with the input validator", () => {
-  const ajv = new Ajv2020({ strict: true });
+  const ajv = new Ajv2020({ strict: true, allowUnionTypes: true });
   const bad = { get_charter: [{ pillar: "nope" }, { extra: 1 }], get_project_status: [{ state: "done" }, { id: "Bad Id!" }, { area: "x".repeat(41) }], get_project_costs: [{ category: "misc" }], get_open_challenges: [{ step: "../x" }], get_provenance: [{ path: "x".repeat(201) }], assess_jrc_manifest: [{}, { manifest: "a string" }, { manifest: [] }], generate_adoption_plan: [{}, { manifest: 5 }] };
   for (const n of REPO_TOOLS) bad[n] = [{ repository: 5 }, { repository: "x".repeat(201) }, { repository: REPO, ref: "a b" }, { snapshot: "s" }, { repository: REPO, extra: 1 }];
   bad.prepare_contribution.push({ repository: REPO }, { repository: REPO, kind: "open-pr" });
   bad.generate_assessment_report.push({ repository: REPO, format: "html" });
+  const item = cfg.items[0];
+  Object.assign(bad, {
+    list_debates: [{ kind: "poll" }, { query: "x".repeat(81) }, { extra: 1 }],
+    get_debate: [{}, { id: "RFC 1" }, { id: "rfc-1", part: "all" }],
+    find_opportunities: [{ skills: ["hacking"] }, { skills: "writing" }, { skills: ["writing", "writing"] }, { interests: ["economics", "economics", "provenance", "community", "standards", "ai-agents", "documentation", "reproducibility", "data-sovereignty"] }],
+    draft_community_post: [{ kind: "rfc" }, { kind: "spam", title: "abc" }, { kind: "rfc", title: "ab" }, { kind: "rfc", title: "abc", sections: { proposal: 5 } }, { kind: "rfc", title: "abc", sections: { extra: "x" } }],
+    prepare_challenge_submission: [{}, { ...challenge, commit: "zz" }, { ...challenge, steps: [{ id: "hack", status: "passed" }] }, { ...challenge, steps: [] }, { ...challenge, affiliated: "no" }],
+    explain_costs: [{ category: "misc" }],
+    compare_infrastructure_costs: [{ a: {} }, { a: cfg, b: { ...cfg, currency: "usd" } }, { a: cfg, b: { ...cfg, items: [{ ...item, unit_cost: -1 }] } }, { a: cfg, b: { ...cfg, items: [{ ...item, period: "weekly" }] } }, { a: cfg, b: { ...cfg, items: [{ ...item, assumption: "" }] } }],
+    estimate_savings: [{ current: cfg, proposed: cfg }, { current: cfg, proposed: cfg, horizon_months: 0 }, { current: cfg, proposed: cfg, horizon_months: 1.5 }],
+    prepare_cost_reduction_pr: [{ current: cfg, proposed: cfg, horizon_months: 12 }],
+    get_provenance_manifest: [{ part: "all" }, { limit: 21 }, { offset: -1 }],
+    verify_hashes: [{}, { items: [] }, { items: [{ sha256: "abc" }] }, { items: [{ path: "x" }] }],
+    get_timestamp_status: [{ x: 1 }],
+    explain_evidence_limitations: [{ evidence: "vibes" }],
+    get_atproto_lexicons: [{ nsid: "com.example.x" }],
+    export_atproto_record: [{}, { kind: "post" }, { kind: "contribution", created_at: "yesterday" }],
+    prepare_atproto_publication: [{}, { record: "x" }],
+  });
   for (const t of TOOLS) {
     const v = ajv.compile(t.inputSchema);
     for (const input of bad[t.name]) {
       assert.equal(v(input), false, `${t.name} schema rejects ${JSON.stringify(input)}`);
       assert.ok(validateInput(t.inputSchema, input).length > 0, `${t.name} validator rejects ${JSON.stringify(input)}`);
     }
-    assert.ok(v(REPO_TOOLS.includes(t.name) ? minimal(t) : t.inputSchema.required ? { manifest: fixture("valid") } : {}), `${t.name} accepts minimal input`);
+    assert.ok(v(minimal(t)), `${t.name} accepts minimal input: ${JSON.stringify(v.errors)}`);
   }
 });
 
@@ -69,7 +98,8 @@ test("every tool runs on the published data, stays within budget and labels its 
     assert.equal(r.ok, true, `${t.name}: ${JSON.stringify(r.error)}`);
     assert.ok(JSON.stringify(r).length <= (t.maxOutput ?? OUTPUT_BUDGET * 2), `${t.name} output ${JSON.stringify(r).length} chars`);
     if (!t.maxOutput && !REPO_TOOLS.includes(t.name)) assert.ok(JSON.stringify(r).length <= OUTPUT_BUDGET, `${t.name} output ${JSON.stringify(r).length} chars`);
-    assert.match(JSON.stringify(r), /"basis/, `${t.name} labels basis`);
+    if (PREPARE_ONLY.has(t.name)) assert.match(JSON.stringify(r), /Prepared only|Draft only|Exported only|Packaged from/, `${t.name} says nothing was sent`);
+    else assert.match(JSON.stringify(r), /"basis/, `${t.name} labels basis`);
     assert.doesNotMatch(JSON.stringify(r), /\bcertified\b/i, `${t.name} never says certified`);
   }
 });
@@ -124,7 +154,7 @@ test("costs, provenance and status tools match the published sources", async () 
   const m = json("provenance/launch-manifest.json");
   assert.equal(p.timestamp.state, m.timestamp_state);
   assert.equal(p.timestamp.basis, m.timestamp_state === "verified" ? "verified" : "missing", "a pending proof is never labelled verified");
-  const pending = buildBundle({ charterMd: read("CHARTER.md"), openDependenciesMd: read("OPEN-DEPENDENCIES.md"), status: json("launch/status.json"), ledger: json("launch/costs.json"), provenance: { ...m, timestamp_state: "pending", bitcoin_attestation_time_utc: null, bitcoin_attestation: undefined }, siteUrl: "https://x.test", repoUrl: "https://x.test/r" });
+  const pending = { ...loadNodeBundle(), provenance: { ...m, timestamp_state: "pending", bitcoin_attestation_time_utc: null, bitcoin_attestation: undefined } };
   const pp = await runTool(tool("get_provenance"), {}, { ...ctx, loadBundle: async () => pending });
   assert.equal(pp.timestamp.basis, "missing");
   assert.equal(pp.timestamp.attested_no_later_than_utc, undefined);

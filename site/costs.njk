@@ -34,3 +34,72 @@ description: "Open operating-cost ledger: cash, forecasts, reserves and noncash 
 
 <h2>Propose a saving</h2>
 <p>Know a cheaper or sturdier way to run this? Open a pull request using the <a href="{{ repoUrl }}/blob/main/.github/PULL_REQUEST_TEMPLATE/propose-a-saving.md">propose-a-saving template</a>, with before-and-after unit costs, your estimate method, the risks, and how we'd measure the result afterwards. Nothing is auto-deployed.</p>
+
+
+<h2 id="compare">Compare configurations</h2>
+<p>Describe two ways of running a project as JSON and compare them. Everything is computed in your browser from the numbers you enter, in whole cents; unknown costs stay unknown. These are estimates, not measurements. The same logic is in the <code>compare_infrastructure_costs</code>, <code>estimate_savings</code> and <code>prepare_cost_reduction_pr</code> agent tools and in <code>qm compare</code> / <code>qm savings</code>. The example below is illustrative; the VPS price is a placeholder, not a quote.</p>
+<section data-jrc-compare hidden aria-labelledby="compare-h">
+  <h3 id="compare-h" class="visually-hidden">Cost comparison</h3>
+  <form>
+    <p><label for="cfg-a">Configuration A (current)</label><br><textarea id="cfg-a" name="a" rows="10" spellcheck="false">{
+  "name": "current",
+  "currency": "USD",
+  "items": [
+    {
+      "id": "hosting",
+      "description": "Cloudflare Pages",
+      "unit_cost": 0,
+      "quantity": 1,
+      "period": "monthly",
+      "assumption": "Free plan, from launch/costs.json"
+    },
+    {
+      "id": "domain",
+      "description": "Domain renewal",
+      "unit_cost": 11.2,
+      "quantity": 1,
+      "period": "yearly",
+      "assumption": "Registrar renewal price, from launch/costs.json"
+    }
+  ]
+}</textarea></p>
+    <p><label for="cfg-b">Configuration B (proposed)</label><br><textarea id="cfg-b" name="b" rows="10" spellcheck="false">{
+  "name": "example-vps",
+  "currency": "USD",
+  "items": [
+    {
+      "id": "vps",
+      "description": "Small virtual server",
+      "unit_cost": 5.0,
+      "quantity": 1,
+      "period": "monthly",
+      "assumption": "Illustrative placeholder, not a quote: replace with a real provider's price"
+    },
+    {
+      "id": "domain",
+      "description": "Domain renewal",
+      "unit_cost": 11.2,
+      "quantity": 1,
+      "period": "yearly",
+      "assumption": "Unchanged"
+    },
+    {
+      "id": "setup",
+      "description": "Initial setup",
+      "unit_cost": null,
+      "quantity": 1,
+      "period": "one-time",
+      "assumption": "Unknown: depends on who does it"
+    }
+  ]
+}</textarea></p>
+    <p><label for="horizon">Horizon (months)</label> <input id="horizon" name="horizon" type="number" min="1" max="120" value="24"></p>
+    <p><label for="migration">One-time migration cost (optional)</label> <input id="migration" name="migration" type="number" min="0" step="0.01"> <label for="migration-assumption">Based on</label> <input id="migration-assumption" name="migration_assumption" type="text" maxlength="300"></p>
+    <p><label for="pr-title">PR title (for the PR draft)</label> <input id="pr-title" name="title" type="text" maxlength="100"></p>
+    <p><button type="submit" value="compare">Compare</button> <button type="submit" value="savings">Estimate savings</button> <button type="submit" value="pr">Draft a cost-reduction PR</button></p>
+  </form>
+  <p data-live aria-live="polite"></p>
+  <div data-results></div>
+</section>
+<p data-jrc-nojs>Without JavaScript: save each configuration as JSON and run <code>qm compare A.json B.json</code> or <code>qm savings MODEL.json</code>.</p>
+<script type="module" src="/assets/interop.js"></script>

@@ -2,34 +2,53 @@
 layout: base.njk
 title: For AI agents
 wide: true
-description: "Thirteen read-only tools for AI browser agents (WebMCP) and a static JSON API: charter, status, costs, provenance, challenge, manifest assessment and repository adoption."
+description: "Every JRC capability, its safety class and which interfaces support it: WebMCP in the browser, a local MCP server, the CLI, static JSON and the website."
 ---
-<p class="kicker">WebMCP · read-only · no account needed</p>
+<p class="kicker">Capabilities · manifest {{ webmcp.manifest.manifest_version }} · tools {{ webmcp.manifest.tools_version }}</p>
 <h1>For AI agents</h1>
-<p class="lede">This site offers structured tools to AI agents running in the browser, so they don't have to scrape pages. The same answers are available as static JSON for any client.</p>
+<p class="lede">Use any agent you like. The same {{ webmcp.manifest.capabilities.length }} capabilities are available through several interfaces, so nothing ties you to one AI provider, browser or hosted service.</p>
 
 <div class="notice">
-  <p><strong>Where this stands:</strong> the tools are implemented and tested, and run in Chrome. Native WebMCP registration needs Chrome with WebMCP enabled (a flag, or an origin trial this site hasn't joined yet). In other browsers the page works normally and registers nothing. See the <a href="{% sourceLink "docs/WEBMCP.md" %}">developer guide</a>.</p>
+  <p><strong>What these tools can't do:</strong> post, publish, sign in, change infrastructure, or certify anything. Every capability is read-only or prepare-only. Drafts, PR descriptions and AT Protocol records are returned to you to review and submit yourself. No tool runs code from a repository, and only the repository-assessment tools fetch anything: public files from GitHub, with no credentials.</p>
 </div>
 
-<h2>Tools</h2>
+<h2>Interfaces</h2>
+<dl>
+{%- for k, v in webmcp.manifest.interfaces %}
+  <dt><strong>{{ k }}</strong></dt><dd>{{ v }}</dd>
+{%- endfor %}
+</dl>
+
+<h3 id="mcp">Use the local MCP server</h3>
+<p>Any MCP client can start it. It reads this repository's files, so it works offline and without jollyrogercharter.org:</p>
+<pre><code>git clone {{ repoUrl }}.git jrc
+# in your MCP client's server configuration:
+{ "command": "node", "args": ["/path/to/jrc/bin/jrc-mcp.mjs"] }</code></pre>
+<h3 id="cli">Use the CLI</h3>
+<pre><code>node bin/jrc.mjs tool list
+echo '{"skills":["writing"]}' | node bin/jrc.mjs tool find_opportunities --input -</code></pre>
+<h3 id="webmcp">Use WebMCP</h3>
+<p>Open this site in a browser with WebMCP enabled; the tools register on every page. Native registration hasn't been verified yet. See the <a href="{% sourceLink "docs/WEBMCP.md" %}">developer guide</a>.</p>
+<h3 id="assess-a-repository">Assess a repository</h3>
+<p><code>assess_repository</code> reads a public GitHub repository's file list and a few key files at one commit. An automated scan isn't a review: <em>missing</em> means not found, not proof of noncompliance. The <a href="/adopt/">adoption page</a> runs the same code.</p>
+
+<h2>All capabilities</h2>
 <div class="table-scroll"><table>
-  <thead><tr><th scope="col">Tool</th><th scope="col">What it returns</th><th scope="col">Hints</th></tr></thead>
+  <thead><tr><th scope="col">Capability</th><th scope="col">Group</th><th scope="col">Safety</th><th scope="col">WebMCP / MCP</th><th scope="col">HTTP</th><th scope="col">CLI</th><th scope="col">Page</th></tr></thead>
   <tbody>
-  {%- for t in webmcp.catalog.tools %}
-    <tr><td><code>{{ t.name }}</code></td><td>{{ t.description }}</td><td>{% if t.annotations.readOnlyHint %}read-only{% endif %}{% if t.annotations.untrustedContentHint %}, untrusted content{% endif %}</td></tr>
+  {%- for c in webmcp.manifest.capabilities %}
+    <tr><td><code>{{ c.name }}</code><br>{{ c.title }}</td><td>{{ c.group }}</td><td>{{ c.safety }}{% if c.network != "none" %}<br><small>network: {{ c.network }}</small>{% endif %}</td><td>yes</td><td>{% if c.interfaces.http_static %}<a href="{{ c.interfaces.http_static }}"><code>{{ c.interfaces.http_static }}</code></a>{% else %}—{% endif %}</td><td>{% if c.interfaces.cli %}<code>{{ c.interfaces.cli }}</code>{% else %}<code>jrc tool {{ c.name }}</code>{% endif %}</td><td>{% if c.interfaces.website %}<a href="{{ c.interfaces.website }}">{{ c.interfaces.website }}</a>{% else %}—{% endif %}</td></tr>
   {%- endfor %}
   </tbody>
 </table></div>
+<p>Machine-readable: <a href="/api/v1/capabilities.json"><code>/api/v1/capabilities.json</code></a> (schemas, annotations, safety, maturity, interfaces) and <a href="/api/v1/tools.json"><code>/api/v1/tools.json</code></a>.</p>
 
-<h2 id="assess-a-repository">Assess a repository</h2>
-<p>Six of the tools take <code>{ repository: "https://github.com/OWNER/REPO" }</code> (optionally with <code>ref</code>) or a saved <code>{ snapshot }</code>. They are the same pipeline as the <a href="/adopt/">Adopt</a> page and <code>jrc assess</code>:</p>
-<ol>
-  <li><strong>Collect.</strong> The page reads public files at one commit: repository settings, the commit id, the recursive file list and up to 24 key files. That's three API requests plus a few file reads, all <code>GET</code> with no credentials.</li>
-  <li><strong>Evaluate.</strong> A pure function scores each pillar from file names and a few fixed fields, as <em>evidenced</em>, <em>partially-evidenced</em>, <em>missing</em>, <em>not-applicable</em> or <em>unknown</em>. <em>Missing</em> means "not found in this repository", never "violates JRCv1". <em>Unknown</em> means the scan couldn't tell. Demonstrated problems are listed separately as concerns.</li>
-  <li><strong>Prepare.</strong> The tools produce a roadmap, a candidate <code>jrc.json</code>, a checklist, a new-files-only patch, a PR description and a challenge log. They return text and GitHub links for the developer to review and submit. No tool can sign in, open a PR or issue, or write anywhere.</li>
-</ol>
-<p>Repository text is untrusted. Tools never echo README or manifest prose, file names with hidden characters are dropped, and a saved snapshot is validated before it is assessed. The same snapshot always gives the same report: <code>jrc assess --snapshot jrc-snapshot.json</code> reproduces it byte for byte.</p>
+<h2>Not built yet</h2>
+<ul>
+{%- for p in webmcp.manifest.planned %}
+  <li><strong>{{ p.title }}</strong> ({{ p.maturity }}): {{ p.why_not_yet }}</li>
+{%- endfor %}
+</ul>
 
 <h2>How results are labelled</h2>
 <ul>
@@ -39,13 +58,5 @@ description: "Thirteen read-only tools for AI browser agents (WebMCP) and a stat
 </ul>
 <p>{{ webmcp.catalog.conventions }}</p>
 
-<h2>Static JSON API</h2>
-<ul>
-  <li><a href="/api/v1/tools.json"><code>/api/v1/tools.json</code></a>: tool catalog with schemas</li>
-  <li><a href="/api/v1/charter.json"><code>/api/v1/charter.json</code></a>, <a href="/api/v1/status.json"><code>status.json</code></a>, <a href="/api/v1/costs.json"><code>costs.json</code></a>, <a href="/api/v1/challenges.json"><code>challenges.json</code></a>, <a href="/api/v1/provenance.json"><code>provenance.json</code></a>: each tool's default output</li>
-  <li><a href="/webmcp/data.json"><code>/webmcp/data.json</code></a>: the data bundle the tools read</li>
-</ul>
-<p>To assess a manifest without a browser agent, use the <a href="/check/"><code>jrc</code> CLI</a>; it runs the same engine.</p>
-
 <h2>Privacy</h2>
-<p>No account, cookies, storage, analytics or third-party scripts. A manifest you pass to <code>assess_jrc_manifest</code> is assessed inside the page and never sent anywhere. The repository tools make credential-free <code>GET</code> requests from your browser straight to <code>api.github.com</code> and <code>raw.githubusercontent.com</code>, so GitHub sees those requests as it would any visit. Nothing about them reaches this site.</p>
+<p>No account, cookies, storage, analytics or third-party scripts. Anything you give a tool on this site is processed in your browser. The repository-assessment tools send requests from your browser straight to GitHub; nothing passes through this site.</p>

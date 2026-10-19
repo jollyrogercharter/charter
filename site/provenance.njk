@@ -53,3 +53,17 @@ node scripts/hash-manifest.mjs {{ provenance.preservation_commit | truncate(7, t
 {% if provenance.opentimestamps_proof_path %}<pre><code>ots verify {{ provenance.opentimestamps_proof_path }}   # checks {{ provenance.timestamped_artifact.path }} against Bitcoin
 shasum -a 256 -c {{ provenance.timestamped_artifact.path }}   # from the original package folder</code></pre>{% endif %}
 <p>For more on timestamp proofs, follow <a href="{% sourceLink "provenance/VERIFY.md" %}"><code>provenance/VERIFY.md</code></a>. The full specification is in <a href="{% sourceLink "provenance/README.md" %}"><code>provenance/README.md</code></a>.</p>
+
+<h2 id="verify">Check your own copy</h2>
+<p>Choose files from your copy of the founding documents. Their SHA-256 hashes are computed <strong>in your browser</strong>; the files never leave your machine, and only the hashes are compared with the published digests (the same check as the <code>verify_hashes</code> agent tool and <code>jrc provenance verify</code>).</p>
+<section data-jrc-verify hidden aria-labelledby="verify-h">
+  <h3 id="verify-h" class="visually-hidden">Verify files</h3>
+  <form>
+    <p><label for="verify-files">Files</label><br><input id="verify-files" name="files" type="file" multiple></p>
+    <p><button type="submit">Check hashes</button></p>
+  </form>
+  <p data-live aria-live="polite"></p>
+  <div data-results></div>
+</section>
+<p data-jrc-nojs>Without JavaScript: run <code>shasum -a 256 FILE</code> and compare with the table above, or <code>jrc provenance verify FILE...</code>.</p>
+<script type="module" src="/assets/interop.js"></script>
