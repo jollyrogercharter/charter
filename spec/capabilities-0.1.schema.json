@@ -165,7 +165,8 @@
               "mcp_stdio",
               "http_static",
               "cli",
-              "website"
+              "website",
+              "cli_shortcut"
             ],
             "properties": {
               "webmcp": {
@@ -197,6 +198,13 @@
                 "maxLength": 200
               },
               "website": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              },
+              "cli_shortcut": {
                 "type": [
                   "string",
                   "null"

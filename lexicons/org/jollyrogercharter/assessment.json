@@ -13,7 +13,6 @@
           "subject",
           "standard",
           "kind",
-          "basis",
           "pillars",
           "tool",
           "independenceVerified",
@@ -22,7 +21,8 @@
         "properties": {
           "subject": {
             "type": "ref",
-            "ref": "#subject"
+            "ref": "#subject",
+            "description": "URI fields may use any scheme; consumers must restrict schemes (e.g. https only) before linking."
           },
           "standard": {
             "type": "string",
@@ -39,18 +39,9 @@
             "maxLength": 32,
             "description": "Who assessed: the project itself, an unaffiliated person, or an automated scan."
           },
-          "basis": {
-            "type": "string",
-            "knownValues": [
-              "self-reported",
-              "automated-scan",
-              "independent-claim"
-            ],
-            "maxLength": 32
-          },
           "pillars": {
             "type": "array",
-            "maxLength": 6,
+            "maxLength": 32,
             "items": {
               "type": "ref",
               "ref": "#pillarResult"
@@ -68,7 +59,8 @@
           "reportSha256": {
             "type": "string",
             "maxLength": 64,
-            "minLength": 64
+            "minLength": 64,
+            "description": "Lowercase hex SHA-256 of the report bytes."
           },
           "independenceVerified": {
             "type": "boolean",
@@ -99,7 +91,8 @@
         "manifestSha256": {
           "type": "string",
           "maxLength": 64,
-          "minLength": 64
+          "minLength": 64,
+          "description": "Lowercase hex SHA-256 of jrc.json."
         }
       }
     },

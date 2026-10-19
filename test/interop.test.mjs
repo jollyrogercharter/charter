@@ -230,9 +230,10 @@ test("capability manifest: valid, complete, honest about interfaces", () => {
   for (const c of m.capabilities) {
     if (c.interfaces.http_static) assert.ok(existsSync(path.join(SITE, c.interfaces.http_static)), `${c.name}: ${c.interfaces.http_static} is published`);
     if (c.interfaces.website) assert.ok(existsSync(path.join(SITE, c.interfaces.website.split("#")[0], "index.html")), `${c.name}: page ${c.interfaces.website} exists`);
-    if (c.interfaces.cli) {
-      const cmd = c.interfaces.cli.split(" / ")[0].split(" ").slice(0, 2).join(" ");
-      assert.ok(usage.includes(cmd), `${c.name}: "${cmd}" is a real CLI command`);
+    assert.equal(c.interfaces.cli, `jrc tool ${c.name}`, "every capability has the canonical CLI route");
+    if (c.interfaces.cli_shortcut) {
+      const cmd = c.interfaces.cli_shortcut.split(" ").slice(0, 2).join(" ");
+      assert.ok(usage.includes(cmd), `${c.name}: shortcut "${cmd}" is a real CLI command`);
     }
   }
   assert.ok(m.planned.every((p) => p.maturity !== "implemented"));
@@ -286,7 +287,9 @@ test("mcp: modern 2026-07-28 requests, discovery, errors and tool results", asyn
   ]);
   const byId = Object.fromEntries(res.filter((r) => r.id !== null).map((r) => [r.id, r]));
   assert.equal(byId[1].result.resultType, "complete");
-  assert.ok(byId[1].result.supportedVersions.includes("2026-07-28"));
+  assert.deepEqual(byId[1].result.supportedVersions, ["2026-07-28"], "only versions servable per request are advertised");
+  assert.equal(byId[1].result.cacheScope, "public");
+  assert.ok(byId[1].result.ttlMs >= 0 && byId[2].result.ttlMs >= 0, "cache hints on discover and tools/list");
   assert.equal(byId[1].result._meta["io.modelcontextprotocol/serverInfo"].name, "jolly-roger-charter");
   assert.deepEqual(byId[2].result.tools.map((t) => t.name), TOOLS.map((t) => t.name), "deterministic order, every tool");
   assert.ok(byId[2].result.tools.every((t) => t.annotations.readOnlyHint && !t.annotations.destructiveHint));
@@ -304,6 +307,40 @@ test("mcp: modern 2026-07-28 requests, discovery, errors and tool results", asyn
   assert.ok(res.some((r) => r.id === null && r.error.code === -32700), "parse error");
   assert.ok(res.some((r) => r.id === null && r.error.code === -32600), "batches are rejected");
   assert.equal(res.length, 10, "the notification gets no response");
+});
+
+test("audit regressions: MCP request validation (spec review of 54d193f)", async () => {
+  const res = await mcpSession([
+    { jsonrpc: "2.0", id: null, method: "ping", params: { _meta: META } },
+    { jsonrpc: "2.0", id: { a: 1 }, method: "ping", params: { _meta: META } },
+    { jsonrpc: "2.0", id: 3, method: "tools/list", params: { cursor: "bogus", _meta: META } },
+    { jsonrpc: "2.0", id: 4, method: "tools/list", params: { _meta: { ...META, "io.modelcontextprotocol/clientCapabilities": [] } } },
+    { jsonrpc: "2.0", id: 5, method: "tools/list", params: { _meta: { ...META, "io.modelcontextprotocol/protocolVersion": "2025-11-25" } } },
+  ]);
+  assert.equal(res.filter((r) => r.id === null && r.error.code === -32600).length, 2, "null and object ids are invalid");
+  const byId = Object.fromEntries(res.filter((r) => r.id !== null).map((r) => [r.id, r]));
+  assert.equal(byId[3].error.code, -32602, "invalid cursor");
+  assert.equal(byId[4].error.code, -32602, "clientCapabilities must be an object");
+  assert.deepEqual(byId[5].error.data.supported, ["2026-07-28"], "no retry loop: legacy versions need initialize");
+  const legacy03 = await mcpSession([{ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {} } }]);
+  assert.equal(legacy03[0].result.protocolVersion, "2025-11-25", "2025-03-26 (batches) isn't offered");
+});
+
+test("audit regressions: datetimes are never looser than @atproto/lexicon; pillar limit has room", () => {
+  const L = atproto();
+  const base = { $type: "org.jollyrogercharter.contribution", kind: "rfc", title: "t", subject: "https://github.com/x/y", createdAt: "2026-10-19T00:00:00Z" };
+  for (const dt of ["2026-01-01T00:00:00-00:00", "2026-00-01T00:00:00Z", "2026-02-30T00:00:00Z", "2026-01-01T24:00:00Z", "2026-01-01T00:00:00.123+05:30", "2024-02-29T12:00:00Z"]) {
+    const rec = { ...base, createdAt: dt };
+    let ref = true;
+    try { L.assertValidRecord(rec.$type, structuredClone(rec)); } catch { ref = false; }
+    const ours = validateRecord(bundle.lexicons, rec.$type, rec).length === 0;
+    if (!ref) assert.equal(ours, false, `${dt}: the reference rejects it, so we must too`);
+    if (dt === "2026-02-30T00:00:00Z") assert.equal(ours, false, "we're stricter than the reference on impossible dates (the spec asks for semantic validity)");
+    if (["2026-01-01T00:00:00.123+05:30", "2024-02-29T12:00:00Z"].includes(dt)) assert.equal(ours && ref, true, `${dt} is valid`);
+  }
+  const a = json(path.join(SITE, "api/v1/atproto-example-assessment.json"));
+  L.assertValidRecord(a.$type, { ...structuredClone(a), pillars: [...a.pillars, { pillar: "future_pillar", status: "unknown" }] });
+  assert.equal(a.basis, undefined, "kind alone says how it was assessed");
 });
 
 test("mcp: legacy initialize clients keep working", async () => {
@@ -330,7 +367,7 @@ test("mcp: cancellation aborts an in-flight tool call", async () => {
   await new Promise((r) => setTimeout(r, 50));
   await server.handle({ jsonrpc: "2.0", method: "notifications/cancelled", params: { requestId: 42 } });
   const r = await pending;
-  assert.ok(r.error?.code === -32800 || r.result?.isError, `cancelled call ends cleanly: ${JSON.stringify(r).slice(0, 200)}`);
+  assert.equal(r, null, "a cancelled request gets no response at all");
   assert.equal(mcpTools().length, TOOLS.length);
 });
 
