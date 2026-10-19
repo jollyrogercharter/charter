@@ -1,19 +1,27 @@
 {
-  "as_of_utc": "2026-10-18T04:22:00Z",
+  "$schema": "https://jollyrogercharter.org/spec/quartermaster/qm-0.1.schema.json",
+  "qm": "0.1",
+  "project": "Jolly Roger Charter",
   "currency": "USD",
-  "billing_integrations": "not-yet-connected",
-  "note": "Manual entries only. A null amount means unknown, not zero. Noncash attention is reported separately and never added to billed totals.",
-  "billed": [
-    { "item": "GitHub organization and public repository", "provider": "GitHub", "amount": 0, "status": "active", "source": "Free plan, verified via the GitHub API on 2026-10-18." },
-    { "item": "Domain jollyrogercharter.org (1 year)", "provider": "Cloudflare Registrar", "amount": 8.5, "status": "registered", "source": "First-year price $8.50 per Cloudflare invoice dated 2026-10-17 (confirmed by the human initiator). Renews at $11.20/yr; auto-renew on. Expires 2027-10-17 per the registrar, 2027-10-18 UTC per PIR RDAP." },
-    { "item": "Static hosting", "provider": "Cloudflare Pages", "amount": 0, "status": "active", "source": "Free plan; project jollyrogercharter, deployed from main on 2026-10-18." },
-    { "item": "Paid advertising", "provider": "None", "amount": 0, "status": "policy", "source": "Zero paid media by charter policy." }
+  "as_of_utc": "2026-10-18T06:45Z",
+  "note": "Manual entries. A null amount means unknown, never zero. Billing integrations are not connected. Noncash time is reported separately and never added to money.",
+  "sources": [
+    { "id": "cf-invoice-2026-10-17", "kind": "invoice", "description": "Cloudflare invoice dated 2026-10-17, read by the agent in the dashboard and confirmed by the human initiator. Invoice number withheld.", "retrieved_utc": "2026-10-18T04:45Z" },
+    { "id": "cf-registrar-page", "kind": "registrar", "description": "Cloudflare Registrar page for jollyrogercharter.org: renewal price and auto-renew state.", "retrieved_utc": "2026-10-18T04:40Z" },
+    { "id": "github-api", "kind": "provider-api", "description": "GitHub REST API: organization plan is free.", "retrieved_utc": "2026-10-18T04:51Z" },
+    { "id": "cf-pages-dashboard", "kind": "provider-dashboard", "description": "Cloudflare Pages project on the free plan.", "retrieved_utc": "2026-10-18T04:22Z" },
+    { "id": "charter-policy", "kind": "manual", "description": "Zero paid media, as stated in the charter's marketing plan.", "retrieved_utc": "2026-10-18T04:51Z", "url": "https://github.com/jollyrogercharter/charter/blob/main/launch/ORGANIC-MARKETING-PLAN.md" },
+    { "id": "no-billing-access", "kind": "manual", "description": "The agent cannot see AI provider billing for these sessions; nobody has supplied it.", "retrieved_utc": "2026-10-18T06:45Z" }
   ],
-  "ai_usage": [
-    { "item": "Founding ideation", "provider": "OpenAI ChatGPT", "amount": null, "status": "unknown", "source": "Plan and usage not disclosed to this record." },
-    { "item": "Launch implementation session, 2026-10-17", "provider": "Anthropic Claude (Claude Code)", "amount": null, "status": "unknown", "source": "The agent cannot see the account's billing; the human may add real usage." }
-  ],
-  "noncash_attention": [
-    { "item": "Human initiator direction and review", "hours": null, "valuation": null, "status": "not-measured", "source": "No method adopted; see standard/HUMAN-ATTENTION.md and the attention-accounting RFC." }
+  "entries": [
+    { "id": "domain-first-year", "category": "cash", "item": "Domain jollyrogercharter.org, first year", "provider": "Cloudflare Registrar", "amount": 8.5, "date": "2026-10-17", "recurrence": "one-time", "status": "paid", "source": "cf-invoice-2026-10-17", "attribution": "Charter website", "privacy": "public" },
+    { "id": "github-org", "category": "cash", "item": "GitHub organization and public repository", "provider": "GitHub", "amount": 0, "date": "2026-10-18", "recurrence": "monthly", "status": "free plan", "source": "github-api", "privacy": "public" },
+    { "id": "hosting", "category": "cash", "item": "Static hosting", "provider": "Cloudflare Pages", "amount": 0, "date": "2026-10-18", "recurrence": "monthly", "status": "free plan", "source": "cf-pages-dashboard", "privacy": "public" },
+    { "id": "paid-ads", "category": "cash", "item": "Paid advertising", "provider": "none", "amount": 0, "status": "policy: zero paid media", "source": "charter-policy", "privacy": "public" },
+    { "id": "ai-founding", "category": "cash", "item": "Founding ideation conversation", "provider": "OpenAI ChatGPT", "amount": null, "date": "2026-10-17", "status": "unknown", "source": "no-billing-access", "privacy": "public" },
+    { "id": "ai-launch-session", "category": "cash", "item": "Launch implementation session", "provider": "Anthropic Claude (Claude Code)", "amount": null, "date": "2026-10-17", "status": "unknown", "source": "no-billing-access", "privacy": "public" },
+    { "id": "ai-overnight-session", "category": "cash", "item": "Overnight build session (jrc, Quartermaster schema)", "provider": "Anthropic Claude (Claude Code)", "amount": null, "date": "2026-10-18", "status": "unknown", "source": "no-billing-access", "privacy": "public" },
+    { "id": "domain-renewal", "category": "forecast", "item": "Domain renewal", "provider": "Cloudflare Registrar", "amount": 11.2, "date": "2027-09-17", "recurrence": "yearly", "status": "auto-renew scheduled", "source": "cf-registrar-page", "privacy": "public" },
+    { "id": "initiator-attention", "category": "donated-labor", "item": "Human initiator: direction, review and approvals", "provider": "none", "amount": null, "hours": null, "status": "not measured; no valuation method adopted", "source": "no-billing-access", "privacy": "aggregated" }
   ]
 }

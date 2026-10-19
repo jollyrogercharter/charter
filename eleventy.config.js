@@ -21,6 +21,9 @@ const DOC_ROUTES = {
   "research/PRECEDENTS.md": "/history/",
   "spec/JRC-MANIFEST.md": "/spec/",
   "spec/jrc-0.1.schema.json": "/spec/jrc-0.1.schema.json",
+  "spec/quartermaster/QM-LEDGER.md": "/spec/quartermaster/",
+  "spec/quartermaster/qm-0.1.schema.json": "/spec/quartermaster/qm-0.1.schema.json",
+  "launch/costs.json": "/costs/ledger.json",
 };
 
 const md = markdownIt({ html: false, linkify: true, typographer: false });
@@ -92,7 +95,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "site/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "MANIFESTO.md": "downloads/MANIFESTO.md", "CHARTER.md": "downloads/CHARTER.md" });
   eleventyConfig.addPassthroughCopy({ "provenance/launch-manifest.json": "provenance/launch-manifest.json" });
-  eleventyConfig.addPassthroughCopy({ "spec/jrc-0.1.schema.json": "spec/jrc-0.1.schema.json", "jrc.json": "check/jrc.json" });
+  eleventyConfig.addPassthroughCopy({ "spec/jrc-0.1.schema.json": "spec/jrc-0.1.schema.json", "jrc.json": "check/jrc.json", "spec/quartermaster/qm-0.1.schema.json": "spec/quartermaster/qm-0.1.schema.json", "launch/costs.json": "costs/ledger.json" });
   eleventyConfig.addWatchTarget("./*.md");
 
   return {

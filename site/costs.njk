@@ -2,47 +2,35 @@
 layout: base.njk
 title: Costs
 wide: true
-description: "Open operating-cost ledger: billed, AI usage and noncash attention, kept separate. Unknown means unknown."
+description: "Open operating-cost ledger: cash, forecasts, reserves and noncash time kept separate. Unknown means unknown."
 ---
-<p class="kicker">Open books · manual ledger</p>
+<p class="kicker">Open books · Quartermaster ledger 0.1 draft</p>
 <h1>What this costs</h1>
 <p class="lede">If we can explain how to run it, we should explain what it costs.</p>
 <div class="notice">
-  <p>Billing integrations: <span class="badge pending">{{ costs.billing_integrations }}</span>. Every entry is entered by hand from <a href="{% sourceLink "launch/costs.json" %}"><code>launch/costs.json</code></a>, as of {{ costs.as_of_utc }}. {{ costs.note }}</p>
+  <p><strong>{{ costs.summary.statement }}</strong></p>
+  <p>As of {{ costs.as_of_utc }}. {{ costs.note }} Source: <a href="{% sourceLink "launch/costs.json" %}"><code>launch/costs.json</code></a>, which <code>qm validate</code> checks on every build (<a href="/costs/ledger.json">machine-readable copy</a>, <a href="/spec/quartermaster/">format</a>).</p>
 </div>
 
-{% macro amount(v) %}{% if v === null %}<span class="badge unknown">unknown</span>{% else %}${{ v }}{% endif %}{% endmacro %}
+{% macro amount(v) %}{% if v === null %}<span class="badge unknown">unknown</span>{% else %}${{ v | round(2) }}{% endif %}{% endmacro %}
 
-<h2>Billed expenses</h2>
+{% for cat, label in costs.categories %}
+{% set rows = [] %}{% for e in costs.entries %}{% if e.category == cat %}{% set rows = (rows.push(e), rows) %}{% endif %}{% endfor %}
+{% if rows.length %}
+<h2>{{ label }} <small>(<code>{{ cat }}</code>)</small></h2>
 <div class="table-scroll"><table>
-  <thead><tr><th scope="col">Item</th><th scope="col">Provider</th><th scope="col">Amount ({{ costs.currency }})</th><th scope="col">Status</th><th scope="col">Source</th></tr></thead>
+  <thead><tr><th scope="col">Item</th><th scope="col">Provider</th>{% if cat == "donated-labor" or cat == "user-attention" %}<th scope="col">Hours</th>{% endif %}<th scope="col">Amount ({{ costs.currency }})</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col">Source</th></tr></thead>
   <tbody>
-  {%- for e in costs.billed %}
-    <tr><td>{{ e.item }}</td><td>{{ e.provider }}</td><td class="num">{{ amount(e.amount) }}</td><td><span class="badge {{ e.status }}">{{ e.status }}</span></td><td>{{ e.source }}</td></tr>
+  {%- for e in rows %}
+    <tr><td>{{ e.item }}</td><td>{{ e.provider }}</td>{% if cat == "donated-labor" or cat == "user-attention" %}<td class="num">{% if e.hours === null %}<span class="badge unknown">unmeasured</span>{% else %}{{ e.hours }}{% endif %}</td>{% endif %}<td class="num">{{ amount(e.amount) }}</td><td>{{ e.date or "—" }}{% if e.recurrence %} · {{ e.recurrence }}{% endif %}</td><td>{{ e.status }}</td><td>{{ costs.sourceById[e.source].description }}</td></tr>
   {%- endfor %}
   </tbody>
 </table></div>
+{% endif %}
+{% endfor %}
 
-<h2>AI usage</h2>
-<div class="table-scroll"><table>
-  <thead><tr><th scope="col">Item</th><th scope="col">Provider</th><th scope="col">Amount ({{ costs.currency }})</th><th scope="col">Status</th><th scope="col">Source</th></tr></thead>
-  <tbody>
-  {%- for e in costs.ai_usage %}
-    <tr><td>{{ e.item }}</td><td>{{ e.provider }}</td><td class="num">{{ amount(e.amount) }}</td><td><span class="badge {{ e.status }}">{{ e.status }}</span></td><td>{{ e.source }}</td></tr>
-  {%- endfor %}
-  </tbody>
-</table></div>
-
-<h2>Human attention (noncash)</h2>
-<p>This is reported separately and never added to billed totals. No method or hourly rate has been adopted. <a href="/charter/#human-attention">Human Attention Accounting</a> is an open proposal.</p>
-<div class="table-scroll"><table>
-  <thead><tr><th scope="col">Item</th><th scope="col">Hours</th><th scope="col">Valuation</th><th scope="col">Status</th><th scope="col">Source</th></tr></thead>
-  <tbody>
-  {%- for e in costs.noncash_attention %}
-    <tr><td>{{ e.item }}</td><td class="num">{{ amount(e.hours) if e.hours === null else e.hours }}</td><td class="num">{{ amount(e.valuation) }}</td><td><span class="badge {{ e.status }}">{{ e.status }}</span></td><td>{{ e.source }}</td></tr>
-  {%- endfor %}
-  </tbody>
-</table></div>
+<h2>Human attention</h2>
+<p>No method or hourly rate has been adopted, so time is shown as unmeasured rather than given a price. <a href="/charter/#human-attention">Human Attention Accounting</a> is an open proposal.</p>
 
 <h2>Propose a saving</h2>
-<p>Know a cheaper or sturdier way to run this? Open a pull request with before-and-after unit costs, your estimate method and the risks. See <a href="{% sourceLink "AGENTS.md" %}"><code>AGENTS.md</code></a>.</p>
+<p>Know a cheaper or sturdier way to run this? Open a pull request using the <a href="{{ repoUrl }}/blob/main/.github/PULL_REQUEST_TEMPLATE/propose-a-saving.md">propose-a-saving template</a>, with before-and-after unit costs, your estimate method, the risks, and how we'd measure the result afterwards. Nothing is auto-deployed.</p>

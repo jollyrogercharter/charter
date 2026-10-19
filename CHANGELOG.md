@@ -2,6 +2,14 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## Unreleased — Quartermaster ledger foundation (PR C)
+
+- `spec/quartermaster/qm-0.1.schema.json` and `QM-LEDGER.md`. Five cost categories that are never summed together: cash, forecast, reserve, donated labour and user attention. Unknown amounts are `null`, never 0. Every entry references a dated source. Noncash time can only carry a price with a published valuation method.
+- `qm validate | summary | csv2json` (`bin/qm.mjs`, `lib/qm/`). Local files only. Invoice and account numbers are rejected, and the same privacy scanner as `jrc` applies.
+- `launch/costs.json` migrated to qm 0.1. The `/costs/` page is built from the validated ledger and the build fails if it's invalid. The ledger is also published at `/costs/ledger.json`.
+- `.github/PULL_REQUEST_TEMPLATE/propose-a-saving.md`.
+- 7 qm tests, including billing-identifier leaks and estimate-as-cash. Total suite: 43 tests.
+
 ## Unreleased — jrc conformance tool (PR B)
 
 - `jrc` 0.1 draft (`bin/jrc.mjs`, `lib/jrc/`): `init`, `check`, `report` (JSON, Markdown, self-reported SVG badge) and `challenge`. Offline, no runtime dependencies, Node 20+.

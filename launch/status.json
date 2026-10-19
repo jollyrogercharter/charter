@@ -182,16 +182,17 @@
       "title": "Public cost ledger",
       "state": "implemented",
       "url": "https://jollyrogercharter.org/costs/",
-      "evidence": "Manual entries; AI usage and human attention marked unknown.",
-      "verified_utc": "2026-10-18T04:51Z"
+      "evidence": "Validated qm 0.1 ledger: $8.50 known cash plus 3 unknown AI-usage items; domain renewal kept as a forecast; human attention unmeasured. The build fails if the ledger is invalid.",
+      "verified_utc": "2026-10-18T07:00Z"
     },
     {
       "id": "billing-integrations",
       "area": "Economics",
-      "title": "Billing integrations (Quartermaster)",
+      "title": "Quartermaster: ledger format and billing integrations",
       "state": "pending",
-      "evidence": "Concept only; no code.",
-      "verified_utc": "2026-10-18T04:51Z"
+      "evidence": "Ledger format qm 0.1 (draft), with validator, CSV import and summary tool. The cost page is now built from the validated ledger. No provider integrations: no credentials-free public sample data was available to build one against.",
+      "verified_utc": "2026-10-18T07:00Z",
+      "url": "https://jollyrogercharter.org/spec/quartermaster/"
     },
     {
       "id": "conformance-tool",
