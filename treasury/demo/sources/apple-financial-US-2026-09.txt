@@ -1,0 +1,4 @@
+Start Date	End Date	UPC	ISRC / ISBN	Vendor Identifier	Quantity	Partner Share	Extended Partner Share	Partner Share Currency	Sale or Return	Apple Identifier	Artist / Show / Developer / Author	Title	Label / Studio / Network / Developer / Publisher	Grid	Product Type Identifier	ISAN / Other Identifier	Country of Sale	Pre-order Flag	Promo Code	Customer Price	Customer Currency
+08/30/2026	09/26/2026		EX-PRO-YEARLY	EX-PRO-YEARLY	12	6.99	83.88	USD	S	1000000001	Example Project (SIMULATED)	EX-PRO-YEARLY			IAY		US			9.99	USD
+08/30/2026	09/26/2026		EX-TIP-SMALL	EX-TIP-SMALL	40	0.69	27.60	USD	S	1000000001	Example Project (SIMULATED)	EX-TIP-SMALL			IA1		US			0.99	USD
+08/30/2026	09/26/2026		EX-PRO-YEARLY	EX-PRO-YEARLY	-1	6.99	-6.99	USD	R	1000000001	Example Project (SIMULATED)	EX-PRO-YEARLY			IAY		US			9.99	USD

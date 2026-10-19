@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { entriesFromCsv, summarize, validateLedger } from "../lib/qm/expenses.mjs";
 import { callTool, nodeContext } from "../lib/capabilities/node-runtime.mjs";
+import { treasuryMain } from "../lib/treasury/cli.mjs";
 
 const USAGE = `qm 0.1 - Quartermaster expense ledger tools (draft)
 
@@ -16,6 +17,8 @@ Usage:
   qm compare A.json B.json           Compare two infrastructure configurations (estimates, whole cents)
   qm savings MODEL.json [--pr]       Net savings and break-even from {current, proposed, migration,
                                      horizon_months}; --pr prints a propose-a-saving PR body
+
+  qm treasury ...                    Verifiable treasury journal; run qm treasury --help
 
 Any JSON file argument may be - to read standard input.
 Exit codes: 0 ok, 1 invalid ledger or input, 2 usage error.
@@ -34,6 +37,7 @@ function report(errors) {
 }
 
 export function main(argv) {
+  if (argv[0] === "treasury") return treasuryMain(argv.slice(1)).catch((e) => fail(e.message, 1));
   let parsed;
   try {
     parsed = parseArgs({ args: argv, allowPositionals: true, options: { json: { type: "boolean" }, header: { type: "string" }, pr: { type: "boolean" }, help: { type: "boolean", short: "h" } } });
