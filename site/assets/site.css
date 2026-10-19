@@ -117,9 +117,6 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 .hash { font-family: var(--mono); font-size: 0.8rem; overflow-wrap: anywhere; }
 
-.attribution { border-top: 2px solid var(--ink); background: var(--paper-2); padding: 1rem 0 1.25rem; font-family: var(--sans); }
-.attribution h2 { font-size: 1rem; margin: 0 0 0.25rem; border: 0; padding: 0; text-transform: uppercase; letter-spacing: 0.1em; }
-.attribution p { margin: 0; max-width: var(--measure); }
 .site-footer { padding: 1.25rem 0 2rem; font: 0.88rem/1.5 var(--sans); color: var(--ink-soft); }
 .site-footer nav { margin-bottom: 0.75rem; }
 

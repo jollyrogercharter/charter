@@ -19,7 +19,6 @@ We built tools before testing the economic idea. That order is now reversed: new
 | [JRCv1](CHARTER.md) and [`jrc`](spec/JRC-MANIFEST.md) | A detailed, voluntary standard and an offline tool for showing that a project can survive without its creator | Draft standard; the tool works |
 | [Adopt](docs/ADOPT.md) | Check a public repository against JRCv1 and get a list of what's missing | Works; still being reviewed |
 | [The Challenge](community/THE-CHALLENGE.md) | Ask an outsider to rebuild and run a project with no private help | Open; nobody has completed it yet for this project |
-| [Provenance](provenance/README.md) | Show where the founding documents came from, with fingerprints and a Bitcoin timestamp | Founding digest list timestamped and checked; transcript not yet published |
 
 ## Rewarded stewardship: honest, accountable money
 

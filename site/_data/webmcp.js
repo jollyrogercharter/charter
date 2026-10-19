@@ -8,10 +8,10 @@ export default async function () {
   const bundle = loadNodeBundle(process.cwd());
   const ctx = { loadBundle: async () => bundle, sha256: async (t) => sha256Hex(t) };
   const endpoints = [];
-  for (const [file, toolName] of [["charter", "get_charter"], ["status", "get_project_status"], ["costs", "get_project_costs"], ["challenges", "get_open_challenges"], ["provenance", "get_provenance"]]) {
+  for (const [file, toolName] of [["charter", "get_charter"], ["status", "get_project_status"], ["costs", "get_project_costs"], ["challenges", "get_open_challenges"]]) {
     endpoints.push({ file, body: JSON.stringify(await runTool(TOOLS.find((t) => t.name === toolName), {}, ctx), null, 2) + "\n" });
   }
-  for (const [file, toolName] of [["debates", "list_debates"], ["cost-categories", "explain_costs"], ["timestamp", "get_timestamp_status"], ["lexicons", "get_atproto_lexicons"]]) {
+  for (const [file, toolName] of [["debates", "list_debates"], ["cost-categories", "explain_costs"], ["lexicons", "get_atproto_lexicons"]]) {
     endpoints.push({ file, body: JSON.stringify(await runTool(TOOLS.find((t) => t.name === toolName), {}, ctx), null, 2) + "\n" });
   }
   endpoints.push({ file: "opportunities", body: JSON.stringify(bundle.opportunities, null, 2) + "\n" });

@@ -8,7 +8,7 @@
 
 ## 1. Motivation
 
-The founding drafts grew into six pillars, a conformance tool, a cost ledger, provenance proofs and agent interfaces. A newcomer meeting all of that at once can't tell what the movement is for.
+The founding drafts grew into six pillars, a conformance tool, a cost ledger, origin proofs and agent interfaces. A newcomer meeting all of that at once can't tell what the movement is for.
 
 The founder's restatement: Jolly Roger is a movement to change **how people earn a living from software** once AI makes software abundant. It rests on three principles:
 
@@ -26,7 +26,7 @@ The founding drafts framed money narrowly: cost recovery, open operating expense
 
 ## 3. What changes now (editorial, branch `feat/reorient`)
 
-- A one-page [manifesto](../MANIFESTO.md) (v0.2). The v0.1 founding draft is preserved byte-for-byte in [`history/`](../history/MANIFESTO-v0.1-2026-10-17.md), and its SHA-256 still matches the Bitcoin-timestamped digest list.
+- A one-page [manifesto](../MANIFESTO.md) (v0.2). The v0.1 founding draft is kept in [`history/`](../history/MANIFESTO-v0.1-2026-10-17.md).
 - A plain-language commitments section at the top of [`CHARTER.md`](../CHARTER.md). The JRCv1 text beneath it is unchanged.
 - New explanatory documents: [`STEWARDSHIP-ECONOMY.md`](../STEWARDSHIP-ECONOMY.md), [`STEWARDSHIP-PILOT.md`](../STEWARDSHIP-PILOT.md), [`PROJECTS.md`](../PROJECTS.md).
 - The website leads with the three principles; technical pages move to secondary navigation at unchanged URLs.

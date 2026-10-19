@@ -8,7 +8,6 @@ import { pathToFileURL } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import { validateInput } from "../lib/capabilities/input.mjs";
 import { MAX_MANIFEST_BYTES, runTool, toolCatalog, TOOLS } from "../lib/capabilities/tools.mjs";
-import { loadNodeBundle } from "../lib/capabilities/node-bundle.mjs";
 import { sha256Hex } from "../lib/jrc/check.mjs";
 import { summarize } from "../lib/qm/expenses.mjs";
 import { createSession } from "../lib/assess/session.mjs";
@@ -23,13 +22,13 @@ const session = createSession({ fetch: gh.fetch, sha256: sha256Bytes, now: () =>
 const ctx = { loadBundle: async () => bundle, sha256: async (t) => sha256Hex(t), session };
 const REPO = "https://github.com/example-org/tidepool";
 const REPO_TOOLS = ["assess_repository", "prepare_adoption_roadmap", "generate_jrc_manifest", "prepare_contribution", "run_challenge_checks", "generate_assessment_report"];
-const ORIGINAL = ["assess_jrc_manifest", "generate_adoption_plan", "get_charter", "get_open_challenges", "get_project_costs", "get_project_status", "get_provenance", ...REPO_TOOLS];
+const ORIGINAL = ["assess_jrc_manifest", "generate_adoption_plan", "get_charter", "get_open_challenges", "get_project_costs", "get_project_status", ...REPO_TOOLS];
 const cfg = { name: "current", currency: "USD", items: [{ id: "hosting", unit_cost: 0, quantity: 1, period: "monthly", assumption: "Free plan" }] };
 const challenge = { project: "Demo", repository: "https://github.com/example-org/tidepool", commit: "abc1234", attempted_by: "A tester", affiliated: false, steps: [{ id: "clean-build", status: "passed" }] };
 const EXT_MINIMAL = {
   get_debate: { id: "rfc-1" }, draft_community_post: { kind: "rfc", title: "Test RFC" }, prepare_challenge_submission: challenge, find_opportunities: { skills: ["writing"] },
   compare_infrastructure_costs: { a: cfg, b: { ...cfg, name: "b" } }, estimate_savings: { current: cfg, proposed: cfg, migration: { one_time_cost: 0, assumption: "none" }, horizon_months: 12 }, prepare_cost_reduction_pr: { current: cfg, proposed: cfg, migration: { one_time_cost: 0, assumption: "none" }, horizon_months: 12, title: "Test" },
-  verify_hashes: { items: [{ sha256: "0".repeat(64) }] }, export_atproto_record: { kind: "adoption", adoption: { repository: "https://github.com/x/y", declared_at: "2026-10-19T00:00:00Z" } },
+  export_atproto_record: { kind: "adoption", adoption: { repository: "https://github.com/x/y", declared_at: "2026-10-19T00:00:00Z" } },
   prepare_atproto_publication: { record: { $type: "org.jollyrogercharter.contribution", kind: "rfc", title: "t", subject: "https://github.com/x/y", createdAt: "2026-10-19T00:00:00Z" } },
 };
 const minimal = (t) => (EXT_MINIMAL[t.name] ?? (REPO_TOOLS.includes(t.name) ? { repository: REPO, ...(t.name === "prepare_contribution" ? { kind: "checklist" } : {}) } : ORIGINAL.includes(t.name) && t.inputSchema.required ? { manifest: json("jrc.json") } : {}));
@@ -43,7 +42,7 @@ const OUTPUT_BUDGET = 2200;
 
 test("catalog: names, descriptions and annotations follow the spec and Chrome guidance", () => {
   const cat = toolCatalog();
-  assert.deepEqual(cat.tools.map((t) => t.name).sort(), [...ORIGINAL, "list_debates", "get_debate", "find_opportunities", "draft_community_post", "prepare_challenge_submission", "explain_costs", "compare_infrastructure_costs", "estimate_savings", "prepare_cost_reduction_pr", "get_provenance_manifest", "verify_hashes", "get_timestamp_status", "explain_evidence_limitations", "get_atproto_lexicons", "export_atproto_record", "prepare_atproto_publication"].sort());
+  assert.deepEqual(cat.tools.map((t) => t.name).sort(), [...ORIGINAL, "list_debates", "get_debate", "find_opportunities", "draft_community_post", "prepare_challenge_submission", "explain_costs", "compare_infrastructure_costs", "estimate_savings", "prepare_cost_reduction_pr", "get_atproto_lexicons", "export_atproto_record", "prepare_atproto_publication"].sort());
   for (const t of cat.tools) {
     assert.match(t.name, /^[A-Za-z0-9_.-]{1,30}$/, "spec name charset; Chrome suggests at most 30 chars");
     assert.ok(t.description.length > 0 && t.description.length <= 500, `${t.name} description length`);
@@ -57,7 +56,7 @@ test("catalog: names, descriptions and annotations follow the spec and Chrome gu
 
 test("schemas compile under strict Ajv and agree with the input validator", () => {
   const ajv = new Ajv2020({ strict: true, allowUnionTypes: true });
-  const bad = { get_charter: [{ pillar: "nope" }, { extra: 1 }], get_project_status: [{ state: "done" }, { id: "Bad Id!" }, { area: "x".repeat(41) }], get_project_costs: [{ category: "misc" }], get_open_challenges: [{ step: "../x" }], get_provenance: [{ path: "x".repeat(201) }], assess_jrc_manifest: [{}, { manifest: "a string" }, { manifest: [] }], generate_adoption_plan: [{}, { manifest: 5 }] };
+  const bad = { get_charter: [{ pillar: "nope" }, { extra: 1 }], get_project_status: [{ state: "done" }, { id: "Bad Id!" }, { area: "x".repeat(41) }], get_project_costs: [{ category: "misc" }], get_open_challenges: [{ step: "../x" }], assess_jrc_manifest: [{}, { manifest: "a string" }, { manifest: [] }], generate_adoption_plan: [{}, { manifest: 5 }] };
   for (const n of REPO_TOOLS) bad[n] = [{ repository: 5 }, { repository: "x".repeat(201) }, { repository: REPO, ref: "a b" }, { snapshot: "s" }, { repository: REPO, extra: 1 }];
   bad.prepare_contribution.push({ repository: REPO }, { repository: REPO, kind: "open-pr" });
   bad.generate_assessment_report.push({ repository: REPO, format: "html" });
@@ -65,17 +64,13 @@ test("schemas compile under strict Ajv and agree with the input validator", () =
   Object.assign(bad, {
     list_debates: [{ kind: "poll" }, { query: "x".repeat(81) }, { extra: 1 }],
     get_debate: [{}, { id: "RFC 1" }, { id: "rfc-1", part: "all" }],
-    find_opportunities: [{ skills: ["hacking"] }, { skills: "writing" }, { skills: ["writing", "writing"] }, { interests: ["economics", "economics", "provenance", "community", "standards", "ai-agents", "documentation", "reproducibility", "data-sovereignty"] }],
+    find_opportunities: [{ skills: ["hacking"] }, { skills: "writing" }, { skills: ["writing", "writing"] }, { interests: ["economics", "economics", "community", "standards", "ai-agents", "documentation", "reproducibility", "data-sovereignty"] }, { interests: ["provenance"] }],
     draft_community_post: [{ kind: "rfc" }, { kind: "spam", title: "abc" }, { kind: "rfc", title: "ab" }, { kind: "rfc", title: "abc", sections: { proposal: 5 } }, { kind: "rfc", title: "abc", sections: { extra: "x" } }],
     prepare_challenge_submission: [{}, { ...challenge, commit: "zz" }, { ...challenge, steps: [{ id: "hack", status: "passed" }] }, { ...challenge, steps: [] }, { ...challenge, affiliated: "no" }],
     explain_costs: [{ category: "misc" }],
     compare_infrastructure_costs: [{ a: {} }, { a: cfg, b: { ...cfg, currency: "usd" } }, { a: cfg, b: { ...cfg, items: [{ ...item, unit_cost: -1 }] } }, { a: cfg, b: { ...cfg, items: [{ ...item, period: "weekly" }] } }, { a: cfg, b: { ...cfg, items: [{ ...item, assumption: "" }] } }],
     estimate_savings: [{ current: cfg, proposed: cfg }, { current: cfg, proposed: cfg, horizon_months: 0 }, { current: cfg, proposed: cfg, horizon_months: 1.5 }],
     prepare_cost_reduction_pr: [{ current: cfg, proposed: cfg, horizon_months: 12 }],
-    get_provenance_manifest: [{ part: "all" }, { limit: 21 }, { offset: -1 }],
-    verify_hashes: [{}, { items: [] }, { items: [{ sha256: "abc" }] }, { items: [{ path: "x" }] }],
-    get_timestamp_status: [{ x: 1 }],
-    explain_evidence_limitations: [{ evidence: "vibes" }],
     get_atproto_lexicons: [{ nsid: "com.example.x" }],
     export_atproto_record: [{}, { kind: "post" }, { kind: "contribution", created_at: "yesterday" }],
     prepare_atproto_publication: [{}, { record: "x" }],
@@ -106,12 +101,10 @@ test("every tool runs on the published data, stays within budget and labels its 
 
 test("filters, not-found and invalid input return structured errors", async () => {
   assert.equal((await run("get_charter", { pillar: "data" })).pillars[0].key, "data");
-  assert.equal((await run("get_project_status", { id: "opentimestamps" })).item.id, "opentimestamps");
+  assert.equal((await run("get_project_status", { id: "stewardship-pilot" })).item.id, "stewardship-pilot");
   assert.equal((await run("get_project_status", { id: "no-such-item" })).error.code, "NOT_FOUND");
   assert.equal((await run("get_project_costs", { category: "forecast" })).entries[0].basis, "estimate");
   assert.equal((await run("get_open_challenges", { step: "clean-build" })).step.id, "clean-build");
-  assert.equal((await run("get_provenance", { path: "MANIFESTO.md" })).file.sha256, bundle.provenance.files.find((f) => f.path === "MANIFESTO.md").sha256);
-  assert.equal((await run("get_provenance", { path: "nope.md" })).error.code, "NOT_FOUND");
   assert.equal((await run("get_charter", { pillar: "nope" })).error.code, "INVALID_INPUT");
   assert.equal((await runTool(tool("get_charter"), null, ctx)).ok, true, "missing input is treated as {}");
   const big = { ...fixture("valid"), limitations: ["x".repeat(MAX_MANIFEST_BYTES)] };
@@ -146,23 +139,15 @@ test("generate_adoption_plan is deterministic and grounded in the assessment", a
   assert.match(broken.steps[0].action, /schema/);
 });
 
-test("costs, provenance and status tools match the published sources", async () => {
+test("costs and status tools match the published sources", async () => {
   const c = await run("get_project_costs");
   assert.equal(c.statement, summarize(json("launch/costs.json")).statement);
   assert.ok(c.entries.filter((e) => e.amount === null).every((e) => e.basis === "missing"), "unknown is missing, never zero");
-  const p = await run("get_provenance");
-  const m = json("provenance/launch-manifest.json");
-  assert.equal(p.timestamp.state, m.timestamp_state);
-  assert.equal(p.timestamp.basis, m.timestamp_state === "verified" ? "verified" : "missing", "a pending proof is never labelled verified");
-  const pending = { ...loadNodeBundle(), provenance: { ...m, timestamp_state: "pending", bitcoin_attestation_time_utc: null, bitcoin_attestation: undefined } };
-  const pp = await runTool(tool("get_provenance"), {}, { ...ctx, loadBundle: async () => pending });
-  assert.equal(pp.timestamp.basis, "missing");
-  assert.equal(pp.timestamp.attested_no_later_than_utc, undefined);
   const s = await run("get_project_status");
   const st = json("launch/status.json");
   assert.equal(Object.values(s.counts).reduce((x, y) => x + y, 0), st.items.length);
-  for (const f of ["charter", "status", "costs", "challenges", "provenance"]) {
-    const name = { charter: "get_charter", status: "get_project_status", costs: "get_project_costs", challenges: "get_open_challenges", provenance: "get_provenance" }[f];
+  for (const f of ["charter", "status", "costs", "challenges"]) {
+    const name = { charter: "get_charter", status: "get_project_status", costs: "get_project_costs", challenges: "get_open_challenges" }[f];
     assert.deepEqual(json(path.join(SITE, `api/v1/${f}.json`)), await run(name), `static API ${f} equals the tool`);
   }
 });
@@ -263,7 +248,7 @@ test("[simulated] cancellation: aborting unregisters tools and aborts executions
   const outer = new AbortController();
   const out = await mod.registerJrcTools(mc, { signal: outer.signal });
   assert.equal((await mc.getTools()).length, TOOLS.length);
-  out.controllers.get("get_provenance").abort();
+  out.controllers.get("get_charter").abort();
   assert.equal((await mc.getTools()).length, TOOLS.length - 1, "per-tool controller unregisters one tool");
   outer.abort();
   assert.equal((await mc.getTools()).length, 0, "outer signal unregisters the rest");
@@ -333,14 +318,6 @@ test("review: echoed manifest text is clipped, marked untrusted, and output is c
   assert.ok(JSON.stringify(plan).length <= OUTPUT_BUDGET);
 });
 
-test("review: the unpublished ZIP's digest isn't labelled verified", async () => {
-  const z = await run("get_provenance", { path: "Jolly_Roger_Claude_Launch_Package.zip" });
-  assert.equal(z.basis, "self-reported");
-  assert.equal(z.file.in_repository, false);
-  assert.doesNotMatch(z.how, /git show/);
-  assert.equal((await run("get_provenance", { path: "MANIFESTO.md" })).basis, "verified");
-});
-
 test("review: the browser hash is named for what it hashes", async () => {
   const a = await run("assess_jrc_manifest", { manifest: json("jrc.json") });
   assert.equal(a.manifest_sha256, undefined);
@@ -396,11 +373,11 @@ test("review: self-asserted independence is flagged, not treated as done", async
 test("review: [simulated] a malformed data bundle is rejected and retried; unknown hours aren't zero", async () => {
   const mod = await loadBrowserModule();
   let calls = 0;
-  globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => (++calls === 1 ? {} : JSON.parse(read(path.join(SITE, "webmcp/data.json")))) });
+  globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => (++calls === 1 ? { ...JSON.parse(read(path.join(SITE, "webmcp/data.json"))), bundle_version: "1" } : JSON.parse(read(path.join(SITE, "webmcp/data.json")))) });
   const exec = mod.executor(tool("get_charter"));
   const first = await exec({}, null);
   assert.equal(first.error.code, "TOOL_FAILED");
-  assert.match(first.error.message, /not a version-1 data bundle/);
+  assert.match(first.error.message, /not a version-2 data bundle/, "a cached pre-retirement bundle is refused");
   assert.equal((await exec("", undefined)).ok, true, "retried after a bad bundle; empty legacy input means {}");
   const c = await run("get_project_costs", {});
   assert.equal(c.totals["donated-labor"].known_hours, null);

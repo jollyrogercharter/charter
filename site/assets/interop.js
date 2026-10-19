@@ -13,7 +13,6 @@ const el = (tag, props = {}, ...kids) => {
 const announce = (region, text) => { region.textContent = ""; setTimeout(() => { region.textContent = text; }, 50); };
 const errorText = (r) => `${r.error?.code ?? "ERROR"}: ${r.error?.message ?? "Something went wrong."}`;
 const errorBox = (r) => el("div", { class: "notice", role: "alert" }, el("p", { text: errorText(r) }));
-const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 const safeHref = (u) => { try { return new URL(u).protocol === "https:" ? u : null; } catch { return null; } };
 const scrollable = (label, child) => el("div", { class: "table-scroll", tabindex: "0", role: "region", "aria-label": label }, child);
 const block = (label, text) => el("pre", { tabindex: "0", "aria-label": label, text });
@@ -70,24 +69,6 @@ function finder(root) {
   });
 }
 
-function verifier(root) {
-  wire(root, async (e, { status }) => {
-    const chosen = [...e.target.elements.files.files];
-    if (!chosen.length) throw new Error("Choose one or more files first.");
-    if (!globalThis.crypto?.subtle) throw new Error("This browser can't compute SHA-256 here (it needs a secure https page). Use jrc provenance verify instead.");
-    const files = chosen.slice(0, 50);
-    status("Hashing in your browser…");
-    const items = [];
-    for (const file of files) items.push({ sha256: hex(await crypto.subtle.digest("SHA-256", await file.arrayBuffer())) });
-    const r = need(await run("verify_hashes", { items }));
-    const tbody = el("tbody");
-    r.results.forEach((x, i) => tbody.append(el("tr", {}, el("th", { scope: "row", text: files[i].name }), el("td", { text: x.result === "match" ? `match: ${x.matches}` : "no match" }), el("td", { class: "hash", text: items[i].sha256 }))));
-    const table = el("table", {}, el("caption", { text: "Your files compared with the published digests" }), el("thead", {}, el("tr", {}, el("th", { scope: "col", text: "Your file" }), el("th", { scope: "col", text: "Result" }), el("th", { scope: "col", text: "SHA-256" }))), tbody);
-    const skipped = chosen.length > 50 ? [el("p", { class: "notice", text: `Only the first 50 of ${chosen.length} files were checked.` })] : [];
-    return { nodes: [...skipped, scrollable("Hash results", table), el("p", { text: r.note })], message: `${r.matched} of ${files.length} file(s) match a published digest.` };
-  });
-}
-
 function comparer(root) {
   const form = root.querySelector("form");
   const parse = (name) => { try { return JSON.parse(form.elements[name].value); } catch (err) { throw new Error(`${name}: not valid JSON (${err.message})`); } };
@@ -116,7 +97,7 @@ function recorder(root) {
   });
 }
 
-for (const [sel, fn] of [["[data-jrc-finder]", finder], ["[data-jrc-verify]", verifier], ["[data-jrc-compare]", comparer], ["[data-jrc-record]", recorder]]) {
+for (const [sel, fn] of [["[data-jrc-finder]", finder], ["[data-jrc-compare]", comparer], ["[data-jrc-record]", recorder]]) {
   for (const root of document.querySelectorAll(sel)) { root.hidden = false; fn(root); }
 }
 for (const n of document.querySelectorAll("[data-jrc-nojs]")) n.hidden = true;

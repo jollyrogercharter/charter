@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Initiator | Human founder, via the brief in [`2026-10-19-reorientation-brief.md`](2026-10-19-reorientation-brief.md) (verbatim) |
+| Initiator | Human founder, via a written brief (the verbatim copy was removed on 2026-10-19 with the founding-provenance material) |
 | Authorization | Edit documents, site and tests on a feature branch and prepare a draft PR. No merge to main, no deployment. Pushing needs the founder's explicit yes. |
 | Main agent | Claude Opus 5.5 (`claude-opus-5-5`) in Claude Code |
 | Sub-agents | Two Claude Sonnet reviewers: editorial (the brief's seven acceptance tests) and engineering (URLs, APIs, links, tests, accessibility) |

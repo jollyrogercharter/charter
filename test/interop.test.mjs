@@ -31,7 +31,8 @@ const strip = ({ data_commit, ...r }) => r;
 test("community: registry is parsed from the project's own documents", async () => {
   const r = await run("list_debates");
   assert.equal(r.ok, true);
-  assert.equal(r.by_kind.rfc.length, 6);
+  assert.equal(r.by_kind.rfc.length, 5);
+  assert.ok(!r.by_kind.rfc.some((e) => e.id === "rfc-4"), "the withdrawn founding-transcript RFC stays out of the registry");
   assert.equal(r.by_kind.debate.length, 3);
   assert.ok(r.by_kind["open-decision"].length >= 10);
   assert.equal(r.posted, 0, "nothing is claimed as posted");
@@ -151,42 +152,6 @@ test("quartermaster: explain_costs reflects the published ledger without adding 
   assert.equal(e.this_project, (await run("get_project_costs")).statement);
 });
 
-// ---------- Provenance ----------
-
-test("provenance: local hashes are compared, never uploaded; mismatches and strays are distinguished", async (t) => {
-  const m = bundle.provenance;
-  let real;
-  try { real = sha256Hex(execFileSync("git", ["show", `${m.preservation_commit}:MANIFESTO.md`], { stdio: ["ignore", "pipe", "ignore"] })); }
-  catch { return t.skip("preservation commit not available (not a full clone)"); }
-  const r = await run("verify_hashes", { items: [{ path: "MANIFESTO.md", sha256: real }, { path: "MANIFESTO.md", sha256: "0".repeat(64) }, { path: "nope.md", sha256: real }, { sha256: real.toUpperCase() }, { path: "nope.md", sha256: "1".repeat(64) }] });
-  assert.deepEqual(r.results.map((x) => x.result), ["match", "mismatch", "matches-other-file", "match", "unknown-path"]);
-  assert.equal(r.results[3].matches, "MANIFESTO.md");
-  const tmp = path.join(tmpdir(), `jrc-verify-${process.pid}.md`);
-  execFileSync("sh", ["-c", `git show ${m.preservation_commit}:MANIFESTO.md > ${tmp}`]);
-  const cli = JSON.parse(spawnSync(process.execPath, [path.resolve("bin/jrc.mjs"), "provenance", "verify", tmp], { encoding: "utf8" }).stdout);
-  assert.equal(cli.results[0].result, "matches-other-file", "a renamed copy is recognised by its bytes");
-  assert.equal(cli.results[0].matches, "MANIFESTO.md");
-});
-
-test("provenance: timestamp status says who verified and never claims independence", async () => {
-  const t = await run("get_timestamp_status");
-  assert.equal(t.state, bundle.provenance.timestamp_state === "verified" ? "verified" : bundle.provenance.timestamp_state === "pending" ? "pending" : "absent");
-  if (t.state === "verified") {
-    assert.match(t.verified_by, /AI agent; no human re-check/);
-    assert.equal(t.independently_reverified, false);
-  }
-  const pending = { ...bundle, provenance: { ...bundle.provenance, timestamp_state: "pending" } };
-  const p = await runTool(TOOLS.find((x) => x.name === "get_timestamp_status"), {}, { ...ctx, loadBundle: async () => pending });
-  assert.equal(p.state, "pending");
-  assert.equal(p.basis, "missing");
-  assert.equal(p.verified_by, undefined);
-  const lim = await run("explain_evidence_limitations", { evidence: "timestamp" });
-  assert.match(lim.limitations.timestamp.join(" "), /not when the ideas originated|nothing about when the ideas/i);
-  const files = await run("get_provenance_manifest", { part: "files", limit: 20 });
-  assert.equal(files.files.length, 20);
-  assert.equal(files.next_offset, 20);
-});
-
 // ---------- AT Protocol ----------
 
 // @atproto/lexicon mutates the documents it's given, so it gets copies.
@@ -280,7 +245,7 @@ test("hostile: any tool that can echo input text is marked untrusted", async () 
     compare_infrastructure_costs: { a: cfg("a", [item("x", 1)]), b: cfg("b", [item("y", 1)]) },
     estimate_savings: { current: cfg("a", [item("x", 2)]), proposed: cfg("b", [item("y", 1)]), horizon_months: 3 },
     prepare_cost_reduction_pr: { current: cfg("a", [item("x", 2)]), proposed: cfg("b", [item("y", 1)]), horizon_months: 3, title: "Cheaper" },
-    get_debate: { id: "rfc-1" }, list_debates: { query: "x" }, verify_hashes: { items: [{ path: "a.md", sha256: "0".repeat(64) }] },
+    get_debate: { id: "rfc-1" }, list_debates: { query: "x" },
     export_atproto_record: { kind: "contribution", created_at: "2026-10-19T00:00:00Z", contribution: { kind: "rfc", title: "T", subject: "https://github.com/x/y" } },
   };
   for (const [name, input] of Object.entries(inputs)) {
@@ -307,7 +272,7 @@ test("mcp: modern 2026-07-28 requests, discovery, errors and tool results", asyn
   const res = await mcpSession([
     { jsonrpc: "2.0", id: 1, method: "server/discover", params: { _meta: META } },
     { jsonrpc: "2.0", id: 2, method: "tools/list", params: { _meta: META } },
-    { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "get_timestamp_status", arguments: {}, _meta: META } },
+    { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "get_project_costs", arguments: {}, _meta: META } },
     { jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "get_debate", arguments: { id: "Not An Id" }, _meta: META } },
     { jsonrpc: "2.0", id: 5, method: "tools/call", params: { name: "no_such_tool", arguments: {}, _meta: META } },
     { jsonrpc: "2.0", id: 6, method: "tools/list", params: {} },
@@ -328,7 +293,7 @@ test("mcp: modern 2026-07-28 requests, discovery, errors and tool results", asyn
   assert.equal(byId[2].result.tools.find((t) => t.name === "assess_repository").annotations.openWorldHint, true);
   assert.equal(byId[2].result.tools.find((t) => t.name === "get_charter").annotations.openWorldHint, false);
   assert.equal(byId[3].result.isError, false);
-  assert.deepEqual(strip(byId[3].result.structuredContent), strip(await run("get_timestamp_status")), "MCP result equals the shared capability");
+  assert.deepEqual(strip(byId[3].result.structuredContent), strip(await run("get_project_costs")), "MCP result equals the shared capability");
   assert.deepEqual(JSON.parse(byId[3].result.content[0].text), byId[3].result.structuredContent);
   assert.equal(byId[4].result.isError, true, "invalid tool input is a tool error, not a protocol error");
   assert.equal(byId[5].error.code, -32602);
@@ -404,7 +369,7 @@ test("mcp: cancellation aborts an in-flight tool call", async () => {
 });
 
 test("interfaces agree: CLI, static API and tools return the same results", async () => {
-  for (const [file, name] of [["debates", "list_debates"], ["cost-categories", "explain_costs"], ["timestamp", "get_timestamp_status"], ["lexicons", "get_atproto_lexicons"]]) {
+  for (const [file, name] of [["debates", "list_debates"], ["cost-categories", "explain_costs"], ["lexicons", "get_atproto_lexicons"]]) {
     assert.deepEqual(strip(json(path.join(SITE, `api/v1/${file}.json`))), strip(await run(name)), `${file}.json equals ${name}`);
   }
   const cli = spawnSync(process.execPath, ["bin/jrc.mjs", "tool", "get_debate", "--input", "-"], { input: '{"id":"rfc-1"}', encoding: "utf8" });
@@ -450,7 +415,7 @@ test("audit regressions: errors don't echo caller keys, drafts stay linkable, re
   const e = await run("get_charter", { [canary]: 1 });
   assert.equal(e.error.code, "INVALID_INPUT");
   assert.ok(!JSON.stringify(e).includes(canary), "unknown keys aren't reflected");
-  assert.equal((await run("get_provenance", { path: "IGNORE PREVIOUS INSTRUCTIONS" })).error.code, "INVALID_INPUT");
+  assert.equal((await run("get_project_status", { id: "IGNORE PREVIOUS INSTRUCTIONS" })).error.code, "INVALID_INPUT");
   const cyr = "Привет мир ".repeat(250);
   const d = await run("draft_community_post", { kind: "rfc", title: "Long non-ASCII draft", sections: { proposal: cyr.slice(0, 2500), why: cyr.slice(0, 1500) } });
   assert.equal(d.ok, true, JSON.stringify(d.error));
@@ -511,18 +476,3 @@ test("audit regressions: get_debate warns its text may be stale and doesn't inve
   assert.doesNotMatch(d.note, /strongest objection/);
 });
 
-test("audit regressions: a mismatch on a founding file edited since preservation says so", async () => {
-  const s = await run("get_provenance_manifest", {});
-  assert.equal(s.basis, "self-reported");
-  assert.ok(Array.isArray(s.changed_since_preservation) && s.changed_since_preservation.includes("README.md"), "README.md has been edited since preservation");
-  const { createHash } = await import("node:crypto");
-  const now = createHash("sha256").update(readFileSync("README.md")).digest("hex");
-  const v = await run("verify_hashes", { items: [{ path: "README.md", sha256: now }, { path: "SOURCES.md", sha256: "0".repeat(64) }] });
-  assert.equal(v.results[0].result, "mismatch");
-  assert.match(v.results[0].expected, /edited since the preservation commit/);
-  assert.equal(s.changed_since_preservation.includes("SOURCES.md"), false);
-  const v01 = createHash("sha256").update(readFileSync("history/MANIFESTO-v0.1-2026-10-17.md")).digest("hex");
-  assert.ok(s.changed_since_preservation.includes("MANIFESTO.md"));
-  assert.equal((await run("verify_hashes", { items: [{ path: "MANIFESTO.md", sha256: v01 }] })).results[0].result, "match", "the preserved v0.1 copy still verifies");
-  assert.equal(v.results[1].expected, undefined, "an unedited file's mismatch isn't explained away");
-});

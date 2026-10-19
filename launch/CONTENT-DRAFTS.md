@@ -1,5 +1,7 @@
 # Content Drafts
 
+> **Historical record.** The founding-provenance parts of this document (transcript publication, founding timestamps, provenance pages, AI-authorship disclosure) were retired on 2026-10-19 and are not current instructions. See `DECISIONS-AND-QUESTIONS.md`.
+
 **Drafts for human review and posting. Nothing here has been published. AI-drafted by Claude (Sonnet subagent) on 2026-10-17; each post must be reviewed and posted by a human from their own account.**
 
 Paid media: **$0**. No bots, no scheduled auto-posting, no bulk direct messages, no purchased engagement. Placeholders: `<SITE_URL>` and `<REPO_URL>` are not real yet (neither the domain nor the GitHub organization is confirmed to exist); fill them in only after they do. Where a draft says "the human initiator", the reviewer should write in their own first person. Do not add metrics, adopters or endorsements that do not exist.

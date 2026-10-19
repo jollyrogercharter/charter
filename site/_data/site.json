@@ -20,9 +20,6 @@
     { "url": "/costs/", "label": "Costs" },
     { "url": "/quartermaster/", "label": "Quartermaster" },
     { "url": "/agents/", "label": "For AI agents" },
-    { "url": "/provenance/", "label": "Provenance" },
-    { "url": "/how-it-was-made/", "label": "How it was made" },
-    { "url": "/conversation/", "label": "Founding conversation" },
     { "url": "/history/", "label": "History" },
     { "url": "/governance/", "label": "Governance" },
     { "url": "/feed.xml", "label": "Atom feed" }

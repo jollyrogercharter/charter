@@ -10,7 +10,7 @@ export const MODERN = ["2026-07-28"];
 // Legacy revisions are served only after `initialize`; batches (2025-03-26) aren't supported, so that revision isn't offered.
 export const LEGACY = ["2025-11-25", "2025-06-18"];
 const SERVER_INFO = { name: "jolly-roger-charter", title: "Jolly Roger Charter (JRCv1) tools", version: TOOLS_VERSION };
-const INSTRUCTIONS = "Read-only and prepare-only tools for the draft Jolly Roger Charter: charter, status, costs, provenance, debates, repository assessment and AT Protocol record preparation. Nothing here posts, publishes or signs in. Results label every fact's basis; null means unknown. JRCv1 is a draft standard, not a certification.";
+const INSTRUCTIONS = "Read-only and prepare-only tools for the draft Jolly Roger Charter: charter, status, costs, debates, repository assessment and AT Protocol record preparation. Nothing here posts, publishes or signs in. Results label every fact's basis; null means unknown. JRCv1 is a draft standard, not a certification.";
 const META = { "io.modelcontextprotocol/serverInfo": SERVER_INFO };
 
 const manifest = capabilityManifest();

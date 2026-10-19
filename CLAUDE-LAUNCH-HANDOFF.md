@@ -1,5 +1,7 @@
 # Claude Launch Handoff: Jolly Roger Charter / Truly Free
 
+> **Historical record.** The founding-provenance parts of this document (transcript publication, founding timestamps, provenance pages, AI-authorship disclosure) were retired on 2026-10-19 and are not current instructions. See `DECISIONS-AND-QUESTIONS.md`.
+
 **Status:** Working launch order, not evidence that anything has been registered, purchased, deployed or released.
 **Prepared:** October 17, 2026 (America/New_York)
 **Primary intent:** Build the initial public home for a founder-independent, radically open software-freedom movement. Treat this repository as the source of truth for project intent, and update it with accurate execution records.

@@ -8,10 +8,10 @@ Machine-readable index: [`/api/v1/capabilities.json`](https://jollyrogercharter.
 
 | Interface | How | Covers | Needs |
 |---|---|---|---|
-| **MCP (stdio)** | `node bin/jrc-mcp.mjs`, from a clone or `npx --package=github:jollyrogercharter/charter jrc-mcp` | All 29 tools | Node 20+. Reads the repository's files, so no network is needed except for the GitHub-reading tools. |
-| **CLI** | `node bin/jrc.mjs tool NAME --input FILE`, plus `jrc check`, `jrc assess`, `jrc provenance verify`, `qm compare`, `qm savings` | All 29 tools | Node 20+ |
-| **WebMCP** | Open the site in a browser with WebMCP enabled | All 29 tools | Chrome 149+ with the flag or an origin-trial token. **Native registration not yet verified:** the suite uses a simulated `modelContext`, and the Chrome 155 checks ran without WebMCP enabled. |
-| **Static HTTP** | `GET /api/v1/*.json` | Default answers of the read-only data tools (charter, status, costs, debates, timestamp, Lexicons…) | Any HTTP client. Any static host can serve it. |
+| **MCP (stdio)** | `node bin/jrc-mcp.mjs`, from a clone or `npx --package=github:jollyrogercharter/charter jrc-mcp` | All 24 tools | Node 20+. Reads the repository's files, so no network is needed except for the GitHub-reading tools. |
+| **CLI** | `node bin/jrc.mjs tool NAME --input FILE`, plus `jrc check`, `jrc assess`, `qm compare`, `qm savings` | All 24 tools | Node 20+ |
+| **WebMCP** | Open the site in a browser with WebMCP enabled | All 24 tools | Chrome 149+ with the flag or an origin-trial token. **Native registration not yet verified:** the suite uses a simulated `modelContext`, and the Chrome 155 checks ran without WebMCP enabled. |
+| **Static HTTP** | `GET /api/v1/*.json` | Default answers of the read-only data tools (charter, status, costs, debates, Lexicons…) | Any HTTP client. Any static host can serve it. |
 | **Website** | Normal pages with forms | Most tools: see the matrix on `/agents/` | Any browser. Pages work without JavaScript, showing static lists and CLI instructions instead of forms. |
 
 No interface needs an account, an AI provider, an API key or this project's hosting. The MCP server and CLI run entirely from a clone.
@@ -42,7 +42,6 @@ Client configuration varies by client. The server is just a command:
 | Adoption | `assess_repository`, `prepare_adoption_roadmap`, `generate_jrc_manifest`, `prepare_contribution`, `run_challenge_checks`, `generate_assessment_report` | Scan a public GitHub repository at one commit (see `/adopt/`) |
 | Community | `list_debates`, `get_debate`, `find_opportunities`, `draft_community_post`, `prepare_challenge_submission` | Read the RFC drafts; match supplied skills to a curated list; draft posts and challenge packages for a person to submit |
 | Quartermaster | `get_project_costs`, `explain_costs`, `compare_infrastructure_costs`, `estimate_savings`, `prepare_cost_reduction_pr` | Read the ledger; compute estimates in whole cents from supplied assumptions; draft a PR body |
-| Provenance | `get_provenance`, `get_provenance_manifest`, `verify_hashes`, `get_timestamp_status`, `explain_evidence_limitations` | Read the manifest; compare hashes the caller computed; report timestamp state and who verified it |
 | AT Protocol (*draft*) | `get_atproto_lexicons`, `export_atproto_record`, `prepare_atproto_publication` | Return the *proposed* Lexicons; build and validate records; return the request the user would send from their own account. The manifest marks these `draft` because the Lexicons may still change. |
 
 ## Safety model

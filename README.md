@@ -21,9 +21,9 @@ Jolly Roger is a movement to change how people earn a living from software, now 
 
 ## What's real and what isn't
 
-**Built and working in this repository:** this website, a CC0 public-domain dedication, an offline conformance tool (`jrc`), a cost-ledger format with a validator, a Bitcoin timestamp of the founding documents' fingerprints, and read-only interfaces for AI agents. The [status file](launch/status.json) says which of these are live at https://jollyrogercharter.org and which are still on draft branches.
+**Built and working in this repository:** this website, a CC0 public-domain dedication, an offline conformance tool (`jrc`), a cost-ledger format with a validator, and read-only interfaces for AI agents. The [status file](launch/status.json) says which of these are live at https://jollyrogercharter.org and which are still on draft branches.
 
-**Not yet:** any evidence that the economic model works (the pilot hasn't started), anyone outside the project reproducing it, legal review of the CC0 dedication, or the published founding conversation. The 2026-10-19 reorientation is the founder's proposal, open for debate in [an RFC](launch/RFC-STEWARDSHIP-ECONOMY.md), not community consensus.
+**Not yet:** any evidence that the economic model works (the pilot hasn't started), anyone outside the project reproducing it, or legal review of the CC0 dedication. The 2026-10-19 reorientation is the founder's proposal, open for debate in [an RFC](launch/RFC-STEWARDSHIP-ECONOMY.md), not community consensus.
 
 ## Take part
 
@@ -67,18 +67,7 @@ How it works, its limits and how to reproduce the demo: [`docs/ADOPT.md`](docs/A
 
 ### For AI agents (WebMCP)
 
-Twenty-nine read-only and prepare-only capabilities are available to any agent through a local MCP server (`node bin/jrc-mcp.mjs`), the CLI (`jrc tool NAME`), WebMCP in the browser, and static JSON under `/api/v1/`. Nothing posts, publishes or signs in. See [`docs/AGENT-INTEROP.md`](docs/AGENT-INTEROP.md), [`docs/WEBMCP.md`](docs/WEBMCP.md) and https://jollyrogercharter.org/agents/.
-
-### Verifiable founding record: digests timestamped, transcript not yet published
-
-A new proposed JRCv1 component is **Proof of Origin and Development History**. We intend to publish the reviewed founding ChatGPT conversation with independently checkable SHA-256 fingerprints, versioned Git history, and portable OpenTimestamps proofs (state labeled `not requested`, `pending`, or `verified`). This is about trustworthy creation records, **not exclusive rights, OpenAI certification, or proof of global firstness**.
-
-- [Provenance specification and accurate claims](provenance/README.md)
-- [How to verify a real published proof](provenance/VERIFY.md)
-- [Illustrative proof manifest (not actual evidence)](provenance/proof-manifest.example.json)
-- [Source-transcript and redaction policy](transparency/CONVERSATION-PUBLICATION.md)
-
-**Status (checked 2026-10-19):** the SHA-256 digest list of the launch files has a complete OpenTimestamps proof, attested in Bitcoin block 971948 and verified by the project's AI agent against public explorers, not an independent party. No conversation-source export or human-approved public transcript has been provided. (Until 2026-10-18 this section said no timestamp had been issued; that was true then.)
+Twenty-four read-only and prepare-only capabilities are available to any agent through a local MCP server (`node bin/jrc-mcp.mjs`), the CLI (`jrc tool NAME`), WebMCP in the browser, and static JSON under `/api/v1/`. Nothing posts, publishes or signs in. See [`docs/AGENT-INTEROP.md`](docs/AGENT-INTEROP.md), [`docs/WEBMCP.md`](docs/WEBMCP.md) and https://jollyrogercharter.org/agents/.
 
 ### Website and launch state
 
@@ -114,16 +103,6 @@ As agents make software cheaper to build, a software provider's durable value sh
 6. Open improvement, governance, debate and infrastructure optimization.
 
 The **freedom to continue** unifies them: the project must remain useful when the creator, host, maintainer, AI vendor or financial sponsor disappears.
-
-### Next step: Claude-led public launch
-
-**Start with [`CLAUDE-LAUNCH-HANDOFF.md`](CLAUDE-LAUNCH-HANDOFF.md)**. This is an actionable work order for Claude to create a human-owned free GitHub organization, push this repository, build an Eleventy website, verify and register a domain with explicit purchase approval, open debate and challenge mechanisms, and prepare a zero-paid-media campaign. It preserves genuine AI attribution and a human-reviewed path for publishing the complete founding conversation.
-
-Working naming: **Jolly Roger Charter** (movement), **JRCv1** (draft conformance *charter*, not yet a legal software license), `jollyrogercharter` (preferred GitHub org), `jollyrogercharter.org` (preferred domain; **not confirmed registrable**), **Quartermaster** (billing reference app). No external accounts or domains are asserted as registered.
-
-Additional implementation sources: [`website/SITE-SPEC.md`](website/SITE-SPEC.md), [`transparency/AI-PROVENANCE-POLICY.md`](transparency/AI-PROVENANCE-POLICY.md), [`transparency/CONVERSATION-PUBLICATION.md`](transparency/CONVERSATION-PUBLICATION.md), [`launch/ORGANIC-MARKETING-PLAN.md`](launch/ORGANIC-MARKETING-PLAN.md), [`launch/OPERATIONS-LEDGER.md`](launch/OPERATIONS-LEDGER.md), [`launch/LAUNCH-STATUS.md`](launch/LAUNCH-STATUS.md), [`launch/NEXT-ACTIONS.md`](launch/NEXT-ACTIONS.md).
-
-The `FOUNDING-ARCHIVE.md` and prior Word file are **historical editorial snapshots**, not verbatim transcripts or a complete live status report. The original chat transcript needs exact source material and explicit privacy review before public publication.
 
 ### Documents
 

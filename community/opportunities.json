@@ -22,7 +22,6 @@
   "interests": [
     "reproducibility",
     "economics",
-    "provenance",
     "data-sovereignty",
     "community",
     "standards",
@@ -181,20 +180,6 @@
       "effort": "medium",
       "where": "blob/main/SECURITY.md",
       "why": "Reviews so far were by AI agents working for the project."
-    },
-    {
-      "id": "provenance-node-verify",
-      "title": "Verify the timestamp proof with your own Bitcoin node",
-      "skills": [
-        "security",
-        "build-and-devops"
-      ],
-      "interests": [
-        "provenance"
-      ],
-      "effort": "small",
-      "where": "blob/main/provenance/VERIFY.md",
-      "why": "The proof was checked against public block explorers, not a local node."
     },
     {
       "id": "translation",

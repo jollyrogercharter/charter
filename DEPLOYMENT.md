@@ -13,8 +13,6 @@ npm ci            # Node 20+; exact versions come from package-lock.json
 npm test          # builds _site/ and runs the checks in test/
 ```
 
-Clone with full history: the provenance tests re-hash files at the preservation commit and are skipped in a shallow clone (`--depth 1`, or CI's default `fetch-depth: 1`).
-
 `npm run build` alone produces `_site/`. `npm run serve` gives a local preview on http://localhost:8080.
 
 Two environment variables change output, both optional:
@@ -52,8 +50,8 @@ Netlify, Vercel static, S3 + CloudFront, a Raspberry Pi with Caddy: all equivale
 
 ```bash
 curl -sI https://<host>/ | head -1                 # 200
-curl -s https://<host>/provenance/launch-manifest.json | shasum -a 256
-shasum -a 256 provenance/launch-manifest.json      # must match
+curl -s https://<host>/costs/ledger.json | shasum -a 256
+shasum -a 256 launch/costs.json                   # must match
 ```
 
 CI uploads `_site` plus `site-checksums.txt` as an artifact for each run, so a deployed file can be compared against the build that produced it.

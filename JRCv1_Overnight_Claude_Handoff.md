@@ -1,5 +1,7 @@
 # JRCv1: Overnight Build Handoff for Claude Code
 
+> **Historical record.** The founding-provenance parts of this document (transcript publication, founding timestamps, provenance pages, AI-authorship disclosure) were retired on 2026-10-19 and are not current instructions. See `DECISIONS-AND-QUESTIONS.md`.
+
 ## Mission
 
 Continue the existing, publicly launched Jolly Roger Charter project at **https://github.com/jollyrogercharter/charter** and **https://jollyrogercharter.org**. This is a build assignment, not a planning-only assignment. The live site already exists. Create the first practical tools that make the charter independently usable, honest, reproducible and open to debate.

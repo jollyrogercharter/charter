@@ -1,5 +1,7 @@
 # Website Specification: Jolly Roger Charter (working title)
 
+> **Historical record.** The founding-provenance parts of this document (transcript publication, founding timestamps, provenance pages, AI-authorship disclosure) were retired on 2026-10-19 and are not current instructions. See `DECISIONS-AND-QUESTIONS.md`.
+
 ## Purpose and positioning
 
 A public-facing home for the **Truly Free** software-freedom philosophy, the draft **JRCv1** charter, open community debate and reproducible development record. The site must be useful even if its original human initiator and AI vendors disappear.

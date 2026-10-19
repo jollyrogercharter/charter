@@ -1,5 +1,7 @@
 # FREE. LIBRE. TRULY FREE.
 
+> **Historical record.** The founding-provenance parts of this document (transcript publication, founding timestamps, provenance pages, AI-authorship disclosure) were retired on 2026-10-19 and are not current instructions. See `DECISIONS-AND-QUESTIONS.md`.
+
 ## The Pirate Charter: Founding Archive
 
 **Captured October 17, 2026 | Working draft 0.1 | Not yet ratified or launched**

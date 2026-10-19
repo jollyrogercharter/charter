@@ -1,13 +1,13 @@
 {
   "schema": "jrc-status-0.1",
-  "as_of_utc": "2026-10-19T20:45Z",
+  "as_of_utc": "2026-10-19T22:00Z",
   "states": {
     "implemented": "Exists and was verified on the date shown.",
     "pending": "Started or requested, but not complete.",
     "blocked": "Cannot proceed without a named person or decision.",
     "historical": "True when written; kept as a record, not a current claim."
   },
-  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, and the founding transcript is not published. The founding digest list has a verified Bitcoin timestamp. The stewardship economic model is untested: a pilot is proposed and has not started.",
+  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced. The stewardship economic model is untested: a pilot is proposed and has not started.",
   "items": [
     {
       "id": "repo",
@@ -61,7 +61,7 @@
       "title": "Hosting and HTTPS",
       "state": "implemented",
       "url": "https://jollyrogercharter.org",
-      "evidence": "Cloudflare Pages free plan, auto-deploys from main. HTTP redirects to HTTPS with a 301. Served provenance manifest matches the repository byte for byte.",
+      "evidence": "Cloudflare Pages free plan, auto-deploys from main. HTTP redirects to HTTPS with a 301.",
       "verified_utc": "2026-10-18T04:51Z"
     },
     {
@@ -99,34 +99,6 @@
       "evidence": "No counsel has reviewed it.",
       "verified_utc": "2026-10-18T04:51Z",
       "next": "Find a volunteer or paid open-source licensing reviewer.",
-      "owner": "human"
-    },
-    {
-      "id": "provenance-digests",
-      "area": "Provenance",
-      "title": "SHA-256 digests of the founding package",
-      "state": "implemented",
-      "url": "https://jollyrogercharter.org/provenance/",
-      "evidence": "36 files plus the received ZIP; a test re-verifies them against Git.",
-      "verified_utc": "2026-10-18T04:51Z"
-    },
-    {
-      "id": "opentimestamps",
-      "area": "Provenance",
-      "title": "OpenTimestamps proof of the digest list",
-      "state": "implemented",
-      "url": "https://jollyrogercharter.org/provenance/",
-      "evidence": "Verified 2026-10-18T17:24Z: attested in Bitcoin block 971948 (block time 2026-10-18T04:45:37Z) and three later blocks. Commitments checked against block headers from blockstream.info and mempool.space, not a local node. Proves existence no later than that time, not authorship or priority.",
-      "verified_utc": "2026-10-18T17:24Z"
-    },
-    {
-      "id": "transcript",
-      "area": "Provenance",
-      "title": "Founding conversation transcript",
-      "state": "blocked",
-      "evidence": "No ChatGPT export has been supplied. The site shows a curated archive labelled as a summary.",
-      "verified_utc": "2026-10-18T04:51Z",
-      "next": "Human exports the conversation; the agent drafts a redacted edition for review.",
       "owner": "human"
     },
     {
@@ -220,7 +192,7 @@
       "title": "WebMCP tools for AI browser agents",
       "state": "pending",
       "url": "https://jollyrogercharter.org/agents/",
-      "evidence": "Read-only and prepare-only tools (29 after the interoperability work) and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155 (2026-10-18), the original 13 tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable; the newer tools ran there only through the page forms. Native registration not yet verified: needs the flag or an origin-trial token.",
+      "evidence": "Read-only and prepare-only tools (29 after the interoperability work, 24 after the founding-provenance tools were retired on 2026-10-19) and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155 (2026-10-18), the original 13 tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable; the newer tools ran there only through the page forms. Native registration not yet verified: needs the flag or an origin-trial token.",
       "verified_utc": "2026-10-18T18:30Z",
       "next": "Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.",
       "owner": "human"
@@ -231,7 +203,7 @@
       "title": "Local MCP server for any agent",
       "state": "implemented",
       "url": "https://jollyrogercharter.org/agents/#mcp",
-      "evidence": "bin/jrc-mcp.mjs: stdio, protocol 2026-07-28 plus legacy initialize, all 29 tools, no dependencies. Protocol conformance and error paths are tested with real messages. Not yet tried with third-party MCP clients.",
+      "evidence": "bin/jrc-mcp.mjs: stdio, protocol 2026-07-28 plus legacy initialize, all 24 tools, no dependencies. Protocol conformance and error paths are tested with real messages. Not yet tried with third-party MCP clients.",
       "verified_utc": "2026-10-19T18:08Z",
       "next": "Try it with several MCP clients and record the results."
     },

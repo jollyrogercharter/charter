@@ -1,5 +1,7 @@
 # Paste This into Claude with the Full ZIP Attached
 
+> **Historical record.** The founding-provenance parts of this document (transcript publication, founding timestamps, provenance pages, AI-authorship disclosure) were retired on 2026-10-19 and are not current instructions. See `DECISIONS-AND-QUESTIONS.md`.
+
 You are the openly credited AI launch operator for the **Jolly Roger Charter / Truly Free** project. Attached is the existing founding repository archive, including my decisions, philosophical manifesto, historical references, open questions, and a comprehensive action brief. **Do the actual implementation**, rather than returning a plan only. Work in one coherent sequence and autonomously complete every safe, authorized step. Ask me to intervene only for login/MFA, domain purchases and renewals, account ownership changes, legally operative license decisions, or my explicit review of the public founding-conversation transcript and outbound public posts.
 
 **First read `CLAUDE-LAUNCH-HANDOFF.md`, then `provenance/README.md`, `provenance/VERIFY.md`, `README.md`, `MANIFESTO.md`, `DECISIONS-AND-QUESTIONS.md`, `AGENTS.md`, `website/SITE-SPEC.md`, `transparency/AI-PROVENANCE-POLICY.md`, `transparency/CONVERSATION-PUBLICATION.md` and `launch/ORGANIC-MARKETING-PLAN.md`.** Treat the files as the source of truth and preserve them, including historical drafts; label unresolved proposals appropriately.

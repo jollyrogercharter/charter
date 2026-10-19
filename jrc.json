@@ -55,15 +55,12 @@
           "verification": { "level": "self-reported" }
         },
         {
-          "id": "agent-process-published",
-          "statement": "The prompts, plans and agent run records that produced this repository are published.",
+          "id": "decisions-recorded",
+          "statement": "Plans, decisions and a changelog explain why the repository is built the way it is.",
           "evidence": [
-            { "kind": "file", "path": "CLAUDE-LAUNCH-HANDOFF.md" },
-            { "kind": "file", "path": "JRCv1_Overnight_Claude_Handoff.md" },
             { "kind": "file", "path": "plan.md" },
-            { "kind": "file", "path": "plan-overnight.md" },
-            { "kind": "file", "path": "transparency/agent-runs/2026-10-17-launch.md" },
-            { "kind": "file", "path": "transparency/AI-CONTRIBUTIONS.md" }
+            { "kind": "file", "path": "DECISIONS-AND-QUESTIONS.md" },
+            { "kind": "file", "path": "CHANGELOG.md" }
           ],
           "verification": { "level": "self-reported" }
         },
@@ -76,10 +73,7 @@
           "verification": { "level": "self-reported" }
         }
       ],
-      "gaps": [
-        "The founding ChatGPT conversation is summarised, not published; the transcript awaits an export and human review.",
-        "Session transcripts of the agent runs are summarised in run records, not published in full."
-      ]
+      "gaps": []
     },
     "data": {
       "status": "not-applicable",

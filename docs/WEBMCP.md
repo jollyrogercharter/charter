@@ -1,8 +1,8 @@
 # WebMCP Developer Guide
 
-> **Update 2026-10-19:** there are now 29 tools (read-only and prepare-only), also served by a local MCP server and the CLI. See [`AGENT-INTEROP.md`](AGENT-INTEROP.md) for the full list and safety model. The sections below describe the original browser layer. Where they say thirteen tools, the browser now registers all 29 the same way; the real-Chrome checks below covered the original 13 tools, and the newer tools only through the page forms.
+> **Update 2026-10-19:** there are now 24 tools (read-only and prepare-only), also served by a local MCP server and the CLI. See [`AGENT-INTEROP.md`](AGENT-INTEROP.md) for the full list and safety model. The five founding-provenance tools were retired the same day, so the tables below no longer list them. The sections below describe the original browser layer. Where they say thirteen (or seven project) tools, count one fewer: `get_provenance` is gone. The browser now registers all 24 the same way; the real-Chrome checks below covered the original 13 tools, and the newer tools only through the page forms.
 
-jollyrogercharter.org registers thirteen **read-only** tools with [WebMCP](https://webmachinelearning.github.io/webmcp/) (`document.modelContext`). Through structured calls instead of scraping, an AI agent in the browser can query the charter, status, costs and provenance, assess a `jrc.json`, and assess a public GitHub repository and prepare its adoption. The seven project tools are also available to any client as static JSON at `/api/v1/`. The six repository tools are described in [`docs/ADOPT.md`](ADOPT.md).
+jollyrogercharter.org registers thirteen **read-only** tools with [WebMCP](https://webmachinelearning.github.io/webmcp/) (`document.modelContext`). Through structured calls instead of scraping, an AI agent in the browser can query the charter, status and costs, assess a `jrc.json`, and assess a public GitHub repository and prepare its adoption. The seven project tools are also available to any client as static JSON at `/api/v1/`. The six repository tools are described in [`docs/ADOPT.md`](ADOPT.md).
 
 **Status:**
 - Implemented and tested in Node, including a spec-modelled *simulated* `modelContext`.
@@ -19,7 +19,6 @@ jollyrogercharter.org registers thirteen **read-only** tools with [WebMCP](https
 | `generate_adoption_plan` | `manifest` | Ordered, deterministic next steps derived from the assessment | read-only, **untrusted content** |
 | `get_project_costs` | `category?` | Quartermaster ledger: categories never summed together, `null` = unknown | read-only |
 | `get_open_challenges` | `step?` | The 9 challenge steps, this project's reproduction status, open ways to help | read-only |
-| `get_provenance` | `path?` | Digest summary, timestamp state with method, transcript state; with `path`, one file's digest | read-only |
 | `assess_repository` | `repository` + `ref?`, or `snapshot` | Each pillar's status (evidenced / partially-evidenced / missing / not-applicable / unknown), concerns, next step | read-only, **untrusted content**, reads GitHub |
 | `prepare_adoption_roadmap` | same | Ordered steps: dependencies, then impact, then effort | read-only, **untrusted content**, reads GitHub |
 | `generate_jrc_manifest` | same | Candidate `jrc.json` (never `evidenced`), checked by the engine, plus a GitHub new-file link | read-only, **untrusted content**, reads GitHub |
@@ -41,7 +40,7 @@ The two manifest tools are marked `untrustedContentHint: true` because their out
   - `not-applicable`.
   - `historical`.
   The legend is in `/api/v1/tools.json`.
-- `null` means unknown, never zero. A pending timestamp is never `verified`.
+- `null` means unknown, never zero.
 - Results link to evidence (`references`) instead of embedding documents. Default outputs stay near Chrome's ~1.5K guidance (the test budget is 2,200 characters); filters return detail.
 - `assess_jrc_manifest` runs **in the page**. The manifest isn't uploaded anywhere. File evidence can't be read from the browser, so it comes back as `not-checked`: the pillar's basis is `unchecked`, `summary.file_evidence_not_checked` counts it, and the adoption plan's first step says to run `jrc check` where the files are. It's never shown as verified.
 - `canonical_json_sha256` hashes `JSON.stringify` of the supplied object. The CLI's `manifest.sha256` hashes the file's bytes, so the two differ by design.
@@ -64,7 +63,7 @@ site/assets/webmcp.js       browser: feature-detect, register, execute (no frame
 ```
 
 - The CLI, the site build, the tests and the browser all call the same functions. The browser loads exact copies of the platform-neutral modules from `/js/lib/` (Node-only `check.mjs` and `init.mjs` are never served).
-- `/webmcp/data.json` is built from `CHARTER.md`, `OPEN-DEPENDENCIES.md`, `launch/status.json`, `launch/costs.json` and `provenance/launch-manifest.json`. There's no separate copy to drift.
+- `/webmcp/data.json` is built from `CHARTER.md`, `OPEN-DEPENDENCIES.md`, `launch/status.json`, `launch/costs.json` and the debate and opportunity sources. There's no separate copy to drift.
 
 ### Browser lifecycle (`site/assets/webmcp.js`)
 
@@ -87,7 +86,6 @@ There's nothing else on the page: no cookies, storage, analytics, third-party sc
 | `/api/v1/status.json` | `get_project_status {}` |
 | `/api/v1/costs.json` | `get_project_costs {}` |
 | `/api/v1/challenges.json` | `get_open_challenges {}` |
-| `/api/v1/provenance.json` | `get_provenance {}` |
 | `/webmcp/data.json` | The full bundle the tools read |
 
 Static files, built on every deploy. A test checks that each one equals the tool's output.
@@ -102,7 +100,7 @@ Static files, built on every deploy. A test checks that each one equals the tool
 | Schemas | Strict Ajv compiles every schema; the input validator rejects everything Ajv rejects | Real code |
 | Execution | Every tool on repository data; budget; basis labels; filters; NOT_FOUND / INVALID_INPUT / INPUT_TOO_LARGE | Real code and data |
 | Consistency | `assess_jrc_manifest` equals `jrc report` (summary, levels, error codes) on four manifests; costs equal `qm summary`; the static API equals the tools; a pending proof is never labelled verified | Real code and CLI |
-| Registration | All 29 register (13 when this table was first written); `executeTool` equals the Node path; legacy string input; `DataError` for non-object input | **Simulated** `modelContext` |
+| Registration | All 24 register (13 when this table was first written); `executeTool` equals the Node path; legacy string input; `DataError` for non-object input | **Simulated** `modelContext` |
 | Failures and cancellation | `NotAllowedError` → `failed`; a duplicate → `partial`; per-tool and outer abort unregister; aborted execution rejects | **Simulated** |
 | Fallback | No `modelContext`, or a non-function `registerTool` | **Simulated** |
 | Pages | Every page loads `/assets/webmcp.js`; no third-party scripts; no tracking APIs; no Node built-ins in served modules | Real build output |
@@ -114,8 +112,8 @@ The simulated `modelContext` follows the spec's IDL and algorithms (name rules, 
 
 1. Use Chrome 149 or newer. Enable `chrome://flags/#enable-webmcp-testing` and relaunch. Production visitors would instead need the origin trial, see below.
 2. `npm run build`, then serve `_site/` on `localhost` (a secure context): `cd _site && python3 -m http.server 8765`.
-3. Open http://localhost:8765/. In DevTools: `document.documentElement.dataset.webmcp` should be `"registered"`, and `(await document.modelContext.getTools()).map(t => t.name)` should list all 29 tools. The DevTools **Application → WebMCP** panel shows them too.
-4. Execute one: `await document.modelContext.executeTool((await document.modelContext.getTools()).find(t => t.name === "get_provenance"), {})`.
+3. Open http://localhost:8765/. In DevTools: `document.documentElement.dataset.webmcp` should be `"registered"`, and `(await document.modelContext.getTools()).map(t => t.name)` should list all 24 tools. The DevTools **Application → WebMCP** panel shows them too.
+4. Execute one: `await document.modelContext.executeTool((await document.modelContext.getTools()).find(t => t.name === "get_charter"), {})`.
 5. Or drive it with an agent: the [Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd) or GoogleChromeLabs' [example extension](https://github.com/GoogleChromeLabs/webmcp-extension/).
 
 **What was verified on 2026-10-18, in Chrome 155 on localhost without the flag:**

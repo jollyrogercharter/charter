@@ -6,7 +6,7 @@
 
 Everything in this repository written by the project's contributors, to the extent they hold rights in it: the manifesto, charter, standards, documentation, launch records, website templates and styles, scripts, tests and the flag artwork (`site/assets/flag.svg`, drawn as original SVG for this project). Copy, modify, sell or build on it without asking or crediting anyone.
 
-Contributors so far are the human initiator and two AI systems used under the initiator's direction (OpenAI ChatGPT for the founding documents, Anthropic Claude for the implementation); see `transparency/AI-CONTRIBUTIONS.md`. Some purely machine-generated material may not be subject to copyright at all; CC0 makes that question moot for reuse.
+Contributors so far are the human initiator and two AI systems used under the initiator's direction (OpenAI ChatGPT for the founding documents, Anthropic Claude for the implementation). Some purely machine-generated material may not be subject to copyright at all; CC0 makes that question moot for reuse.
 
 ## What CC0 does not cover
 

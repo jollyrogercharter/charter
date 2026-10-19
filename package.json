@@ -26,7 +26,6 @@
     "launch/status.json",
     "lexicons/",
     "lib/",
-    "provenance/launch-manifest.json",
     "spec/"
   ],
   "engines": {
@@ -35,7 +34,6 @@
   "scripts": {
     "build": "eleventy",
     "serve": "eleventy --serve",
-    "manifest": "node scripts/hash-manifest.mjs",
     "status": "node scripts/render-status.mjs",
     "test": "npm run build && node --test test/*.test.mjs",
     "jrc": "node bin/jrc.mjs",

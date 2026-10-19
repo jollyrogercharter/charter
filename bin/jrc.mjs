@@ -26,8 +26,6 @@ Usage:
                                               Print or write a Jolly Roger Challenge log template
   jrc tool list                               List every capability (the same tools WebMCP and MCP expose)
   jrc tool NAME [--input FILE|-]              Run one capability with JSON input; prints the JSON result
-  jrc provenance verify FILE...               Check local files against the published founding digests
-  jrc provenance status                       Timestamp proof state: absent, pending or verified, and by whom
   jrc atproto lexicons                        Print the proposed org.jollyrogercharter Lexicons
   jrc assess [dir|github-url] [--ref REF] [--snapshot FILE] [--save-snapshot FILE] [--out DIR] [--format md|json]
                                               Scan a repository's public evidence and plan adoption
@@ -69,7 +67,6 @@ export async function main(argv) {
 function run(argv) {
   const [cmd, ...rest] = argv;
   if (cmd === "tool") return toolCommand(rest);
-  if (cmd === "provenance") return provenanceCommand(rest);
   if (cmd === "atproto") return atprotoCommand(rest);
   let parsed;
   try {
@@ -188,18 +185,6 @@ async function toolCommand(rest) {
     try { input = JSON.parse(text.replace(/^\ufeff/, "")); } catch { return fail("input is not valid JSON", 1); }
   }
   return runAndPrint(name, input);
-}
-
-async function provenanceCommand(rest) {
-  const [sub, ...files] = rest;
-  if (sub === "status") return runAndPrint("get_timestamp_status", {});
-  if (sub !== "verify" || !files.length) return fail("usage: jrc provenance verify FILE... | jrc provenance status");
-  const items = [];
-  for (const f of files) {
-    if (!existsSync(f) || !statSync(f).isFile()) return fail(`not a file: ${f}`, 1);
-    items.push({ path: path.relative(process.cwd(), path.resolve(f)).split(path.sep).join("/"), sha256: sha256Hex(readFileSync(f)) });
-  }
-  return runAndPrint("verify_hashes", { items });
 }
 
 async function atprotoCommand(rest) {

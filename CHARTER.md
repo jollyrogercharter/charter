@@ -18,7 +18,7 @@ The [manifesto](MANIFESTO.md) says what we believe. This charter says what it me
 **Respected attention**
 
 6. **Give people their time back.** Design software to save attention, not capture it: no surveillance, no selling people's focus, no engagement traps.
-7. **Say who and what made it.** Credit people and AI honestly, and welcome criticism and forks.
+7. **Welcome criticism and forks.** Credit contributors honestly.
 
 The founding line behind commitments 2 and 5:
 
@@ -38,7 +38,7 @@ For anyone who wants to check a project closely, the commitments map onto the si
 | 4. Easy leaving | 3. Data freedom, 4. Stewardship freedom |
 | 5. Honest books | 5. Economic freedom |
 | 6. Time back | 5. Economic freedom (human attention extension) |
-| 7. Who and what made it | 2. Development freedom, 6. Governance freedom |
+| 7. Criticism and forks | 6. Governance freedom |
 
 Where the commitments and JRCv1 differ (on cost recovery, how much financial detail to publish, and whether AT Protocol is a default or a recommendation), JRCv1 below still applies until [the RFC](launch/RFC-STEWARDSHIP-ECONOMY.md) is decided. The text below is unchanged from the founding draft apart from its title ("The Charter: Design Principles and Promises") and heading levels.
 
