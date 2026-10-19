@@ -111,7 +111,7 @@ Publish a short inventory of what the repository contains and who has contribute
 
 #### Decision status
 
-Open. (Maintainers fill in.) Blocked on legal review per the launch gate in `CLAUDE-LAUNCH-HANDOFF.md`.
+Open. (Maintainers fill in.) Blocked on legal review.
 
 ---
 

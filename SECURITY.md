@@ -17,4 +17,4 @@ The `jrc` and `qm` CLIs, the MCP server (`bin/jrc-mcp.mjs`), the WebMCP tools an
 
 ## What has been reviewed
 
-Reviews so far were done by AI agents working for the project, recorded under `transparency/agent-runs/`. No independent human security review has happened yet; that is one of the open contribution opportunities.
+Reviews so far were done by AI agents working for the project; each finding they confirmed has a regression test. No independent human security review has happened yet; that is one of the open contribution opportunities.

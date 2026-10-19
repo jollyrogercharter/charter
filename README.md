@@ -126,8 +126,6 @@ The **freedom to continue** unifies them: the project must remain useful when th
 - [templates/open-infrastructure.example.yaml](templates/open-infrastructure.example.yaml) — **illustrative** cost and infra record, not a working integration.
 - [SOURCES.md](SOURCES.md) — verified links and context.
 
-`FOUNDING-ARCHIVE.md` contains the complete concatenated record for preservation, searchable handoff and offline reading. It is regenerated from the above modular files.
-
 ### Intellectual humility
 
 No claim of inventing free software, public-domain dedication, paid support, agentic development, or cost management. The potentially distinctive contribution is the **combination**, made independently verifiable. No exhaustive worldwide novelty search has established firstness.

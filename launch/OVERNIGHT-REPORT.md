@@ -113,7 +113,7 @@ I verified the `npx … #feat/jrc-cli` form end to end from GitHub. Docs: `/chec
     - symlink writes from `--out`.
   - **Drafting** of the RFC and briefing documents.
   - Every confirmed finding was fixed in e623d39 with a regression test.
-- **Errors I made and corrected,** all disclosed in `transparency/agent-runs/2026-10-18-overnight.md`:
+- **Errors I made and corrected,** all disclosed at the time:
   - a commit created while a test was failing (amended before pushing);
   - a dropped placeholder warning;
   - mangled Unicode escapes;

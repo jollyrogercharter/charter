@@ -10,13 +10,14 @@ Factual record of changes. Dates are UTC. Nothing here has been deployed unless 
   - `provenance/`: the digest list, its OpenTimestamps proof and verifier, the manifest, the example and the docs.
   - `lib/provenance/`, `scripts/hash-manifest.mjs` and `transparency/` policy documents: the AI provenance policy, the conversation-publication plan and the AI-contributions ledger. Also the verbatim prompt briefs.
   - Status items `provenance-digests`, `opentimestamps` and `transcript`; open dependencies 4 and 10; seed RFC 4.
+  - The founding launch handoffs (`CLAUDE-LAUNCH-HANDOFF.md`, `PASTE-INTO-CLAUDE.md`, `JRCv1_Overnight_Claude_Handoff.md`, `launch/NEXT-ACTIONS.md`), `FOUNDING-ARCHIVE.md`, `website/SITE-SPEC.md`, `launch/CONTENT-DRAFTS.md` and the agent run records in `transparency/agent-runs/`. Git history keeps them. Confirmed review findings live on as regression tests.
 - **Agent interfaces (breaking):**
   - Five tools are gone: `get_provenance`, `get_provenance_manifest`, `verify_hashes`, `get_timestamp_status` and `explain_evidence_limitations`, along with `jrc provenance`, `/api/v1/provenance.json`, `/api/v1/timestamp.json` and the in-browser hash checker.
   - Tools are now 2.0.0 (24 tools), and the data bundle is version 2. The `provenance` capability group and opportunity interest are dropped.
 - **Standard:** item 4 of `standard/AGENTIC-REPRODUCIBILITY.md` now makes publishing prompts and transcripts optional. This is the founder's change, open for review.
 - **Kept:**
   - Git history and contributor attribution, `LICENSE` and `NOTICE.md`.
-  - The cost ledger, reproducible builds and the security tests. Historical handoff documents carry a one-line "retired" banner.
+  - The cost ledger, reproducible builds and the security tests.
 - Not deployed.
 
 ## Unreleased — Reorientation around rewarded stewardship (founder proposal)

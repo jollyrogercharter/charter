@@ -17,7 +17,7 @@ All of the above, with consumers updated. Removed tools are a breaking change: t
 - The cost ledger (including its unknown AI-cost lines, which are financial records).
 - Dependency/legal provenance language in the charter, conformance standard and legal notes (licensing, not origin).
 - NOTICE's statement of who contributed (a rights fact), without the link to the deleted ledger.
-- Git history. Historical archives (`FOUNDING-ARCHIVE.md`, launch handoffs, `plan*.md`, dated agent-run records apart from the verbatim briefs) stay as dated records; nothing points to them as current work.
+- Git history. `plan*.md` stay as dated records. The founding handoffs, `FOUNDING-ARCHIVE.md`, site spec, content drafts and agent run records were deleted at the founder's request (2026-10-19).
 - `history/MANIFESTO-v0.1-2026-10-17.md` and `/manifesto/v0-1/` as the previous manifesto, without digest framing.
 
 ## Routes

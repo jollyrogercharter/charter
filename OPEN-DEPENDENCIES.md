@@ -10,7 +10,7 @@ The charter's own test, applied to itself: could this project continue if the hu
 | 5 | Licence decision | **Resolved 2026-10-18:** CC0 1.0 applied by the initiator's decision (`LICENSE`, `NOTICE.md`). Not yet reviewed by counsel. | Independent legal review; an RFC on patent policy for future software. |
 | 6 | Merge rights | `main` is protected (PR plus CI required), but only one person can merge. | At least two maintainers with merge rights, then require one approving review. |
 | 7 | Decisions on open questions | `DECISIONS-AND-QUESTIONS.md` items are settled by the initiator's preference. | Adopt the RFC process from `community/GOVERNANCE-AND-DEBATE.md` with a published decision rule (e.g. lazy consensus with a review period). |
-| 8 | Public voice | Launch posts would come from the initiator's personal accounts. | Project-owned accounts with shared access via an org password manager; posts go through PRs to `launch/CONTENT-DRAFTS.md` first. |
+| 8 | Public voice | Launch posts would come from the initiator's personal accounts. | Project-owned accounts with shared access via an org password manager; posts go through PRs first. |
 | 9 | AI tooling | The launch work ran on the initiator's Claude account; costs are invisible to the project. | Record usage in `launch/costs.json` when known; keep all work reproducible without any specific AI vendor (it currently is: the build needs only Node). |
 
 ## Things that are already founder-independent
