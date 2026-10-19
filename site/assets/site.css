@@ -170,3 +170,7 @@ button:disabled { opacity: 0.6; cursor: progress; }
   body { background: #fff; color: #000; }
 }
 .caption-left { text-align: left; padding-bottom: 0.5rem; }
+.badge.verified { color: var(--ok); }
+.postings { margin: 0; padding-left: 1rem; }
+.postings li { margin: 0.15rem 0; }
+.timeline li { margin: 0.25rem 0; }

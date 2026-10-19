@@ -1,0 +1,121 @@
+---
+layout: base.njk
+title: Treasury
+wide: true
+description: "A verifiable treasury journal: append-only books, Merkle commitments and offline Bitcoin proofs. JRC holds no money or bitcoin; the example here is simulated."
+---
+<p class="kicker">Open books · Quartermaster treasury journal 0.1 draft · <a href="{% sourceLink "BITCOIN-TREASURY.md" %}">RFC</a></p>
+<h1>Treasury</h1>
+<p class="lede">The code is free. The data belongs to users. The money should be accountable to the community, which means books anyone can check and nobody can quietly rewrite.</p>
+
+<div class="notice" role="note">
+  <p><strong>The Jolly Roger Charter has no treasury.</strong> It has no revenue, no bank or exchange account, and no bitcoin. Its only spending is on <a href="/costs/">the costs page</a>. Holding Bitcoin is <strong>not</strong> part of JRCv1: it's a draft <a href="{% sourceLink "BITCOIN-TREASURY.md" %}">RFC</a> open for debate.</p>
+  <p>Everything below is a <strong>simulated example</strong> for "{{ treasury.entity }}". The money, accounts, company and keys are invented; the bitcoin transactions are in made-up regtest blocks, not on the real network. The mathematics is real, and you can check every hash yourself.</p>
+</div>
+
+<h2 id="what">What this can and can't show</h2>
+<ul>
+  <li><strong>Can:</strong> show that published history wasn't edited later (hash chain, Merkle root, timestamp); that every transaction balances; that converting dollars to bitcoin was never counted as revenue; and, for bitcoin that moved on-chain, that the coins really moved as recorded.</li>
+  <li><strong>Can't:</strong> show the books are complete. An operator can always leave an account out. A bitcoin address or transaction shows only those coins, not a project's whole finances. Apple, bank and exchange figures here rest on documents only the operator holds.</li>
+</ul>
+
+<h2 id="evidence">How each entry is backed</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Evidence classes"><table>
+  <caption class="visually-hidden">Evidence classes and how many postings in the example carry each</caption>
+  <thead><tr><th scope="col">Evidence</th><th scope="col">Meaning</th><th scope="col">Postings (your view)</th><th scope="col">With the regtest anchors</th></tr></thead>
+  <tbody>
+  {%- for k, v in treasury.classes %}
+    <tr><th scope="row"><span class="badge {{ 'verified' if k == 'chain-verified' else ('pending' if k in ['pending', 'chain-proof-unanchored', 'estimate'] else ('unknown' if k == 'unknown' else 'self')) }}">{{ k }}</span></th><td>{{ v }}</td><td class="num">{{ treasury.counts.unanchored[k] }}</td><td class="num">{{ treasury.counts.anchored[k] }}</td></tr>
+  {%- endfor %}
+  </tbody>
+</table></div>
+<p>Nothing is <code>chain-verified</code> until <em>you</em> confirm the block hashes. For this simulation the "anchors" are the regtest block hashes in <a href="/treasury/demo/regtest-anchors.json"><code>regtest-anchors.json</code></a>; on the real network you'd get them from your own node or from two explorers that agree. A regtest proof fails the mainnet difficulty check, so it can't pass as a real transaction.</p>
+
+<h2 id="flow">From an App Store sale to the treasury</h2>
+<ol class="timeline">
+{%- for s in treasury.flow %}
+  <li><strong>{{ s.kind }}</strong> · {{ s.occurred_at | truncate(10, true, "") }}{% if s.hours_after_previous !== null %} · {{ (s.hours_after_previous / 24) | round(1) }} days later{% endif %} <small><code>{{ s.transaction }}</code></small></li>
+{%- endfor %}
+</ol>
+<p>Customer purchases (Apple's report, aggregated) → Apple's commission and the tax it collected (not split in Apple's report) → proceeds owed → Apple's payment into the bank → a transfer to the exchange → a purchase of bitcoin (a conversion, never revenue) → withdrawal to the self-custodied treasury, checked against the chain. The exchange statement carries no blockchain transaction id, so linking the withdrawal to the on-chain transaction rests on amount and time, and the operator's word.</p>
+
+<h2 id="bitcoin">Bitcoin treasury</h2>
+<p>Booked balance <strong>{{ treasury.treasury.balance }}</strong>; balance proven from transaction proofs <strong>{{ treasury.treasury.proven }}</strong>; custody issues: {{ treasury.treasury.custody.issues.length }}. Watch-only addresses (regtest): {% for a in treasury.treasury.addresses %}<code class="hash">{{ a }}</code>{% if not loop.last %}, {% endif %}{% endfor %}. Nobody holds a key for them: each is the hash of a public phrase.</p>
+{% macro txrows(list) %}
+<div class="table-scroll" tabindex="0" role="region" aria-label="Transactions"><table>
+  <thead><tr><th scope="col">Date</th><th scope="col">Entry</th><th scope="col">Postings and evidence</th></tr></thead>
+  <tbody>
+  {%- for t in list %}
+    {%- if t.withheld %}
+    <tr><th scope="row">{{ t.date }}</th><td colspan="2">Record {{ t.seq }}, withheld: published as its leaf hash <code class="hash">{{ t.withheld }}</code> only. It counts in the balances; an auditor can be shown it and check it against the Merkle root.</td></tr>
+    {%- else %}
+    <tr><th scope="row">{{ t.date }}{% if t.status == "pending" %} <span class="badge pending">pending</span>{% endif %}</th><td>{{ t.description }}<br><small><code>{{ t.id }}</code> · {{ t.kind }}</small></td>
+      <td><ul class="postings">{% for p in t.postings %}<li><code>{{ p.account }}</code> {{ p.amount }} · <span class="badge {{ 'verified' if p.evidence == 'chain-verified' else ('pending' if p.evidence in ['pending','estimate','chain-proof-unanchored'] else 'self') }}">{{ p.evidence }}</span>{% if p.evidence != p.unanchored %} <small>(without anchors: {{ p.unanchored }})</small>{% endif %}{% if p.operator_supplied %} <small>operator-supplied</small>{% endif %}</li>{% endfor %}</ul></td></tr>
+    {%- endif %}
+  {%- endfor %}
+  </tbody>
+</table></div>
+{% endmacro %}
+{{ txrows(treasury.treasury.rows) }}
+<p>Network fee on the spend, recomputed from the chain: {{ treasury.treasury.custody.spends[0].network_fee_sats }} sats. Proofs show coins arrived and were spent as recorded; whether a coin is still unspent today is something a watch-only node or explorer reports, not something these proofs show.</p>
+
+<h2 id="fiat">Fiat not yet converted</h2>
+<p>Held in dollars: <strong>{{ treasury.fiat.unconverted }}</strong> (bank and exchange). Owed by Apple: {{ treasury.fiat.receivable }}. Pending, estimated and not counted in balances: {{ treasury.fiat.pending }}.</p>
+{{ txrows(treasury.revenue) }}
+
+<h2 id="conversions">Conversions</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Conversions"><table>
+  <thead><tr><th scope="col">Date</th><th scope="col">Paid</th><th scope="col">Received</th><th scope="col">Effective rate (incl. fees)</th><th scope="col">Fees</th><th scope="col">Delay after previous step</th></tr></thead>
+  <tbody>
+  {%- for c in treasury.conversions %}
+    <tr><th scope="row">{{ c.occurred_at | truncate(10, true, "") }}</th><td class="num">{{ c.paid }}</td><td class="num">{{ c.received }}</td><td class="num">{{ c.effective_rate }} USD/BTC</td><td>{{ c.fees }}</td><td>{% for d in c.delay_after %}{{ (d.hours / 24) | round(1) }} days after <code>{{ d.transaction }}</code> (ACH hold){% endfor %}</td></tr>
+  {%- endfor %}
+  </tbody>
+</table></div>
+
+<h2 id="expenses">Expenses</h2>
+{{ txrows(treasury.expenses) }}
+<p>Paying in bitcoin is a disposal for US tax purposes. Under FIFO per account, the {{ treasury.lots.disposals[0].sats }}-sat payment had a cost basis of ${{ (treasury.lots.disposals[0].basis_cents / 100) | round(2) }} and was worth ${{ (treasury.lots.disposals[0].proceeds_cents / 100) | round(2) }}: a gain of ${{ (treasury.lots.disposals[0].gain_cents / 100) | round(2) }}. That's a record under one stated method, not tax advice. How the network fee is treated is flagged for an adviser.</p>
+
+<h2 id="gaps">Gaps and unverified claims</h2>
+<p>{{ treasury.gaps.length }} posting(s) are pending, estimated, self-reported or unknown, and {{ treasury.operatorOnly.length }} rest on documents only the operator holds (Apple, bank, exchange, BTCPay, invoices). The operator can publish each document's SHA-256 in the journal and show the document to an auditor later.</p>
+<ul>
+{%- for g in treasury.gaps %}<li><code>{{ g.transaction }}</code>: {{ g.account }} is <strong>{{ g.evidence }}</strong></li>{%- endfor %}
+</ul>
+
+<h2 id="attention">Human attention</h2>
+<p>Kept apart from money and never added to it.</p>
+<ul>{% for a in treasury.attention %}<li>{{ a.role }}, {{ a.period_start }} to {{ a.period_end }}: {% if a.minutes === null %}<span class="badge unknown">unmeasured</span>{% else %}{{ (a.minutes / 60) | round(1) }} hours{% endif %}</li>{% endfor %}</ul>
+
+<h2 id="snapshot">Snapshot and verification</h2>
+<dl>
+  <dt>Snapshot SHA-256</dt><dd><code class="hash">{{ treasury.snapshot_sha256 }}</code></dd>
+  <dt>Merkle root of {{ treasury.snapshot.journal.records }} records</dt><dd><code class="hash">{{ treasury.snapshot.journal.merkle_root }}</code></dd>
+  <dt>Withheld records</dt><dd>{{ treasury.snapshot.journal.withheld }}: a private donation (committed with a salt), and a refund line below the aggregation threshold of {{ treasury.snapshot.journal.policy.min_aggregate_count }}. They're included in the balances and published as hashes only.</dd>
+  <dt>Timestamp</dt><dd><span class="badge unknown">not stamped</span>: this example is simulated. A real snapshot would be stamped with <code>ots stamp snapshot.json</code> and its proof published next to it.</dd>
+  <dt>Build check</dt><dd>{% if treasury.publicCheck.ok %}The public journal matched this snapshot when the site was built.{% endif %}</dd>
+</dl>
+
+<section data-jrc-treasury hidden aria-labelledby="verify-h">
+  <h3 id="verify-h">Check a record yourself</h3>
+  <p>Your browser downloads the public journal, recomputes every leaf hash and the Merkle root, checks the hash chain, and builds and checks an inclusion proof for the record you choose. Nothing is sent anywhere.</p>
+  <form class="adopt-form">
+    <p><label for="seq">Record number (1 to {{ treasury.snapshot.journal.records }})</label> <input id="seq" name="seq" type="number" min="1" max="{{ treasury.snapshot.journal.records }}" value="30"></p>
+    <p><button type="submit">Verify</button></p>
+  </form>
+  <div data-results></div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<h3>From the command line</h3>
+<pre tabindex="0" aria-label="Verification commands"><code>git clone {{ repoUrl }}.git &amp;&amp; cd charter/treasury/demo
+node ../../bin/qm.mjs treasury verify public-journal.jsonl snapshot.json
+node ../../bin/qm.mjs treasury report journal.jsonl --anchors regtest-anchors.json
+node ../../bin/qm.mjs treasury append-check journal.jsonl public-journal.jsonl</code></pre>
+<p>The formats are standard (SHA-256, RFC 6962 Merkle trees, Bitcoin serialization), so you can check them with your own code. Spec: <a href="{% sourceLink "spec/quartermaster/QMT-JOURNAL.md" %}">QMT-JOURNAL.md</a>; schema: <a href="/spec/quartermaster/qmt-0.1.schema.json"><code>qmt-0.1.schema.json</code></a>.</p>
+
+<h2 id="downloads">Downloads (simulated data)</h2>
+<ul>{% for f in treasury.files %}<li><a href="/treasury/demo/{{ f }}"><code>{{ f }}</code></a>{% if f == "journal.jsonl" %}: the operator's <em>private</em> journal, including withheld records and their salts. A real operator would never publish this; it's here so you can see what an auditor would be shown.{% elif f.startsWith("sources/") %}: a simulated source document; real ones stay private and are referenced by their SHA-256{% endif %}</li>{% endfor %}</ul>
+<p>Machine-readable summary: <a href="/api/v1/treasury-demo.json"><code>/api/v1/treasury-demo.json</code></a>.</p>
+<p data-jrc-nojs>Without JavaScript, use the command-line checks above.</p>
+<script type="module" src="/assets/treasury.js"></script>

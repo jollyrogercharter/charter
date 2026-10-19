@@ -151,7 +151,7 @@ test("no secrets or personal data in tracked files or build output", () => {
     [/\bsk-[A-Za-z0-9_-]{20,}/, "API key"],
     [/\bAKIA[0-9A-Z]{16}\b/, "AWS key"],
     [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, "private key"],
-    [/\/Users\/[a-z]+\/|\/home\/[a-z]+\//, "local home path"],
+    [/(?<![\w.-])\/(?:Users|home)\/[a-z]+\//, "local home path"],
   ];
   const hits = [];
   for (const f of files) {

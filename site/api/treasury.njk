@@ -1,0 +1,5 @@
+---
+permalink: "/api/v1/treasury-demo.json"
+eleventyExcludeFromCollections: true
+---
+{{ { "simulated": true, "note": "SIMULATED example of the qmt treasury journal. The Jolly Roger Charter itself holds no money or bitcoin.", "snapshot_sha256": treasury.snapshot_sha256, "snapshot": treasury.snapshot, "files": treasury.files, "spec": "https://github.com/jollyrogercharter/charter/blob/main/spec/quartermaster/QMT-JOURNAL.md" } | dump(2) | safe }}

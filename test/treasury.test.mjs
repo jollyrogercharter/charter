@@ -322,3 +322,53 @@ test("cli: validate, verify, prove and append-check run on the published demo", 
   assert.match(run("--help").stdout, /Nothing here holds keys/);
   assert.ok(parseJournal(readFileSync("treasury/demo/public-journal.jsonl", "utf8")).length === 45);
 });
+
+test("schema: every demo record, private and public, matches the published JSON Schema", async () => {
+  const { default: Ajv2020 } = await import("ajv/dist/2020.js");
+  const ajv = new Ajv2020({ allErrors: true, strict: false });
+  const check = ajv.compile(JSON.parse(readFileSync("spec/quartermaster/qmt-0.1.schema.json", "utf8")));
+  for (const r of [...demo.records, ...demo.snapshot.public_journal]) assert.ok(check(r), `${r.id ?? r.seq}: ${JSON.stringify(check.errors?.slice(0, 2))}`);
+  assert.equal(check({ seq: 1, prev: "0".repeat(64), type: "transaction", id: "x", kind: "sale", status: "posted", occurred_at: "2026-10-19T00:00:00Z", description: "d", privacy: "public", postings: [{ account: "a", amount: 1.5, commodity: "USD" }, { account: "b", amount: -1.5, commodity: "USD" }] }), false, "fractional minor units");
+});
+
+test("bitcoin: the genesis block's coinbase verifies against the well-known genesis hash", () => {
+  const tx = "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000";
+  const header = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c";
+  const r = verifyTxProof({ network: "mainnet", tx_hex: tx, header_hex: header, merkle: [], pos: 0, block_height: 0 }, { anchors: { 0: "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f" }, expectTxid: "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b" });
+  assert.equal(r.status, "chain-verified");
+});
+
+test("[simulated] /treasury/ page: the in-browser check recomputes the published root, and the page never shows withheld details", async () => {
+  const { mkdtempSync, writeFileSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const path = await import("node:path");
+  const { pathToFileURL } = await import("node:url");
+  const html = readFileSync("_site/treasury/index.html", "utf8");
+  assert.match(html, /has no treasury/);
+  assert.match(html, /simulated example/i);
+  const hidden = demo.records.filter((r) => r.type === "transaction" && demo.snapshot.public_journal[r.seq - 1].type === "commitment");
+  for (const r of hidden) assert.ok(!html.includes(r.description), `withheld record ${r.seq} isn't described on the page`);
+  const nodes = [];
+  const mk = (tag) => { const n = { tag, children: [], textContent: "", append(...k) { this.children.push(...k); }, replaceChildren() { this.children = []; }, focus() { this.focused = true; } }; nodes.push(n); return n; };
+  const out = mk("div"), live = mk("p"), button = { disabled: false };
+  let submit;
+  const form = { elements: { seq: { value: "30" } }, querySelector: () => button, addEventListener: (_, fn) => { submit = fn; } };
+  const root = { hidden: true, querySelector: (s) => ({ "[data-results]": out, "[data-live]": live, form }[s]) };
+  globalThis.document = { querySelectorAll: (s) => (s === "[data-jrc-treasury]" ? [root] : []), createElement: mk };
+  globalThis.fetch = async (url) => ({ text: async () => readFileSync(`_site${url}`, "utf8"), json: async () => JSON.parse(readFileSync(`_site${url}`, "utf8")) });
+  const src = readFileSync("_site/assets/treasury.js", "utf8").replaceAll('"/js/lib/', JSON.stringify(pathToFileURL(path.resolve("_site/js/lib")).href + "/").slice(0, -1));
+  const tmp = path.join(mkdtempSync(path.join(tmpdir(), "jrc-treasury-")), "treasury.mjs");
+  writeFileSync(tmp, src);
+  await import(pathToFileURL(tmp).href);
+  assert.equal(root.hidden, false);
+  await submit({ preventDefault() {} });
+  const text = out.children.map((c) => c.textContent).join("\n");
+  assert.match(text, /Roots match: yes/);
+  assert.match(text, /Hash chain intact: yes/);
+  assert.match(text, /verifies against the published root: yes/);
+  assert.equal(live.textContent, "Record 30 verified.");
+  form.elements.seq.value = "999";
+  await submit({ preventDefault() {} });
+  assert.match(live.textContent, /Choose a record from 1 to 45/);
+  delete globalThis.document;
+});
