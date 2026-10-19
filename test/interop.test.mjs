@@ -97,9 +97,22 @@ test("quartermaster: whole-cent arithmetic, unknowns propagate, currencies never
   const u = await run("compare_infrastructure_costs", { a: cfg("a", [item("x", null)]), b: cfg("b", [item("y", 1)]) });
   assert.equal(u.a.monthly, null);
   assert.equal(u.cheaper_recurring, "indeterminate");
-  assert.equal(u.difference_b_minus_a, null, "unknown is never treated as zero");
+  assert.equal(u.difference_b_minus_a.yearly, null, "unknown is never treated as zero");
+  assert.equal(u.difference_b_minus_a.monthly, null);
   assert.equal((await run("compare_infrastructure_costs", { a: cfg("a", [item("x", 1)]), b: cfg("b", [item("y", 1)], "EUR") })).error.code, "CURRENCY_MISMATCH");
   assert.equal((await run("compare_infrastructure_costs", { a: cfg("a", [item("x", 1), item("x", 2)]), b: cfg("b", [item("y", 1)]) })).error.code, "INVALID_INPUT");
+});
+
+test("quartermaster: yearly costs never drift, and unknowns stay in their own period (found in real Chrome)", async () => {
+  const r = await run("compare_infrastructure_costs", { a: cfg("a", [item("domain", 11.2, "yearly")]), b: cfg("b", [item("vps", 5), item("setup", null, "one-time")]) });
+  assert.equal(r.a.yearly.amount, 11.2, "a $11.20/yr item is $11.20 a year, not 12 x $0.93");
+  assert.equal(r.a.monthly.amount, 0.93);
+  assert.equal(r.b.yearly.amount, 60, "an unknown one-time cost doesn't hide a known monthly bill");
+  assert.equal(r.b.one_time, null);
+  assert.equal(r.difference_b_minus_a.yearly.amount, 48.8);
+  assert.equal(r.difference_b_minus_a.one_time, null);
+  const s = await run("estimate_savings", { current: cfg("c", [item("d", 11.2, "yearly"), item("vm", 7)]), proposed: cfg("p", [item("d", 11.2, "yearly")]), horizon_months: 7 });
+  assert.equal(s.net_saving_over_horizon.amount, 49, "7 x $7 with no rounding drift");
 });
 
 test("quartermaster: savings, break-even and PR drafts follow the assumptions exactly", async () => {
