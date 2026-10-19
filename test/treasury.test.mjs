@@ -16,7 +16,7 @@ import { appendRecords, newSalt, parseJournal, serializeJournal, validateJournal
 import { chainCustody, index } from "../lib/treasury/ledger.mjs";
 import { canonical, inclusionProof, leafHash, merkleRoot, recordLeaf, verifyInclusion } from "../lib/treasury/merkle.mjs";
 import { convert, effectiveRate } from "../lib/treasury/money.mjs";
-import { appendCheck, buildSnapshot, checkDisclosure, proveRecord, verifyPublic } from "../lib/treasury/snapshot.mjs";
+import { appendCheck, buildSnapshot, checkDisclosure, proveRecord, verifyInclusion as verifyInclusionSnap, verifyPublic } from "../lib/treasury/snapshot.mjs";
 import { fromHex, hex, sha256Hex } from "../lib/treasury/sha256.mjs";
 import { fullReport } from "../lib/treasury/cli.mjs";
 
@@ -166,7 +166,7 @@ test("journal: chain evidence must match the proven transaction's amounts", () =
   const pay = (sats) => tx("in", "deposit", [{ account: "assets:cold", amount: sats, commodity: "BTC", evidence: { source: "chain" } }, { account: "assets:btc", amount: -sats, commodity: "BTC", evidence: ev }], { chain_proof: "p170" });
   // Block 170 pays nothing to the genesis address, so any positive deposit to it is refused.
   assert.match(errs(tiny([proof, pay(1000)])), /pays 0 sats/);
-  assert.match(errs(tiny([{ ...proof, txid: "00".repeat(32) }])), /doesn't match the transaction bytes/);
+  assert.match(errs(tiny([{ ...proof, txid: "00".repeat(32) }])), /doesn.t check offline: txid/);
   assert.match(errs(tiny([proof, tx("x", "deposit", [{ account: "assets:cold", amount: 5, commodity: "BTC", evidence: { source: "chain" } }, { account: "assets:btc", amount: -5, commodity: "BTC", evidence: ev }])])), /needs a chain_proof/);
 });
 
@@ -206,9 +206,9 @@ test("snapshot: anyone can verify the public journal; withheld records stay veri
   const hidden = demo.records.find((r) => r.id.startsWith("bank-") && r.privacy === "committed");
   assert.ok(!serializeJournal(pub).includes(hidden.salt), "salts of withheld records are never published");
   const proof = proveRecord(pub, hidden.seq);
-  assert.ok(checkDisclosure(hidden, proof, snapshot.journal.merkle_root), "an auditor shown the record can check it against the root");
-  assert.equal(checkDisclosure({ ...hidden, postings: hidden.postings.map((p) => ({ ...p, amount: p.amount * 2 })) }, proof, snapshot.journal.merkle_root), false, "an altered disclosure fails");
-  assert.equal(checkDisclosure({ ...hidden, salt: "0".repeat(64) }, proof, snapshot.journal.merkle_root), false, "without the right salt the amount can't be confirmed by guessing");
+  assert.ok(checkDisclosure(hidden, proof, snapshot), "an auditor shown the record can check it against the root");
+  assert.equal(checkDisclosure({ ...hidden, postings: hidden.postings.map((p) => ({ ...p, amount: p.amount * 2 })) }, proof, snapshot), false, "an altered disclosure fails");
+  assert.equal(checkDisclosure({ ...hidden, salt: "0".repeat(64) }, proof, snapshot), false, "without the right salt the amount can't be confirmed by guessing");
   const tampered = pub.map((r, i) => (i === 25 ? { ...r, description: "changed" } : r));
   assert.equal(verifyPublic(tampered, snapshot).ok, false);
   assert.equal(verifyPublic(pub.slice(0, -1), snapshot).ok, false);
@@ -308,13 +308,14 @@ test("esplora: GET-only, explorer data re-checked, anchors need agreeing sources
     [`/tx/${p.txid}/hex`]: p.tx_hex, [`/tx/${p.txid}/merkle-proof`]: JSON.stringify({ block_height: 170, merkle: p.merkle, pos: p.pos }),
     [`/tx/${p.txid}/status`]: JSON.stringify({ confirmed: true, block_height: 170, block_hash: B170.block_hash }), [`/block/${B170.block_hash}/header`]: p.header_hex, "/block-height/170": B170.block_hash,
   };
-  const mk = (over = {}) => esploraClient({ baseUrl: "https://explorer.example/api", fetch: async (url, init) => { assert.equal(init.method, "GET"); const k = String(url).replace("https://explorer.example/api", ""); const body = over[k] ?? routes[k]; return { ok: body !== undefined, status: body === undefined ? 404 : 200, text: async () => body }; } });
+  const mk = (over = {}, host = "explorer.example") => esploraClient({ baseUrl: `https://${host}/api`, fetch: async (url, init) => { assert.equal(init.method, "GET"); const k = String(url).replace(`https://${host}/api`, ""); const body = over[k] ?? routes[k]; return { ok: body !== undefined, status: body === undefined ? 404 : 200, text: async () => body }; } });
   const proof = await fetchProof(mk(), p.txid, { id: "x", source: "chain" });
   assert.equal(verifyTxProof(proof, { anchors: { 170: B170.block_hash } }).status, "chain-verified");
   await assert.rejects(fetchProof(mk({ [`/tx/${p.txid}/hex`]: B170.proof.tx_hex.replace("0100000001", "0200000001") }), p.txid, { id: "x", source: "chain" }), /different transaction/);
-  const agree = await confirmAnchors([170], [mk(), mk()]);
+  const agree = await confirmAnchors([170], [mk(), mk({}, "second.example")]);
   assert.deepEqual(agree.anchors, { 170: B170.block_hash });
-  const liar = await confirmAnchors([170], [mk(), mk({ "/block-height/170": "11".repeat(32) })]);
+  const liar = await confirmAnchors([170], [mk(), mk({ "/block-height/170": "11".repeat(32) }, "second.example")]);
+  assert.deepEqual((await confirmAnchors([170], [mk(), mk({}, "EXPLORER.example")])).anchors, {}, "the same explorer written two ways is one source");
   assert.deepEqual(liar.anchors, {});
   assert.deepEqual((await confirmAnchors([170], [mk()])).anchors, {}, "one source is never enough");
   assert.throws(() => esploraClient({ baseUrl: "http://explorer.example" }), /https/);
@@ -456,7 +457,7 @@ test("review (accounting): sells, foreign-currency buys, date order, reversals a
   assert.match(errs(tiny([est, tx("r2", "reversal", [{ account: "assets:bank", amount: -900, commodity: "USD" }, { account: "income:sales", amount: 900, commodity: "USD" }], { reverses: "est" })])), /can't reverse a pending/);
   const actual = tx("act", "sale", [{ account: "assets:bank", amount: 850, commodity: "USD", evidence: ev }, { account: "income:sales", amount: -850, commodity: "USD", evidence: ev }], { retires: ["est"] });
   const settled = fullReport(tiny([est, actual]));
-  assert.deepEqual(settled.pending, {}, "a retired estimate stops counting as pending");
+  assert.equal(Object.keys(settled.pending).length, 0, "a retired estimate stops counting as pending");
   assert.match(errs(tiny([est, actual, { ...actual, id: "act2", retires: ["est"] }])), /once each/);
 });
 
@@ -473,8 +474,8 @@ test("review (reproducibility): anchors output feeds --anchors directly; the sta
   const { readAnchors } = await import("../lib/treasury/cli.mjs");
   const p = B170.proof;
   const routes = { "/block-height/170": B170.block_hash };
-  const mk = () => esploraClient({ baseUrl: "https://e.example/api", fetch: async (url) => ({ ok: true, status: 200, text: async () => routes[String(url).replace("https://e.example/api", "")] }) });
-  const r = await confirmAnchors([170], [mk(), mk()]);
+  const mk = (host) => esploraClient({ baseUrl: `https://${host}/api`, fetch: async (url) => ({ ok: true, status: 200, text: async () => routes[String(url).replace(`https://${host}/api`, "")] }) });
+  const r = await confirmAnchors([170], [mk("a.example"), mk("b.example")]);
   const fileShape = { network: "mainnet", ...r, anchors: { mainnet: r.anchors } };
   for (const shape of [fileShape, { anchors: r.anchors }]) {
     const anchors = readAnchors(JSON.parse(JSON.stringify(shape)), "mainnet");
@@ -506,4 +507,67 @@ test("review (reproducibility): trades import from the CLI, watch needs a named 
   const addrs = demo.records.find((r) => r.id === "assets:treasury:btc").onchain.addresses;
   const payTo = demo.records.filter((r) => r.type === "chain_proof").flatMap((p) => parseTx(p.tx_hex).outputs.map((o) => o.script)).filter((sc) => addrs.map((a) => addressToScript(a, "regtest")).includes(sc));
   assert.equal(new Set(payTo).size, payTo.length, "the demo never reuses a treasury address");
+});
+
+test("review (security): failed, reused or doubled proofs never count as custody, and books must match the coins", () => {
+  const recs = demo.records;
+  const anchors = JSON.parse(demo.files["regtest-anchors.json"]).anchors;
+  const badHeader = rechain(edit(recs, "proof-withdrawal", (r) => ({ ...r, header_hex: "00".repeat(80) })));
+  assert.match(errs(badHeader), /doesn't check offline/, "a proof that fails offline is refused at validation");
+  const reuse = rechain([...recs, { type: "transaction", id: "resurrect", kind: "deposit", status: "posted", occurred_at: "2026-12-02T00:00:00Z", description: "reuse", privacy: "public", chain_proof: "proof-withdrawal", postings: [{ account: "assets:treasury:btc", amount: 86087, commodity: "BTC", evidence: { source: "src-chain" } }, { account: "assets:exchange:btc", amount: -86087, commodity: "BTC", evidence: { source: "src-exchange" } }], simulated: true }]);
+  assert.match(errs(reuse), /already supports another entry/);
+  const p = recs.find((r) => r.id === "proof-spend");
+  const dupTx = rechain([...recs, { ...p, id: "proof-spend-again" }]);
+  assert.match(errs(dupTx), /already has a proof/);
+  const shared = rechain([...recs.slice(0, 5), { type: "account", id: "assets:shadow:btc", kind: "asset", commodity: "BTC", description: "Shadow", onchain: { network: "regtest", addresses: recs.find((r) => r.id === "assets:treasury:btc").onchain.addresses.slice(0, 1) }, simulated: true }, ...recs.slice(5)]);
+  assert.match(errs(shared), /already belongs to/);
+  const rep = fullReport(recs, anchors);
+  assert.equal(rep.custody.proven_balance_sats["assets:treasury:btc"], 56073);
+  assert.equal(fullReport(recs).custody.proven_balance_sats["assets:treasury:btc"], undefined, "unanchored proofs are never counted as proven: a block at minimum difficulty can be mined");
+  assert.equal(fullReport(recs).custody.offline_checked_balance_sats["assets:treasury:btc"], 56073);
+  const extra = rechain([...recs, { type: "transaction", id: "phantom", kind: "deposit", status: "posted", occurred_at: "2026-12-02T00:00:00Z", description: "claimed coins", privacy: "public", postings: [{ account: "assets:treasury:btc", amount: 5000, commodity: "BTC", evidence: { source: "src-exchange" } }, { account: "assets:exchange:btc", amount: -5000, commodity: "BTC", evidence: { source: "src-exchange" } }], simulated: true }]);
+  assert.ok(fullReport(extra, anchors).custody.issues.some((i) => /books hold 61073 sats/.test(i.issue)), "books holding coins the proofs don't show are flagged");
+  const wrongOut = rechain(edit(recs, "pay-design-studio-2026-12-01", (r) => { r.postings[2].amount = -60000; r.postings[0].amount = 58800; r.postings[0].value.amount = convert(58800, "BTC", "USD", "120000.00"); return r; }));
+  assert.deepEqual(validateJournal(wrongOut), []);
+  const ev = fullReport(wrongOut, anchors).evidence.transactions.find((t) => t.transaction === "pay-design-studio-2026-12-01");
+  assert.equal(ev.postings.find((x) => x.account === "assets:treasury:btc").evidence, "contradicted", "an outflow the chain disagrees with is never chain-verified");
+});
+
+test("review (security): verify recomputes every figure; disclosures and proofs are bound to position and size", () => {
+  const { snapshot, public_journal: pub } = demo.snapshot;
+  const forged = structuredClone(snapshot);
+  forged.balances["assets:treasury:btc"].BTC = 99999999;
+  forged.evidence_counts["chain-verified"] = 40;
+  const v = verifyPublic(pub, forged);
+  assert.equal(v.ok, false);
+  assert.equal(v.checks.find((c) => c.id === "figures-recomputed").ok, false);
+  assert.ok(verifyPublic(pub, snapshot).checks.find((c) => c.id === "figures-recomputed").ok);
+  const hidden = demo.records.find((r) => r.privacy === "committed");
+  const proof = proveRecord(pub, hidden.seq);
+  assert.ok(checkDisclosure(hidden, proof, snapshot));
+  assert.equal(checkDisclosure(hidden, { ...proof, index: proof.index + 2 ** 32 }, snapshot), false);
+  assert.equal(checkDisclosure(hidden, { ...proof, tree_size: proof.tree_size + 2 ** 32 }, snapshot), false);
+  assert.equal(verifyInclusion({ ...proof, index: proof.index + 2 ** 32, tree_size: proof.tree_size + 2 ** 32 }, snapshot.journal.merkle_root), false, "no 32-bit truncation");
+  const garbage = [...pub, { seq: pub.length + 1, prev: "0".repeat(64), type: "nonsense", id: "junk" }];
+  assert.equal(appendCheck(pub, garbage).ok, false, "appended records must be valid");
+  const padded = pub.map((r) => (r.type === "commitment" ? { ...r, note: "smuggled" } : r));
+  assert.match(errs(padded), /only seq, type and leaf/);
+});
+
+test("review (security): prototype names, networks, heights and odd encodings are refused", async () => {
+  assert.match(errs(tiny([{ type: "account", id: "constructor", kind: "asset", commodity: "USD", description: "x" }])), /reserved name/);
+  assert.match(errs(tiny([{ type: "source", id: "s2", kind: "constructor", description: "x", operator_supplied: true, retrieved_at: "2026-10-19T00:00:00Z" }])), /one of apple-financial-report/);
+  assert.match(errs(tiny([{ type: "account", id: "a2", kind: "asset", commodity: "__proto__", description: "x" }])), /one of USD/);
+  const real = tiny([{ type: "account", id: "assets:test", kind: "asset", commodity: "BTC", description: "t", onchain: { network: "regtest", addresses: ["bcrt1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt080"] } }]);
+  assert.match(errs(real), /only in simulated journals|one network/);
+  const p = { type: "chain_proof", id: "p170", ...B170.proof, source: "chain" };
+  assert.match(errs(tiny([{ ...p, block_height: 1.5 }])), /non-negative integer/);
+  const segwitEmpty = "01000000" + "0001" + "01" + "00".repeat(32) + "00000000" + "00" + "ffffffff" + "01" + "0000000000000000" + "00" + "00" + "00000000";
+  assert.throws(() => parseTx(segwitEmpty), /no witness data/);
+  assert.throws(() => esploraClient({ baseUrl: "https://blockstream.info/api", network: "regtest" }), /regtest has no public explorer/);
+  assert.throws(() => esploraClient({ baseUrl: "https://blockstream.info/api", network: "testnet" }), /doesn't look like a testnet/);
+  const seen = [];
+  const c = btcpayClient({ baseUrl: "https://host.example/btcpay/", apiKey: "k", fetch: async (url) => { seen.push(String(url)); return { ok: true, status: 200, json: async () => ({}) }; } });
+  await c.getInvoice("abc");
+  assert.equal(seen[0], "https://host.example/btcpay/api/v1/invoices/abc", "a sub-path deployment keeps its path");
 });

@@ -64,7 +64,8 @@ Every posting is shown with exactly one class, computed at read time:
 | Class | Meaning |
 |---|---|
 | `chain-verified` | An on-chain posting whose transaction proof checks offline **and** whose block hash the *viewer* confirmed (own node, or several explorers that agree) |
-| `chain-proof-unanchored` | The proof checks offline, but nobody has confirmed the block hash for this view |
+| `chain-proof-unanchored` | The proof checks offline, but nobody has confirmed the block hash for this view. On its own this proves little: a minimum-difficulty block can be mined on a laptop. |
+| `contradicted` | Chain evidence is cited, but the proven coins disagree with the posting or the books |
 | `provider-document` | A third party's statement, usually held only by the operator |
 | `self-reported` | The operator's own record |
 | `estimate` / `pending` / `unknown` | As named |
@@ -81,7 +82,7 @@ Independent review is recorded separately: a `review` record names the reviewer,
 4. 64-byte transactions are refused, because a branch without the block's transaction count could let one pose as an inner node (the CVE-2012-2459 family).
 5. An **anchor**: a block hash for that height the verifier confirmed independently. Without it, the result is `proof-valid-unanchored`, never `chain-verified`.
 
-`chainCustody` then follows treasury coins through proven transactions. Each spend must consume outputs this journal proved arriving, the treasury's net change must match the books, and the network fee (inputs minus outputs, when all inputs are the treasury's) must match the booked fee.
+Proofs that don't check offline can't enter the journal. Each transaction has one proof and each proof supports one entry, and each address belongs to one account. `chainCustody` follows treasury coins through checked proofs. Each spend must consume outputs this journal proved arriving, and the network fee (inputs minus outputs, when all inputs are the treasury's) must match the booked fee. An on-chain account's booked balance must equal the coins its proofs show. Coins count as *proven* only when the viewer anchored their blocks; a posting the chain disagrees with is shown as `contradicted`.
 
 The test suite verifies a real mainnet transaction from block 170, fetched from two explorers that returned identical bytes, and the genesis coinbase. It also checks that every kind of tampering fails.
 
@@ -89,7 +90,7 @@ The test suite verifies a real mainnet transaction from block 170, fetched from 
 
 ### 3.4 Snapshots and timestamps
 
-`qm treasury snapshot` writes a deterministic `snapshot.json`: balances, evidence counts, custody, conversions, lots, attention, and the journal's record count, head and Merkle root. The tree is RFC 6962-style, with 0x00 for leaves and 0x01 for nodes, and the test suite checks it against the Certificate Transparency reference vectors.
+`qm treasury snapshot` writes a deterministic `snapshot.json`: balances, evidence counts, custody, conversions, lots, attention, and the journal's record count, head and Merkle root. Every figure comes from the public records, so `qm treasury verify` recomputes the whole snapshot and compares it byte for byte; a hand-edited figure fails. The tree is RFC 6962-style, with 0x00 for leaves and 0x01 for nodes, and the test suite checks it against the Certificate Transparency reference vectors.
 
 The human then runs `ots stamp snapshot.json`, which sends only a hash to public calendars. The project's founding documents were timestamped the same way ([`provenance/`](provenance/)).
 

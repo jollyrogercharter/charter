@@ -41,6 +41,12 @@ This file is a provenance record, not a claim that a model or vendor endorses th
 - **Four Claude Sonnet sub-agents** each audited commit 54d193f separately from the main agent: spec compliance and vendor neutrality; security and privacy; accessibility, fallback and reproducibility; claims, transparency and provenance. Their findings and the fixes are in the run record. They are agents working for the project, not independent auditors.
 - **Human initiator:** wrote the brief; merges and every external decision remain theirs.
 
+## Verifiable treasury (2026-10-19)
+
+- **Claude Opus 5.5 in Claude Code**, under the human initiator's brief (published verbatim in [`agent-runs/2026-10-19-treasury-brief.md`](agent-runs/2026-10-19-treasury-brief.md)) and with draft PRs only, wrote the treasury RFC, the qmt journal format and `lib/treasury/`, the adapters, the simulated example and `/treasury/`. Run record: [`agent-runs/2026-10-19-treasury.md`](agent-runs/2026-10-19-treasury.md).
+- **Five Claude Sonnet sub-agents** researched providers, US tax and legal questions, and Bitcoin verification; **five more** reviewed the result separately (accounting, transaction security, privacy, legal claims, reproducibility). They are agents working for the project, not independent auditors or advisers.
+- **Human initiator:** wrote the brief. Whether JRC ever holds money or bitcoin, and every legal and tax position, remain theirs and their advisers'.
+
 ## Statement of honesty
 
 No human-only-authorship or model-only-authorship claims. Publish accessible prompts, inputs, tests and changes where lawful and safe. Mark redactions and unknowns. Do not try to expose undisclosed private chain-of-thought or claim access to it.

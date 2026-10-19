@@ -56,15 +56,18 @@ A **posting** is `{ account, amount, commodity, evidence: { source, ref? }, valu
 8. `committed` and `aggregated` transactions carry a random 32-byte `salt` (64 hex digits, at least 10 distinct, never reused); `aggregated` ones also state their `count` (units, not distinct people).
 9. No email addresses, tokens, keys, home paths, card, account, IBAN, routing, SSN/EIN or phone numbers, extended keys (private or public) or WIF keys, in values or in keys. This is pattern matching: it can't recognise a person's name, so descriptions come from the operator's rules, never from raw bank memos.
 10. Transfers, conversions, deposits, withdrawals and settlements post to expense accounts only as positive fees. Conversion accounts appear only in conversion, settlement and reversal entries.
-11. A reversal has the same status as the entry it reverses. A posted entry may list `retires: [ids]` to replace earlier pending estimates, each once; retired estimates leave the pending balances.
+11. A `chain_proof` must check offline (txid, Merkle inclusion, proof of work within the network limit, no 64-byte transaction) to enter the journal. Each txid has one proof, and each proof supports one entry.
+12. Each watch-only address belongs to one account. All on-chain accounts and proofs in a journal share one network, and testnet or regtest appear only in simulated journals.
+13. Ids are never reserved JavaScript names such as `constructor` or `__proto__`.
+14. A reversal has the same status as the entry it reverses. A posted entry may list `retires: [ids]` to replace earlier pending estimates, each once; retired estimates leave the pending balances.
 
 ## Evidence classes
 
 Computed at read time per posting, never stored:
 
-`chain-verified`, `chain-proof-unanchored`, `provider-document`, `self-reported`, `estimate`, `pending`, `unknown`.
+`chain-verified`, `chain-proof-unanchored`, `contradicted` (chain evidence cited, but the proven coins disagree with the posting or with the books), `provider-document`, `self-reported`, `estimate`, `pending`, `unknown`.
 
-`chain-verified` needs the viewer's own **anchor**: a block hash for that height that they confirmed from their own node or from at least two explorers that agree.
+`chain-verified` needs the viewer's own **anchor**: a block hash for that height that they confirmed from their own node or from at least two different explorers that agree. Without one, a proof proves little: a block at minimum difficulty can be mined on a laptop in minutes. Custody counts only anchored proofs as *proven*; offline-checked coins are reported separately, and an on-chain account's booked balance must equal the coins its checked proofs show.
 
 ## Snapshots
 
@@ -81,8 +84,8 @@ Computed at read time per posting, never stored:
 `snapshot.json` is written without a trailing newline, so its file SHA-256 (`shasum -a 256 snapshot.json`, also in `snapshot.sha256` in `sha256sum -c` format) is the digest `ots stamp snapshot.json` timestamps. Every figure in it is computed from the **public** records only.
 
 The **public journal** replaces each `committed` transaction, and each aggregate whose `count` is below `policy.min_aggregate_count` (default 3), with `{ seq, type: "commitment", leaf }`. Publication is refused if a public record names a withheld one (`follows`, `reverses`, `covers`) or a withheld record has a chain proof. A withheld record's existence is visible, and neighbouring public records may reveal its size. Every leaf hash is unchanged, so:
-- `verifyPublic(public, snapshot)` checks record count, Merkle root, head, the hash chain across visible records and the withheld count;
-- `checkDisclosure(record, proof, root)` lets an auditor confirm a withheld record later;
+- `verifyPublic(public, snapshot)` checks record count, Merkle root, head, the hash chain across visible records and the withheld count, then **recomputes the whole snapshot from the public records and compares it byte for byte**, so no figure in it can be edited by hand;
+- `checkDisclosure(record, proof, snapshot)` lets an auditor confirm a withheld record later, at its own position in a tree of the published size;
 - `appendCheck(old, new)` works between private and public copies.
 
 ## Verification without this project
