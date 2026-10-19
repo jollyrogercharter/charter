@@ -9,7 +9,7 @@ description: "Every JRC capability, its safety class and which interfaces suppor
 <p class="lede">Use any agent you like. The same {{ webmcp.manifest.capabilities.length }} capabilities are available through several interfaces, so nothing ties you to one AI provider, browser or hosted service.</p>
 
 <div class="notice">
-  <p><strong>What these tools can't do:</strong> post, publish, sign in, change infrastructure, or certify anything. Every capability is read-only or prepare-only. Drafts, PR descriptions and AT Protocol records are returned to you to review and submit yourself. No tool runs code from a repository, and only the repository-assessment tools fetch anything: public files from GitHub, with no credentials.</p>
+  <p><strong>What these tools can't do:</strong> post, publish, sign in, change infrastructure, or certify anything. Every capability is read-only or prepare-only. Drafts, PR descriptions and AT Protocol records are returned to you to review and submit yourself. No tool runs code from a repository, and only the repository-assessment tools (and an assessment record built from a live scan) fetch anything: public files from GitHub, with no credentials.</p>
 </div>
 
 <h2>Interfaces</h2>
@@ -33,11 +33,12 @@ echo '{"skills":["writing"]}' | node bin/jrc.mjs tool find_opportunities --input
 <p><code>assess_repository</code> reads a public GitHub repository's file list and a few key files at one commit. An automated scan isn't a review: <em>missing</em> means not found, not proof of noncompliance. The <a href="/adopt/">adoption page</a> runs the same code.</p>
 
 <h2>All capabilities</h2>
-<div class="table-scroll"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Capabilities by interface"><table>
+  <caption class="visually-hidden">Every capability and the interfaces that support it</caption>
   <thead><tr><th scope="col">Capability</th><th scope="col">Group</th><th scope="col">Safety</th><th scope="col">WebMCP / MCP</th><th scope="col">HTTP</th><th scope="col">CLI</th><th scope="col">Page</th></tr></thead>
   <tbody>
   {%- for c in webmcp.manifest.capabilities %}
-    <tr><td><code>{{ c.name }}</code><br>{{ c.title }}</td><td>{{ c.group }}</td><td>{{ c.safety }}{% if c.network != "none" %}<br><small>network: {{ c.network }}</small>{% endif %}</td><td>yes</td><td>{% if c.interfaces.http_static %}<a href="{{ c.interfaces.http_static }}"><code>{{ c.interfaces.http_static }}</code></a>{% else %}—{% endif %}</td><td>{% if c.interfaces.cli %}<code>{{ c.interfaces.cli }}</code>{% else %}<code>jrc tool {{ c.name }}</code>{% endif %}</td><td>{% if c.interfaces.website %}<a href="{{ c.interfaces.website }}">{{ c.interfaces.website }}</a>{% else %}—{% endif %}</td></tr>
+    <tr><th scope="row"><code>{{ c.name }}</code><br>{{ c.title }}</th><td>{{ c.group }}{% if c.maturity != "implemented" %}<br><small>{{ c.maturity }}</small>{% endif %}</td><td>{{ c.safety }}{% if c.network != "none" %}<br><small>network: {{ c.network }}</small>{% endif %}</td><td>yes</td><td>{% if c.interfaces.http_static %}<a href="{{ c.interfaces.http_static }}"><code>{{ c.interfaces.http_static }}</code></a>{% else %}—{% endif %}</td><td>{% if c.interfaces.cli %}<code>{{ c.interfaces.cli }}</code>{% else %}<code>jrc tool {{ c.name }}</code>{% endif %}</td><td>{% if c.interfaces.website %}<a href="{{ c.interfaces.website }}">{{ c.interfaces.website }}</a>{% else %}—{% endif %}</td></tr>
   {%- endfor %}
   </tbody>
 </table></div>

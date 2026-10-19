@@ -2,6 +2,22 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## Unreleased — Agent interoperability (PR F)
+
+- 16 new capabilities, 29 in all, every one read-only or prepare-only:
+  - **Community:** RFC and debate registry, a single RFC's arguments, skill-based opportunity matching, drafts for people to post, challenge submission packages.
+  - **Quartermaster:** cost-category explanations, configuration comparison and savings estimates in whole cents (recurring costs kept in yearly cents, unknowns per period), cost-reduction PR drafts.
+  - **Provenance:** manifest parts, local hash verification, timestamp status that names who verified it, evidence limitations.
+  - **AT Protocol:** proposed `org.jollyrogercharter.{assessment,adoption,contribution}` Lexicons, record export and publication *preparation*.
+- **Versioned capability manifest** (`/api/v1/capabilities.json`, `spec/capabilities-0.1.schema.json`): each capability's safety class, maturity and real interfaces. Planned items are listed as planned.
+- **New interfaces:** a stdio MCP server (`bin/jrc-mcp.mjs`, protocol 2026-07-28 plus legacy `initialize`, no dependencies), `jrc tool NAME` for every capability, `jrc provenance verify|status`, `jrc atproto lexicons`, `qm compare`, `qm savings [--pr]`.
+- **Pages:** `/agents/` rebuilt from the manifest; RFC list and contribution finder on `/debate/`; in-browser hash checker on `/provenance/`; configuration comparison on `/costs/`; new `/spec/atproto/`. All have no-JS fallbacks.
+- **Docs:** `docs/AGENT-INTEROP.md` and `SECURITY.md`; `@atproto/lexicon` 0.7.15 added as a test-only dependency.
+- **Tests:** 30 in `test/interop.test.mjs` (131 in the suite), covering capabilities, hostile input, the untrusted-echo sentinel, Lexicon validation against the reference library, MCP protocol conformance and errors in both eras, cancellation, interface agreement, and a regression test for each audit finding.
+- **Audits:** four Claude Sonnet reviewers (spec, security and privacy, accessibility and reproducibility, claims) audited 54d193f; their findings and fixes are in `transparency/agent-runs/2026-10-19-interop.md`.
+- **Hardening:** a Content-Security-Policy in `site/_headers`; a wider privacy scanner; `REPO_URL`/`SITE_URL` reach every generated link, so forks link to themselves.
+- Not deployed. Native WebMCP registration is still unverified.
+
 ## Unreleased — Adoption journey (PR E)
 
 - `/adopt/` assesses a public GitHub repository, a `jrc.json` or a saved snapshot in the browser. It reports each pillar as evidenced, partially-evidenced, missing, not-applicable or unknown, explains every check, and links evidence at the pinned commit. It shows progress and offers the report (JSON and Markdown), a candidate `jrc.json`, a checklist, a new-files patch, a PR description, a challenge log and the snapshot to download. *Raise the Flag* moves below it, unchanged.

@@ -31,6 +31,16 @@ This file is a provenance record, not a claim that a model or vendor endorses th
 - **Claude Sonnet sub-agent:** independent review of the WebMCP layer.
 - **Human initiator:** wrote the brief; native verification and the origin-trial decision remain theirs.
 
+## Adoption journey (2026-10-18)
+
+- Recorded in [`agent-runs/2026-10-18-adopt.md`](agent-runs/2026-10-18-adopt.md) (Claude Opus 5.5 in Claude Code, a separate session).
+
+## Agent interoperability (2026-10-19)
+
+- **Claude Opus 5.5 in Claude Code**, under the human initiator's brief and with draft PRs only, designed and built the community, Quartermaster, provenance and AT Protocol capabilities, the capability manifest, the MCP server, the CLI access to every tool, and the pages. Run record: [`agent-runs/2026-10-19-interop.md`](agent-runs/2026-10-19-interop.md).
+- **Four Claude Sonnet sub-agents** each audited commit 54d193f separately from the main agent: spec compliance and vendor neutrality; security and privacy; accessibility, fallback and reproducibility; claims, transparency and provenance. Their findings and the fixes are in the run record. They are agents working for the project, not independent auditors.
+- **Human initiator:** wrote the brief; merges and every external decision remain theirs.
+
 ## Statement of honesty
 
 No human-only-authorship or model-only-authorship claims. Publish accessible prompts, inputs, tests and changes where lawful and safe. Mark redactions and unknowns. Do not try to expose undisclosed private chain-of-thought or claim access to it.

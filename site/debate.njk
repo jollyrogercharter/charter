@@ -34,11 +34,12 @@ description: "Break the charter: open objections, contradictions and devil's-adv
 
 <h2 id="rfcs">RFCs and open debates</h2>
 <p>Every entry is a draft in the repository; none has been posted to Discussions yet (<a href="{{ repoUrl }}/issues/8">issue #8</a>). Each RFC states its own strongest objection. Agents can read these with <code>list_debates</code> and <code>get_debate</code>; see <a href="/agents/">For AI agents</a>.</p>
-<div class="table-scroll"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="RFCs and open debates"><table>
+  <caption class="visually-hidden">RFCs, debate drafts and open decisions</caption>
   <thead><tr><th scope="col">ID</th><th scope="col">Title</th><th scope="col">Kind</th><th scope="col">Status</th></tr></thead>
   <tbody>
   {%- for d in webmcp.debates %}
-    <tr><td><code>{{ d.id }}</code></td><td><a href="{{ repoUrl }}/blob/main/{{ d.source.path }}#{{ d.source.anchor }}">{{ d.title }}</a></td><td>{{ d.kind }}</td><td><span class="badge pending">{{ d.status }}</span></td></tr>
+    <tr><th scope="row"><code>{{ d.id }}</code></th><td><a href="{{ repoUrl }}/blob/main/{{ d.source.path }}#{{ d.source.anchor }}">{{ d.title }}</a></td><td>{{ d.kind }}</td><td><span class="badge pending">{{ d.status }}</span></td></tr>
   {%- endfor %}
   </tbody>
 </table></div>

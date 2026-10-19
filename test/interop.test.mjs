@@ -153,9 +153,11 @@ test("quartermaster: explain_costs reflects the published ledger without adding 
 
 // ---------- Provenance ----------
 
-test("provenance: local hashes are compared, never uploaded; mismatches and strays are distinguished", async () => {
+test("provenance: local hashes are compared, never uploaded; mismatches and strays are distinguished", async (t) => {
   const m = bundle.provenance;
-  const real = sha256Hex(execFileSync("git", ["show", `${m.preservation_commit}:MANIFESTO.md`]));
+  let real;
+  try { real = sha256Hex(execFileSync("git", ["show", `${m.preservation_commit}:MANIFESTO.md`], { stdio: ["ignore", "pipe", "ignore"] })); }
+  catch { return t.skip("preservation commit not available (not a full clone)"); }
   const r = await run("verify_hashes", { items: [{ path: "MANIFESTO.md", sha256: real }, { path: "MANIFESTO.md", sha256: "0".repeat(64) }, { path: "nope.md", sha256: real }, { sha256: real.toUpperCase() }, { path: "nope.md", sha256: "1".repeat(64) }] });
   assert.deepEqual(r.results.map((x) => x.result), ["match", "mismatch", "matches-other-file", "match", "unknown-path"]);
   assert.equal(r.results[3].matches, "MANIFESTO.md");
@@ -170,7 +172,7 @@ test("provenance: timestamp status says who verified and never claims independen
   const t = await run("get_timestamp_status");
   assert.equal(t.state, bundle.provenance.timestamp_state === "verified" ? "verified" : bundle.provenance.timestamp_state === "pending" ? "pending" : "absent");
   if (t.state === "verified") {
-    assert.equal(t.verified_by, "the project");
+    assert.match(t.verified_by, /AI agent; no human re-check/);
     assert.equal(t.independently_reverified, false);
   }
   const pending = { ...bundle, provenance: { ...bundle.provenance, timestamp_state: "pending" } };
@@ -265,6 +267,8 @@ test("capability manifest: valid, complete, honest about interfaces", () => {
     }
   }
   assert.ok(m.planned.every((p) => p.maturity !== "implemented"));
+  for (const c of m.capabilities) assert.equal(c.maturity, c.group === "atproto" ? "draft" : "implemented", `${c.name}: tools on proposed Lexicons aren't called implemented`);
+  assert.match(m.interface_verification.webmcp, /^Not verified natively/);
 });
 
 test("hostile: any tool that can echo input text is marked untrusted", async () => {
@@ -497,4 +501,25 @@ test("audit regressions: the CSP in _headers holds for every built page", async 
       assert.doesNotMatch(t, /\.style\.|setAttribute\(["']style|\beval\(|new Function\(/, `${f}: blocked by the CSP`);
     }
   }
+});
+
+test("audit regressions: get_debate warns its text may be stale and doesn't invent an objection", async () => {
+  const r = await run("get_debate", { id: "rfc-2" });
+  assert.match(r.currency, /not kept current/);
+  const d = await run("get_debate", { id: "decision-1" });
+  assert.equal(d.against, "(not stated in the source)");
+  assert.doesNotMatch(d.note, /strongest objection/);
+});
+
+test("audit regressions: a mismatch on a founding file edited since preservation says so", async () => {
+  const s = await run("get_provenance_manifest", {});
+  assert.equal(s.basis, "self-reported");
+  assert.ok(Array.isArray(s.changed_since_preservation) && s.changed_since_preservation.includes("README.md"), "README.md has been edited since preservation");
+  const { createHash } = await import("node:crypto");
+  const now = createHash("sha256").update(readFileSync("README.md")).digest("hex");
+  const v = await run("verify_hashes", { items: [{ path: "README.md", sha256: now }, { path: "MANIFESTO.md", sha256: "0".repeat(64) }] });
+  assert.equal(v.results[0].result, "mismatch");
+  assert.match(v.results[0].expected, /edited since the preservation commit/);
+  assert.equal(s.changed_since_preservation.includes("MANIFESTO.md"), false);
+  assert.equal(v.results[1].expected, undefined, "an unedited file's mismatch isn't explained away");
 });

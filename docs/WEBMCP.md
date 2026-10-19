@@ -1,6 +1,6 @@
 # WebMCP Developer Guide
 
-> **Update 2026-10-19:** there are now 29 tools (read-only and prepare-only), also served by a local MCP server and the CLI. See [`AGENT-INTEROP.md`](AGENT-INTEROP.md) for the full list and safety model. The sections below describe the original browser layer, which is unchanged.
+> **Update 2026-10-19:** there are now 29 tools (read-only and prepare-only), also served by a local MCP server and the CLI. See [`AGENT-INTEROP.md`](AGENT-INTEROP.md) for the full list and safety model. The sections below describe the original browser layer. Where they say thirteen tools, the browser now registers all 29 the same way; the real-Chrome checks below covered the original 13 tools, and the newer tools only through the page forms.
 
 jollyrogercharter.org registers thirteen **read-only** tools with [WebMCP](https://webmachinelearning.github.io/webmcp/) (`document.modelContext`). Through structured calls instead of scraping, an AI agent in the browser can query the charter, status, costs and provenance, assess a `jrc.json`, and assess a public GitHub repository and prepare its adoption. The seven project tools are also available to any client as static JSON at `/api/v1/`. The six repository tools are described in [`docs/ADOPT.md`](ADOPT.md).
 
@@ -31,7 +31,7 @@ The two manifest tools are marked `untrustedContentHint: true` because their out
 
 ### Result conventions
 
-- `{ ok: true, tool, tools_version, data_commit, … }` on success. On failure, `{ ok: false, tool, error: { code, message, details? } }`, with codes `INVALID_INPUT`, `INPUT_TOO_LARGE`, `OUTPUT_TOO_LARGE` (a hard 8K-character cap), `NOT_FOUND` or `TOOL_FAILED`. Cancellation rejects with `AbortError` instead of returning.
+- `{ ok: true, tool, tools_version, data_commit, … }` on success. On failure, `{ ok: false, tool, error: { code, message, details? } }`, with codes `INVALID_INPUT`, `INPUT_TOO_LARGE`, `OUTPUT_TOO_LARGE` (about 2 KiB by default, up to 48 KiB for tools that return drafts or reports), `NOT_FOUND` or `TOOL_FAILED`. Cancellation rejects with `AbortError` instead of returning.
 - Every fact carries a **`basis`**:
   - `verified`: anyone can re-check it by a reproducible method (hash, block header).
   - `self-reported`: a claim, not checked independently.
@@ -102,7 +102,7 @@ Static files, built on every deploy. A test checks that each one equals the tool
 | Schemas | Strict Ajv compiles every schema; the input validator rejects everything Ajv rejects | Real code |
 | Execution | Every tool on repository data; budget; basis labels; filters; NOT_FOUND / INVALID_INPUT / INPUT_TOO_LARGE | Real code and data |
 | Consistency | `assess_jrc_manifest` equals `jrc report` (summary, levels, error codes) on four manifests; costs equal `qm summary`; the static API equals the tools; a pending proof is never labelled verified | Real code and CLI |
-| Registration | All 13 register; `executeTool` equals the Node path; legacy string input; `DataError` for non-object input | **Simulated** `modelContext` |
+| Registration | All 29 register (13 when this table was first written); `executeTool` equals the Node path; legacy string input; `DataError` for non-object input | **Simulated** `modelContext` |
 | Failures and cancellation | `NotAllowedError` → `failed`; a duplicate → `partial`; per-tool and outer abort unregister; aborted execution rejects | **Simulated** |
 | Fallback | No `modelContext`, or a non-function `registerTool` | **Simulated** |
 | Pages | Every page loads `/assets/webmcp.js`; no third-party scripts; no tracking APIs; no Node built-ins in served modules | Real build output |

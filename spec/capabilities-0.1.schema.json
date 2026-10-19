@@ -212,6 +212,10 @@
                 "maxLength": 200
               }
             }
+          },
+          "maturity_note": {
+            "type": "string",
+            "maxLength": 300
           }
         }
       }
@@ -244,6 +248,14 @@
             "type": "string"
           }
         }
+      }
+    },
+    "interface_verification": {
+      "type": "object",
+      "description": "How each interface has actually been checked, in plain words. Absent means unstated, not verified.",
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 300
       }
     }
   }

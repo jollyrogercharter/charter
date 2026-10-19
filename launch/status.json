@@ -1,6 +1,6 @@
 {
   "schema": "jrc-status-0.1",
-  "as_of_utc": "2026-10-19T19:00Z",
+  "as_of_utc": "2026-10-19T18:08Z",
   "states": {
     "implemented": "Exists and was verified on the date shown.",
     "pending": "Started or requested, but not complete.",
@@ -209,7 +209,7 @@
       "title": "WebMCP tools for AI browser agents",
       "state": "pending",
       "url": "https://jollyrogercharter.org/agents/",
-      "evidence": "Read-only and prepare-only tools (29 after the interoperability work) and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155, the modules and tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable. Native registration not yet verified: needs the flag or an origin-trial token.",
+      "evidence": "Read-only and prepare-only tools (29 after the interoperability work) and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155 (2026-10-18), the original 13 tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable; the newer tools ran there only through the page forms. Native registration not yet verified: needs the flag or an origin-trial token.",
       "verified_utc": "2026-10-18T18:30Z",
       "next": "Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.",
       "owner": "human"
@@ -221,7 +221,7 @@
       "state": "implemented",
       "url": "https://jollyrogercharter.org/agents/#mcp",
       "evidence": "bin/jrc-mcp.mjs: stdio, protocol 2026-07-28 plus legacy initialize, all 29 tools, no dependencies. Protocol conformance and error paths are tested with real messages. Not yet tried with third-party MCP clients.",
-      "verified_utc": "2026-10-19T19:00Z",
+      "verified_utc": "2026-10-19T18:08Z",
       "next": "Try it with several MCP clients and record the results."
     },
     {
@@ -231,7 +231,7 @@
       "state": "implemented",
       "url": "https://jollyrogercharter.org/api/v1/capabilities.json",
       "evidence": "Every capability with schema, safety class, maturity and interfaces. Validated against spec/capabilities-0.1.schema.json; tests check each listed interface exists.",
-      "verified_utc": "2026-10-19T19:00Z"
+      "verified_utc": "2026-10-19T18:08Z"
     },
     {
       "id": "atproto-lexicons",
@@ -240,7 +240,7 @@
       "state": "pending",
       "url": "https://jollyrogercharter.org/spec/atproto/",
       "evidence": "Proposed org.jollyrogercharter.{assessment,adoption,contribution} Lexicons and example records, validated with @atproto/lexicon. Not published for resolution; no records published.",
-      "verified_utc": "2026-10-19T19:00Z",
+      "verified_utc": "2026-10-19T18:08Z",
       "next": "RFC on naming, then the owner adds the _lexicon DNS record and publishes the schemas."
     },
     {
