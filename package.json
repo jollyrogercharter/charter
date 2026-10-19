@@ -2,7 +2,7 @@
   "name": "jolly-roger-charter",
   "version": "0.1.0",
   "private": true,
-  "description": "Founding documents and static website for the Jolly Roger Charter (JRCv1 draft).",
+  "description": "Jolly Roger: free the code, reward the stewards, give people their time back. Manifesto, charter, JRCv1 draft tools and website.",
   "license": "CC0-1.0",
   "type": "module",
   "bin": {

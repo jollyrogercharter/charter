@@ -57,6 +57,7 @@ Captured October 17, 2026. **Confirmed** means the user explicitly favored the c
 10. **Reference app scope:** which two cost providers first; which programming languages to prioritize; self-hosted billing credential storage model.
 11. **Distribution:** order of outreach and launch timing; first independent reviewers and maintainers.
 12. **Novelty framing:** describe a new synthesis rather than claiming global priority.
+13. **Stewardship economics:** replace the cost-recovery and efficiency pledge with price honesty, allow steward compensation as one aggregate line, and make AT Protocol a recommendation rather than the default; see [the RFC](launch/RFC-STEWARDSHIP-ECONOMY.md).
 
 ## Don't lose these exact lines
 
@@ -86,3 +87,16 @@ Captured October 17, 2026. **Confirmed** means the user explicitly favored the c
 
 - The human initiator chose CC0 1.0 Universal for all original content in the charter repository (`LICENSE`, scope and exclusions in `NOTICE.md`), ahead of the legal review this register recommended. Review is still wanted.
 - CC0 section 4(a) does not waive patent rights. Acceptable for this documents-and-website repository; the licence for future software such as Quartermaster stays open (CC0 plus a patent pledge, or Apache-2.0), as seed RFC 2 proposes.
+
+## Founder-proposed reorientation (October 19, 2026)
+
+**Proposed by the human founder, not yet community consensus.** Recorded here so it can be debated like everything above. Details and conflicts are in [`launch/RFC-STEWARDSHIP-ECONOMY.md`](launch/RFC-STEWARDSHIP-ECONOMY.md).
+
+- Jolly Roger is a movement to change how people earn a living from software as AI makes software abundant. Everything revolves around three principles: **software should be free; stewardship should be rewarded; human attention is precious.**
+- **We are not trying to eliminate software profits. We are trying to separate them from artificial scarcity and dependency.** Stewards may earn substantial income, including from AI-driven efficiency. Cost recovery is no longer the economic ideal.
+- Financial transparency stays an accountability principle. It doesn't require anyone to disclose personal finances.
+- Public material is organized in three layers: the [Manifesto](MANIFESTO.md) (what we believe), the [Charter](CHARTER.md) (voluntary commitments, with JRCv1 underneath) and the [Projects](PROJECTS.md) (optional experiments and tools).
+- The manifesto becomes one page (v0.2). The founding draft is preserved unchanged at [`history/MANIFESTO-v0.1-2026-10-17.md`](history/MANIFESTO-v0.1-2026-10-17.md).
+- Priority reverses: a [real-world stewardship pilot](STEWARDSHIP-PILOT.md) comes before further technical work.
+- The founding line marked "retain verbatim" above is kept verbatim in the Charter and in the preserved v0.1 manifesto, rather than in the shorter v0.2 manifesto. The founder to confirm.
+- New lines to keep: **Free the code. Reward the stewards. Give people their time back.** **The code is free. Your attention is valuable. Stewardship is worth paying for.**

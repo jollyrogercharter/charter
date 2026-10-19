@@ -4,7 +4,7 @@ This repository is a founding **document collection**, not a deployed product or
 
 ## Before making changes
 
-1. Read `README.md`, `MANIFESTO.md`, `CHARTER.md` and `DECISIONS-AND-QUESTIONS.md`.
+1. Read `README.md`, `MANIFESTO.md`, `CHARTER.md`, `STEWARDSHIP-ECONOMY.md` and `DECISIONS-AND-QUESTIONS.md`. Keep the three principles (free software, rewarded stewardship, precious human attention) at the center of public material, and put tools on the projects layer.
 2. Distinguish confirmed founding preferences, draft implementation proposals, verified external facts and speculative naming.
 3. Prefer substantive revisions with context, evidence, compatibility assessment and documented tradeoffs.
 4. Do not claim legal adoption, technical certification, live integrations, external endorsement or community consensus that doesn't exist.

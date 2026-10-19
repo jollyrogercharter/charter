@@ -2,6 +2,16 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## Unreleased — Reorientation around rewarded stewardship (founder proposal)
+
+- **Three principles lead everything:** software should be free; stewardship should be rewarded; human attention is precious.
+- **Manifesto v0.2** (`MANIFESTO.md`): one page, 295 words. The v0.1 founding draft is preserved byte-for-byte at `history/MANIFESTO-v0.1-2026-10-17.md` (its SHA-256 matches the timestamped digest list) and served at `/manifesto/v0-1/`.
+- **Charter:** seven plain-language commitments at the top of `CHARTER.md`, mapped to the six JRCv1 pillars. The JRCv1 text below is unchanged apart from its title and heading levels.
+- **New:** `STEWARDSHIP-ECONOMY.md` (`/stewardship/`), `STEWARDSHIP-PILOT.md` (`/pilot/`, proposed and not started), `PROJECTS.md` (`/projects/`), and `launch/RFC-STEWARDSHIP-ECONOMY.md`, which records six conflicts with JRCv1 and proposes resolutions. Open decision 13 tracks it on `/debate/`.
+- **Website:** new home page and six-item primary navigation. Every earlier page keeps its URL and is linked from the footer. New `og:site_name`.
+- **Unchanged:** `jrc`, schemas, Quartermaster formats, `/api/v1/`, WebMCP and MCP tools, provenance records and proofs.
+- Not deployed.
+
 ## Unreleased — Agent interoperability (PR F)
 
 - 16 new capabilities, 29 in all, every one read-only or prepare-only:

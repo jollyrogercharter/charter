@@ -1,13 +1,13 @@
 {
   "schema": "jrc-status-0.1",
-  "as_of_utc": "2026-10-19T18:08Z",
+  "as_of_utc": "2026-10-19T20:45Z",
   "states": {
     "implemented": "Exists and was verified on the date shown.",
     "pending": "Started or requested, but not complete.",
     "blocked": "Cannot proceed without a named person or decision.",
     "historical": "True when written; kept as a record, not a current claim."
   },
-  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, and the founding transcript is not published. The founding digest list has a verified Bitcoin timestamp.",
+  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, and the founding transcript is not published. The founding digest list has a verified Bitcoin timestamp. The stewardship economic model is untested: a pilot is proposed and has not started.",
   "items": [
     {
       "id": "repo",
@@ -193,6 +193,17 @@
       "evidence": "Ledger format qm 0.1 (draft), with validator, CSV import and summary tool. The cost page is now built from the validated ledger. No provider integrations: no credentials-free public sample data was available to build one against.",
       "verified_utc": "2026-10-18T07:00Z",
       "url": "https://jollyrogercharter.org/spec/quartermaster/"
+    },
+    {
+      "id": "stewardship-pilot",
+      "area": "Economics",
+      "title": "Stewardship pilot",
+      "state": "blocked",
+      "url": "https://jollyrogercharter.org/pilot/",
+      "evidence": "STEWARDSHIP-PILOT.md (proposal) and STEWARDSHIP-ECONOMY.md (explanation). No steward, application, customers, revenue or results exist.",
+      "verified_utc": "2026-10-19T20:45Z",
+      "next": "A human picks the steward, application, price, success thresholds, upstream share and reviewer, and publishes them first.",
+      "owner": "human"
     },
     {
       "id": "conformance-tool",

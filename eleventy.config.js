@@ -25,6 +25,11 @@ const DOC_ROUTES = {
   "spec/quartermaster/qm-0.1.schema.json": "/spec/quartermaster/qm-0.1.schema.json",
   "launch/costs.json": "/costs/ledger.json",
   "docs/WEBMCP.md": "/agents/",
+  "STEWARDSHIP-ECONOMY.md": "/stewardship/",
+  "STEWARDSHIP-PILOT.md": "/pilot/",
+  "PROJECTS.md": "/projects/",
+  "history/MANIFESTO-v0.1-2026-10-17.md": "/manifesto/v0-1/",
+  "launch/LAUNCH-STATUS.md": "/status/",
 };
 
 const md = markdownIt({ html: false, linkify: true, typographer: false });
@@ -95,7 +100,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addGlobalData("buildTime", new Date().toISOString());
   eleventyConfig.addPassthroughCopy({ "site/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "site/_headers": "_headers" });
-  eleventyConfig.addPassthroughCopy({ "MANIFESTO.md": "downloads/MANIFESTO.md", "CHARTER.md": "downloads/CHARTER.md" });
+  eleventyConfig.addPassthroughCopy({ "MANIFESTO.md": "downloads/MANIFESTO.md", "CHARTER.md": "downloads/CHARTER.md", "history/MANIFESTO-v0.1-2026-10-17.md": "downloads/MANIFESTO-v0.1-2026-10-17.md" });
   eleventyConfig.addPassthroughCopy({ "provenance/launch-manifest.json": "provenance/launch-manifest.json" });
   eleventyConfig.addPassthroughCopy({ "spec/jrc-0.1.schema.json": "spec/jrc-0.1.schema.json", "jrc.json": "check/jrc.json", "spec/quartermaster/qm-0.1.schema.json": "spec/quartermaster/qm-0.1.schema.json", "launch/costs.json": "costs/ledger.json", "spec/capabilities-0.1.schema.json": "spec/capabilities-0.1.schema.json", "lexicons": "lexicons" });
   // Platform-neutral modules only: the browser runs the same engine as the CLI. Node-only files (check.mjs, init.mjs) stay out.

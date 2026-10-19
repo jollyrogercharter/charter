@@ -1,16 +1,18 @@
 ---
 layout: base.njk
-title: Charter (JRCv1 draft)
-description: "Draft JRCv1 conformance requirements: six pillars, evidence and limitations."
+title: The Charter
+description: "Seven voluntary commitments for free code, rewarded stewardship and respect for human attention, with the detailed JRCv1 draft standard underneath."
 ---
-<p class="kicker">JRCv1 · working draft</p>
+<p class="kicker">Charter · commitments and the JRCv1 working draft</p>
 <h1>The Charter</h1>
+<p class="lede">The <a href="/manifesto/">manifesto</a> says what we believe. This is what it means in practice.</p>
 <div class="notice">
   <p><strong>JRCv1 is a draft conformance standard, not a copyright licence.</strong> It hasn't been legally reviewed, and nothing about it is OSI-approved. A project meets it by publishing evidence, not by paying anyone or asking permission. Disagree with a requirement? <a href="{{ repoUrl }}/issues/new?template=charter-rfc.md">Open an RFC</a>.</p>
 </div>
 <nav aria-label="On this page">
   <ul>
-    <li><a href="#principles">Principles</a></li>
+    <li><a href="#our-commitments">Commitments</a></li>
+    <li><a href="#the-detailed-standard-jrcv1-draft">JRCv1 principles</a></li>
     <li><a href="#conformance">Conformance</a></li>
     <li><a href="#agentic-reproducibility">Agentic reproducibility</a></li>
     <li><a href="#data-sovereignty">Data sovereignty</a></li>
@@ -18,9 +20,9 @@ description: "Draft JRCv1 conformance requirements: six pillars, evidence and li
     <li><a href="#human-attention">Human attention</a></li>
   </ul>
 </nav>
-<section id="principles">{% doc "CHARTER.md", { shiftHeadings: 1 } %}</section>
+<section id="principles">{% doc "CHARTER.md", { dropTitle: true } %}</section>
 <section id="conformance">{% doc "standard/CONFORMANCE.md", { shiftHeadings: 1 } %}</section>
 <section id="agentic-reproducibility">{% doc "standard/AGENTIC-REPRODUCIBILITY.md", { shiftHeadings: 1 } %}</section>
 <section id="data-sovereignty">{% doc "standard/DATA-SOVEREIGNTY.md", { shiftHeadings: 1 } %}</section>
-<section id="open-economics">{% doc "standard/OPEN-ECONOMICS.md", { shiftHeadings: 1 } %}</section>
+<section id="open-economics"><div class="notice" role="note"><p><strong>Under review.</strong> A founder-proposed <a href="{% sourceLink "launch/RFC-STEWARDSHIP-ECONOMY.md" %}">RFC</a> would replace the cost-recovery and efficiency pledge below with price honesty, and let steward pay be reported as one line. Until it is decided, this text stands.</p></div>{% doc "standard/OPEN-ECONOMICS.md", { shiftHeadings: 1 } %}</section>
 <section id="human-attention">{% doc "standard/HUMAN-ATTENTION.md", { shiftHeadings: 1 } %}</section>

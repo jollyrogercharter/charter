@@ -517,9 +517,12 @@ test("audit regressions: a mismatch on a founding file edited since preservation
   assert.ok(Array.isArray(s.changed_since_preservation) && s.changed_since_preservation.includes("README.md"), "README.md has been edited since preservation");
   const { createHash } = await import("node:crypto");
   const now = createHash("sha256").update(readFileSync("README.md")).digest("hex");
-  const v = await run("verify_hashes", { items: [{ path: "README.md", sha256: now }, { path: "MANIFESTO.md", sha256: "0".repeat(64) }] });
+  const v = await run("verify_hashes", { items: [{ path: "README.md", sha256: now }, { path: "SOURCES.md", sha256: "0".repeat(64) }] });
   assert.equal(v.results[0].result, "mismatch");
   assert.match(v.results[0].expected, /edited since the preservation commit/);
-  assert.equal(s.changed_since_preservation.includes("MANIFESTO.md"), false);
+  assert.equal(s.changed_since_preservation.includes("SOURCES.md"), false);
+  const v01 = createHash("sha256").update(readFileSync("history/MANIFESTO-v0.1-2026-10-17.md")).digest("hex");
+  assert.ok(s.changed_since_preservation.includes("MANIFESTO.md"));
+  assert.equal((await run("verify_hashes", { items: [{ path: "MANIFESTO.md", sha256: v01 }] })).results[0].result, "match", "the preserved v0.1 copy still verifies");
   assert.equal(v.results[1].expected, undefined, "an unedited file's mismatch isn't explained away");
 });

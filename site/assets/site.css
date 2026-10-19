@@ -65,6 +65,7 @@ nav a:hover, nav a[aria-current="page"] { color: var(--accent); text-decoration:
 
 .status-bar { margin: 0; padding: 0.4rem 0; font: 0.85rem/1.5 var(--sans); background: var(--ink); color: var(--paper); }
 .status-bar a { color: inherit; }
+.status-bar .wrap { display: block; }
 
 h1, h2, h3, h4 { line-height: 1.2; text-wrap: balance; }
 h1 { font-size: clamp(2rem, 1.2rem + 3vw, 3.2rem); margin: 0.5rem 0 1rem; }
@@ -111,6 +112,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .pillars { list-style: none; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
 .pillars li { border-top: 3px solid var(--ink); padding-top: 0.6rem; }
 .pillars strong { display: block; font-size: 1.1rem; }
+.principles { grid-template-columns: 1fr; }
+.principles strong { font-size: 1.3rem; }
 
 .hash { font-family: var(--mono); font-size: 0.8rem; overflow-wrap: anywhere; }
 

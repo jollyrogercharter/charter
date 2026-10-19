@@ -2,7 +2,7 @@
 
 <!-- Generated from launch/status.json by scripts/render-status.mjs. Edit the JSON, then run `npm run status`. -->
 
-**As of 2026-10-19T18:08Z.** The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, and the founding transcript is not published. The founding digest list has a verified Bitcoin timestamp.
+**As of 2026-10-19T20:45Z.** The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, and the founding transcript is not published. The founding digest list has a verified Bitcoin timestamp. The stewardship economic model is untested: a pilot is proposed and has not started.
 
 States: **implemented**: Exists and was verified on the date shown. **pending**: Started or requested, but not complete. **blocked**: Cannot proceed without a named person or decision. **historical**: True when written; kept as a record, not a current claim.
 
@@ -28,6 +28,7 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 | Community | Public announcements | **pending** | — | Drafts exist in launch/CONTENT-DRAFTS.md. Nothing has been posted. | 2026-10-18T04:51Z | Human reviews and posts from their own accounts. |
 | Economics | Public cost ledger | **implemented** | <https://jollyrogercharter.org/costs/> | Validated qm 0.1 ledger: $8.50 known cash plus 3 unknown AI-usage items; domain renewal kept as a forecast; human attention unmeasured. The build fails if the ledger is invalid. | 2026-10-18T07:00Z | — |
 | Economics | Quartermaster: ledger format and billing integrations | **pending** | <https://jollyrogercharter.org/spec/quartermaster/> | Ledger format qm 0.1 (draft), with validator, CSV import and summary tool. The cost page is now built from the validated ledger. No provider integrations: no credentials-free public sample data was available to build one against. | 2026-10-18T07:00Z | — |
+| Economics | Stewardship pilot | **blocked** | <https://jollyrogercharter.org/pilot/> | STEWARDSHIP-PILOT.md (proposal) and STEWARDSHIP-ECONOMY.md (explanation). No steward, application, customers, revenue or results exist. | 2026-10-19T20:45Z | A human picks the steward, application, price, success thresholds, upstream share and reviewer, and publishes them first. |
 | Standard | JRCv1 conformance tool (jrc 0.1 draft) | **implemented** | <https://jollyrogercharter.org/check/> | Offline CLI with init, check, report and challenge commands and a JSON Schema. 23 CLI tests, 10 of them regression tests from an independent code review and an adversarial review. This repository's own self-assessment is published at /check/. | 2026-10-18T06:30Z | — |
 | Standard | WebMCP tools for AI browser agents | **pending** | <https://jollyrogercharter.org/agents/> | Read-only and prepare-only tools (29 after the interoperability work) and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155 (2026-10-18), the original 13 tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable; the newer tools ran there only through the page forms. Native registration not yet verified: needs the flag or an origin-trial token. | 2026-10-18T18:30Z | Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial. |
 | Standard | Local MCP server for any agent | **implemented** | <https://jollyrogercharter.org/agents/#mcp> | bin/jrc-mcp.mjs: stdio, protocol 2026-07-28 plus legacy initialize, all 29 tools, no dependencies. Protocol conformance and error paths are tested with real messages. Not yet tried with third-party MCP clients. | 2026-10-19T18:08Z | Try it with several MCP clients and record the results. |
@@ -42,7 +43,8 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 3. **Founding conversation transcript** (blocked): Human exports the conversation; the agent drafts a redacted edition for review.
 4. **Charter discussion categories and seed RFCs** (blocked): Human creates the categories and approves the RFC text for posting.
 5. **Public announcements** (pending): Human reviews and posts from their own accounts.
-6. **WebMCP tools for AI browser agents** (pending): Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.
+6. **Stewardship pilot** (blocked): A human picks the steward, application, price, success thresholds, upstream share and reviewer, and publishes them first.
+7. **WebMCP tools for AI browser agents** (pending): Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.
 
 ## Historical records
 
