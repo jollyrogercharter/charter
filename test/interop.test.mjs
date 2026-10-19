@@ -139,7 +139,7 @@ test("quartermaster: savings, break-even and PR drafts follow the assumptions ex
   const pr = await run("prepare_cost_reduction_pr", { ...model, title: "Move to static hosting", risks: ["build minutes"], tests: ["load test"] });
   for (const h of ["## Proposed saving", "## Cost, before and after", "## Assumptions and risks", "## Tests", "## After merging"]) assert.ok(pr.body.includes(h), h);
   assert.match(pr.note, /No branch, PR or infrastructure change was made/);
-  const cli = spawnSync(process.execPath, ["bin/qm.mjs", "savings", "/dev/stdin"], { input: JSON.stringify(model), encoding: "utf8" });
+  const cli = spawnSync(process.execPath, ["bin/qm.mjs", "savings", "-"], { input: JSON.stringify(model), encoding: "utf8" });
   assert.equal(cli.status, 0, cli.stderr);
   assert.deepEqual(strip(JSON.parse(cli.stdout)), strip(s), "qm savings equals the tool");
 });

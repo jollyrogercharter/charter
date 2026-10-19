@@ -17,6 +17,7 @@ Usage:
   qm savings MODEL.json [--pr]       Net savings and break-even from {current, proposed, migration,
                                      horizon_months}; --pr prints a propose-a-saving PR body
 
+Any JSON file argument may be - to read standard input.
 Exit codes: 0 ok, 1 invalid ledger or input, 2 usage error.
 qm reads local files only. It never calls a billing API or asks for credentials.`;
 
@@ -24,7 +25,7 @@ const out = (s) => process.stdout.write(s);
 const fail = (msg, code = 2) => { process.stderr.write(`qm: ${String(msg).replace(/[\x00-\x08\x0b-\x1f\x7f-\x9f]/g, "?")}\n`); return code; };
 
 function readJson(file) {
-  try { return { value: JSON.parse(readFileSync(file, "utf8").replace(/^\ufeff/, "")) }; }
+  try { return { value: JSON.parse(readFileSync(file === "-" ? 0 : file, "utf8").replace(/^\ufeff/, "")) }; }
   catch (e) { return { error: `${file}: ${e.code ?? "not valid JSON"}` }; }
 }
 
