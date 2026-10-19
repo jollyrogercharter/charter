@@ -1,6 +1,6 @@
 # Independently Verify a Published Founding Record
 
-**Status:** instructions only. There is currently **no reviewed public transcript or actual `.ots` proof** in this starter package. Never use these commands to imply a completed attestation.
+**Status:** no reviewed public transcript of the founding conversation exists, so the transcript steps below are instructions only. The launch digest list *does* have a complete OpenTimestamps proof (`provenance/launch-digests.sha256.ots`), verified by the project against public explorers; see the last section. Never use these commands to imply an attestation that hasn't happened.
 
 ## Verify the exact public file
 

@@ -77,7 +77,7 @@ No claim of inventing free software, public-domain dedication, paid support, age
 - A cost-based stewardship pledge is voluntary for adopters, not a restriction attached to free code.
 - *As of 2026-10-17 (historical):* merely drafting documents here had **not** created a public Git repository, registered an organization or deployed any service. All three have since happened; see `launch/status.json`.
 
-## Verifiable founding record: planned, not yet issued
+## Verifiable founding record: digests timestamped, transcript not yet published
 
 A new proposed JRCv1 component is **Proof of Origin and Development History**. We intend to publish the reviewed founding ChatGPT conversation with independently checkable SHA-256 fingerprints, versioned Git history, and portable OpenTimestamps proofs (state labeled `not requested`, `pending`, or `verified`). This is about trustworthy creation records, **not exclusive rights, OpenAI certification, or proof of global firstness**.
 
@@ -86,7 +86,7 @@ A new proposed JRCv1 component is **Proof of Origin and Development History**. W
 - [Illustrative proof manifest (not actual evidence)](provenance/proof-manifest.example.json)
 - [Source-transcript and redaction policy](transparency/CONVERSATION-PUBLICATION.md)
 
-**Status as of 2026-10-17 (historical):** no true conversation-source export or human-approved public transcript has been provided to this package; no independent timestamp has been issued or verified here.
+**Status (checked 2026-10-19):** the SHA-256 digest list of the launch files has a complete OpenTimestamps proof, attested in Bitcoin block 971948 and verified by the project's AI agent against public explorers, not an independent party. No conversation-source export or human-approved public transcript has been provided. (Until 2026-10-18 this section said no timestamp had been issued; that was true then.)
 
 ## Website and launch state
 
@@ -107,6 +107,10 @@ Spec: [`spec/JRC-MANIFEST.md`](spec/JRC-MANIFEST.md) · Schema: [`spec/jrc-0.1.s
 ## For AI agents (WebMCP)
 
 Twenty-nine read-only and prepare-only capabilities are available to any agent through a local MCP server (`node bin/jrc-mcp.mjs`), the CLI (`jrc tool NAME`), WebMCP in the browser, and static JSON under `/api/v1/`. Nothing posts, publishes or signs in. See [`docs/AGENT-INTEROP.md`](docs/AGENT-INTEROP.md), [`docs/WEBMCP.md`](docs/WEBMCP.md) and https://jollyrogercharter.org/agents/.
+
+## Open books and a verifiable treasury (draft RFC)
+
+[`BITCOIN-TREASURY.md`](BITCOIN-TREASURY.md) compares three ways to make a project's money accountable: open accounting, open accounting committed to a timestamped ledger, and that plus a Bitcoin treasury. It recommends the second as a baseline and leaves Bitcoin optional, and it changes nothing in JRCv1. The prototype is an append-only, double-entry journal (`qm treasury`, spec [`spec/quartermaster/QMT-JOURNAL.md`](spec/quartermaster/QMT-JOURNAL.md)) with offline Bitcoin proof checks and Merkle snapshots. **JRC itself holds no money or bitcoin**; https://jollyrogercharter.org/treasury/ shows a clearly simulated Apple-to-Bitcoin example.
 
 ## Adopt JRCv1: assess a repository
 

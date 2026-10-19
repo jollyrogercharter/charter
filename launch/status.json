@@ -215,6 +215,17 @@
       "owner": "human"
     },
     {
+      "id": "treasury-journal",
+      "area": "Economics",
+      "title": "Verifiable treasury journal (draft RFC and prototype)",
+      "state": "pending",
+      "url": "https://jollyrogercharter.org/treasury/",
+      "evidence": "BITCOIN-TREASURY.md (draft RFC), qmt 0.1 journal format and schema, lib/treasury (hash-chained double-entry journal, offline Bitcoin proof checks, RFC 6962 snapshots, read-only Apple/bank/exchange/BTCPay/Esplora adapters) and a simulated Apple-to-Bitcoin example. JRC itself has no treasury, revenue or bitcoin. Not adopted into JRCv1.",
+      "verified_utc": "2026-10-19T19:03Z",
+      "next": "Community debate on the RFC; counsel and CPA questions in section 6; no real treasury without the human initiator's decision.",
+      "owner": "human"
+    },
+    {
       "id": "mcp-server",
       "area": "Standard",
       "title": "Local MCP server for any agent",
