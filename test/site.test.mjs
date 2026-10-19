@@ -4,9 +4,10 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
+import { renderStatus } from "../scripts/render-status.mjs";
 
 const SITE = "_site";
-const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/how-it-was-made/", "/conversation/", "/conversation/archive/", "/provenance/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/"];
+const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/how-it-was-made/", "/conversation/", "/conversation/archive/", "/provenance/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/"];
 const FOUNDING_LINE = "If we can explain how to build it, we should explain how to run it. If we can explain how to run it, we should explain what it costs. And if someone can make it better or cheaper, they should be free to try.";
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => {
@@ -115,6 +116,21 @@ test("licence and notice are present and linked", () => {
   assert.match(read("LICENSE"), /CC0 1\.0 Universal/);
   assert.ok(existsSync("NOTICE.md"));
   for (const f of htmlFiles) assert.match(read(f), /blob\/main\/LICENSE">CC0 1\.0</, `${f} footer licence link`);
+});
+
+test("status has one source and every view agrees with it", () => {
+  const s = JSON.parse(read("launch/status.json"));
+  assert.equal(read("launch/LAUNCH-STATUS.md"), renderStatus(s), "LAUNCH-STATUS.md is stale; run npm run status");
+  const ids = s.items.map((i) => i.id);
+  assert.deepEqual(ids.filter((id, n) => ids.indexOf(id) !== n), [], "duplicate status ids");
+  const page = text(read(routeFile("/status/")));
+  for (const i of s.items) assert.ok(page.includes(i.title), `status page missing ${i.id}`);
+  const m = JSON.parse(read("provenance/launch-manifest.json"));
+  const ots = s.items.find((i) => i.id === "opentimestamps");
+  assert.equal(ots.state === "implemented" ? "verified" : ots.state, m.timestamp_state, "status.json and the manifest disagree about the timestamp");
+  for (const i of s.items.filter((x) => x.state === "implemented" && x.url?.startsWith("https://jollyrogercharter.org/"))) {
+    assert.ok(existsSync(routeFile(new URL(i.url).pathname)), `${i.id} claims a page that isn't built`);
+  }
 });
 
 test("cost ledger never invents figures", () => {

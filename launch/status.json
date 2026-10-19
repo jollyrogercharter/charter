@@ -1,0 +1,214 @@
+{
+  "schema": "jrc-status-0.1",
+  "as_of_utc": "2026-10-18T17:30Z",
+  "states": {
+    "implemented": "Exists and was verified on the date shown.",
+    "pending": "Started or requested, but not complete.",
+    "blocked": "Cannot proceed without a named person or decision.",
+    "historical": "True when written; kept as a record, not a current claim."
+  },
+  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, and the founding transcript is not published. The founding digest list has a verified Bitcoin timestamp.",
+  "items": [
+    {
+      "id": "repo",
+      "area": "Infrastructure",
+      "title": "Public repository",
+      "state": "implemented",
+      "url": "https://github.com/jollyrogercharter/charter",
+      "evidence": "Public, CC0-1.0 detected by GitHub.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "org-security",
+      "area": "Infrastructure",
+      "title": "Org 2FA and branch protection",
+      "state": "implemented",
+      "url": "https://github.com/jollyrogercharter",
+      "evidence": "Org requires 2FA. Ruleset protect-main requires a pull request and the build-and-test check, and blocks force-push and deletion.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "second-owner",
+      "area": "Infrastructure",
+      "title": "Second organization owner",
+      "state": "pending",
+      "evidence": "One owner invitation outstanding; one active admin.",
+      "verified_utc": "2026-10-18T04:40Z",
+      "next": "Invitee accepts; then raise required approvals on main to 1.",
+      "owner": "human"
+    },
+    {
+      "id": "ci",
+      "area": "Infrastructure",
+      "title": "Continuous integration",
+      "state": "implemented",
+      "url": "https://github.com/jollyrogercharter/charter/actions",
+      "evidence": "build-and-test passes on main and pull requests.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "domain",
+      "area": "Infrastructure",
+      "title": "Domain jollyrogercharter.org",
+      "state": "implemented",
+      "url": "https://jollyrogercharter.org",
+      "evidence": "Cloudflare Registrar; registered 2026-10-18; $8.50 first year, renews $11.20/yr, auto-renew on.",
+      "verified_utc": "2026-10-18T04:40Z"
+    },
+    {
+      "id": "hosting",
+      "area": "Infrastructure",
+      "title": "Hosting and HTTPS",
+      "state": "implemented",
+      "url": "https://jollyrogercharter.org",
+      "evidence": "Cloudflare Pages free plan, auto-deploys from main. HTTP redirects to HTTPS with a 301. Served provenance manifest matches the repository byte for byte.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "www",
+      "area": "Infrastructure",
+      "title": "www.jollyrogercharter.org",
+      "state": "implemented",
+      "evidence": "Added as a second Cloudflare Pages custom domain (CNAME www → jollyrogercharter.pages.dev) at the human's request. Serves the site over HTTPS; canonical links point to the apex domain.",
+      "verified_utc": "2026-10-18T17:55Z",
+      "url": "https://www.jollyrogercharter.org"
+    },
+    {
+      "id": "mirror-host",
+      "area": "Infrastructure",
+      "title": "Second, independent host",
+      "state": "pending",
+      "evidence": "DEPLOYMENT.md documents alternatives; none deployed.",
+      "verified_utc": "2026-10-18T04:51Z",
+      "next": "Anyone can deploy a mirror from a fork; the project has not done so yet."
+    },
+    {
+      "id": "licence",
+      "area": "Rights",
+      "title": "CC0 1.0 dedication",
+      "state": "implemented",
+      "url": "https://github.com/jollyrogercharter/charter/blob/main/NOTICE.md",
+      "evidence": "LICENSE holds the official CC0 1.0 text; NOTICE.md lists exclusions. Decided by the human initiator without counsel.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "legal-review",
+      "area": "Rights",
+      "title": "Legal review of the dedication",
+      "state": "pending",
+      "evidence": "No counsel has reviewed it.",
+      "verified_utc": "2026-10-18T04:51Z",
+      "next": "Find a volunteer or paid open-source licensing reviewer.",
+      "owner": "human"
+    },
+    {
+      "id": "provenance-digests",
+      "area": "Provenance",
+      "title": "SHA-256 digests of the founding package",
+      "state": "implemented",
+      "url": "https://jollyrogercharter.org/provenance/",
+      "evidence": "36 files plus the received ZIP; a test re-verifies them against Git.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "opentimestamps",
+      "area": "Provenance",
+      "title": "OpenTimestamps proof of the digest list",
+      "state": "implemented",
+      "url": "https://jollyrogercharter.org/provenance/",
+      "evidence": "Verified 2026-10-18T17:24Z: attested in Bitcoin block 971948 (block time 2026-10-18T04:45:37Z) and three later blocks. Commitments checked against block headers from blockstream.info and mempool.space, not a local node. Proves existence no later than that time, not authorship or priority.",
+      "verified_utc": "2026-10-18T17:24Z"
+    },
+    {
+      "id": "transcript",
+      "area": "Provenance",
+      "title": "Founding conversation transcript",
+      "state": "blocked",
+      "evidence": "No ChatGPT export has been supplied. The site shows a curated archive labelled as a summary.",
+      "verified_utc": "2026-10-18T04:51Z",
+      "next": "Human exports the conversation; the agent drafts a redacted edition for review.",
+      "owner": "human"
+    },
+    {
+      "id": "discussions",
+      "area": "Community",
+      "title": "GitHub Discussions",
+      "state": "implemented",
+      "url": "https://github.com/jollyrogercharter/charter/discussions",
+      "evidence": "Enabled with GitHub's default categories; no posts yet.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "discussion-categories",
+      "area": "Community",
+      "title": "Charter discussion categories and seed RFCs",
+      "state": "blocked",
+      "evidence": "Categories proposed in launch/RFC-SEEDS.md are not created; GitHub only allows that in the web UI. Seed RFCs are drafted, not posted.",
+      "verified_utc": "2026-10-18T04:51Z",
+      "next": "Human creates the categories and approves the RFC text for posting.",
+      "owner": "human"
+    },
+    {
+      "id": "challenge",
+      "area": "Community",
+      "title": "Jolly Roger Challenge",
+      "state": "implemented",
+      "url": "https://jollyrogercharter.org/challenge/",
+      "evidence": "Published with issue template.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "independent-reproduction",
+      "area": "Community",
+      "title": "Independent reproduction of this project",
+      "state": "pending",
+      "evidence": "Only the agent that built the site has reproduced it. No unrelated person has.",
+      "verified_utc": "2026-10-18T04:51Z",
+      "next": "An unrelated person runs launch/FOUNDER-ABSENCE-TEST.md and files a report."
+    },
+    {
+      "id": "social",
+      "area": "Community",
+      "title": "Public announcements",
+      "state": "pending",
+      "evidence": "Drafts exist in launch/CONTENT-DRAFTS.md. Nothing has been posted.",
+      "verified_utc": "2026-10-18T04:51Z",
+      "next": "Human reviews and posts from their own accounts.",
+      "owner": "human"
+    },
+    {
+      "id": "costs",
+      "area": "Economics",
+      "title": "Public cost ledger",
+      "state": "implemented",
+      "url": "https://jollyrogercharter.org/costs/",
+      "evidence": "Manual entries; AI usage and human attention marked unknown.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "billing-integrations",
+      "area": "Economics",
+      "title": "Billing integrations (Quartermaster)",
+      "state": "pending",
+      "evidence": "Concept only; no code.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "conformance-tool",
+      "area": "Standard",
+      "title": "JRCv1 conformance tool",
+      "state": "pending",
+      "evidence": "Not built yet.",
+      "verified_utc": "2026-10-18T04:51Z"
+    },
+    {
+      "id": "founding-status-2026-10-17",
+      "area": "History",
+      "title": "Founding package status notes",
+      "state": "historical",
+      "url": "https://github.com/jollyrogercharter/charter/blob/e59cf86/README.md",
+      "evidence": "Status lines in the founding documents (for example 'no public Git repository has been created') were true when written on 2026-10-17 and are kept unchanged as a record.",
+      "verified_utc": "2026-10-18T04:51Z"
+    }
+  ]
+}

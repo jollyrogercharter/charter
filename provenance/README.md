@@ -1,5 +1,7 @@
 # Proof of Origin and Development History — Proposal for JRCv1
 
+> **Update 2026-10-18:** digests of the founding package are published, and an OpenTimestamps proof of them is verified in Bitcoin block 971948 (via public explorers); see [`launch-manifest.json`](launch-manifest.json). The paragraph below is the original 2026-10-17 status, kept as written.
+
 **Status: proposed open specification; no ChatGPT export has been received, no public founding transcript has been reviewed, and no external timestamp has been issued or verified.** This folder contains instructions and templates, not evidence of past certification.
 
 ## Why this exists

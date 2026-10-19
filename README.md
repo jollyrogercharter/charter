@@ -1,5 +1,7 @@
 # Truly Free: Founding Archive (working title)
 
+> **Current status lives in [`launch/status.json`](launch/status.json)** (rendered at https://jollyrogercharter.org/status/). Status lines below marked *as of 2026-10-17* are historical: they were true when the founding package was written and are kept unchanged as a record.
+
 **Status:** working founding archive, not a published standard, adopted license, launched product, or verified organization.  
 **Captured:** October 17, 2026; launch-handoff materials added afterward.  
 **Working identities:** Jolly Roger (movement / emblem), The Pirate Charter (manifesto), Truly Free (philosophy), Open Stewardship Standard (possible neutral specification), Quartermaster (possible reference application). Names are **not cleared** for use.
@@ -73,7 +75,7 @@ No claim of inventing free software, public-domain dedication, paid support, age
 - Public AT Protocol repositories can be replicated; private records need separate protections. Spaces was alpha as of October 17, 2026.
 - Publicly documenting development does not mean publishing secrets, user information, third-party licensed material or actionable vulnerabilities.
 - A cost-based stewardship pledge is voluntary for adopters, not a restriction attached to free code.
-- Merely drafting documents here has **not** created a public Git repository, registered an organization or deployed any service.
+- *As of 2026-10-17 (historical):* merely drafting documents here had **not** created a public Git repository, registered an organization or deployed any service. All three have since happened; see `launch/status.json`.
 
 ## Verifiable founding record: planned, not yet issued
 
@@ -84,7 +86,7 @@ A new proposed JRCv1 component is **Proof of Origin and Development History**. W
 - [Illustrative proof manifest (not actual evidence)](provenance/proof-manifest.example.json)
 - [Source-transcript and redaction policy](transparency/CONVERSATION-PUBLICATION.md)
 
-**Current status:** no true conversation-source export or human-approved public transcript has been provided to this package; no independent timestamp has been issued or verified here.
+**Status as of 2026-10-17 (historical):** no true conversation-source export or human-approved public transcript has been provided to this package; no independent timestamp has been issued or verified here.
 
 ## Website and launch state
 

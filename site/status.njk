@@ -1,0 +1,29 @@
+---
+layout: base.njk
+title: Status
+wide: true
+description: "What exists, what is pending, what is blocked, and what is only historical, with evidence and dates."
+---
+<p class="kicker">Status · as of {{ status.as_of_utc }}</p>
+<h1>Current status</h1>
+<p class="lede">{{ status.summary }}</p>
+<p>Generated from <a href="{% sourceLink "launch/status.json" %}"><code>launch/status.json</code></a>, the single source for status claims on this site.</p>
+<ul>
+{%- for k, v in status.states %}
+  <li><span class="badge {{ k }}">{{ k }}</span> {{ v }}</li>
+{%- endfor %}
+</ul>
+<div class="table-scroll"><table>
+  <thead><tr><th scope="col">Area</th><th scope="col">Item</th><th scope="col">State</th><th scope="col">Evidence</th><th scope="col">Verified (UTC)</th><th scope="col">Next</th></tr></thead>
+  <tbody>
+  {%- for i in status.items %}{% if i.state != "historical" %}
+    <tr><td>{{ i.area }}</td><td>{% if i.url %}<a href="{{ i.url }}">{{ i.title }}</a>{% else %}{{ i.title }}{% endif %}</td><td><span class="badge {{ i.state }}">{{ i.state }}</span></td><td>{{ i.evidence }}</td><td>{{ i.verified_utc }}</td><td>{{ i.next or "—" }}</td></tr>
+  {%- endif %}{% endfor %}
+  </tbody>
+</table></div>
+<h2>Historical records</h2>
+<ul>
+{%- for i in status.items %}{% if i.state == "historical" %}
+  <li><strong>{{ i.title }}</strong>: {{ i.evidence }}{% if i.url %} <a href="{{ i.url }}">Source</a>{% endif %}</li>
+{%- endif %}{% endfor %}
+</ul>
