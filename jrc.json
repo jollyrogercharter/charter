@@ -1,0 +1,150 @@
+{
+  "$schema": "https://jollyrogercharter.org/spec/jrc-0.1.schema.json",
+  "jrc": "0.1",
+  "project": {
+    "name": "Jolly Roger Charter (charter repository)",
+    "repository": "https://github.com/jollyrogercharter/charter",
+    "homepage": "https://jollyrogercharter.org",
+    "description": "Founding documents, draft JRCv1 standard, website and the jrc conformance tool."
+  },
+  "assessment": {
+    "kind": "self",
+    "assessor": "Claude Opus 5.5 (AI agent), for the human initiator",
+    "date": "2026-10-18",
+    "method": "Self-assessment written by the agent that built most of this repository, checked with jrc 0.1.0. Nobody unaffiliated has reviewed it."
+  },
+  "pillars": {
+    "code_rights": {
+      "status": "partial",
+      "claims": [
+        {
+          "id": "cc0-dedication",
+          "statement": "Original content is dedicated to the public domain under CC0 1.0, with exclusions listed.",
+          "evidence": [
+            { "kind": "file", "path": "LICENSE", "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499", "note": "Official CC0 1.0 legal code" },
+            { "kind": "file", "path": "NOTICE.md", "note": "Scope and exclusions" }
+          ],
+          "verification": { "level": "self-reported" }
+        },
+        {
+          "id": "locked-dependencies",
+          "statement": "All build dependencies are pinned in a lockfile; the jrc tool itself has no runtime dependencies.",
+          "evidence": [
+            { "kind": "file", "path": "package-lock.json" },
+            { "kind": "file", "path": "lib/jrc" }
+          ],
+          "verification": { "level": "self-reported" }
+        }
+      ],
+      "gaps": [
+        "No per-dependency licence inventory has been generated for the npm build dependencies.",
+        "The CC0 dedication has not been reviewed by counsel; CC0 does not waive patent rights."
+      ]
+    },
+    "development": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "clean-build",
+          "statement": "A fresh clone builds and tests with no credentials using two commands.",
+          "evidence": [
+            { "kind": "command", "command": "npm ci && npm test", "expect": "all tests pass, exit 0" },
+            { "kind": "file", "path": "DEPLOYMENT.md" },
+            { "kind": "file", "path": ".github/workflows/ci.yml" }
+          ],
+          "verification": { "level": "self-reported" }
+        },
+        {
+          "id": "agent-process-published",
+          "statement": "The prompts, plans and agent run records that produced this repository are published.",
+          "evidence": [
+            { "kind": "file", "path": "CLAUDE-LAUNCH-HANDOFF.md" },
+            { "kind": "file", "path": "JRCv1_Overnight_Claude_Handoff.md" },
+            { "kind": "file", "path": "plan.md" },
+            { "kind": "file", "path": "plan-overnight.md" },
+            { "kind": "file", "path": "transparency/agent-runs/2026-10-17-launch.md" },
+            { "kind": "file", "path": "transparency/AI-CONTRIBUTIONS.md" }
+          ],
+          "verification": { "level": "self-reported" }
+        },
+        {
+          "id": "agent-instructions",
+          "statement": "Contributor and agent instructions are in the repository, with no dependency on one AI vendor.",
+          "evidence": [
+            { "kind": "file", "path": "AGENTS.md" }
+          ],
+          "verification": { "level": "self-reported" }
+        }
+      ],
+      "gaps": [
+        "The founding ChatGPT conversation is summarised, not published; the transcript awaits an export and human review.",
+        "Session transcripts of the agent runs are summarised in run records, not published in full."
+      ]
+    },
+    "data": {
+      "status": "not-applicable",
+      "applicability": "The charter site is static. It has no accounts, forms, cookies or analytics, and stores no user records, so there is nothing to export or migrate. This changes when a reference application such as Quartermaster holds user data.",
+      "claims": []
+    },
+    "operations": {
+      "status": "partial",
+      "claims": [
+        {
+          "id": "portable-deploy",
+          "statement": "Deployment is documented for three interchangeable static hosts, with rollback by git revert.",
+          "evidence": [
+            { "kind": "file", "path": "DEPLOYMENT.md" },
+            { "kind": "url", "url": "https://jollyrogercharter.org/status/" }
+          ],
+          "verification": { "level": "self-reported" }
+        }
+      ],
+      "gaps": [
+        "Only one host is deployed, in one person's account; no mirror exists yet.",
+        "No incident or security-response procedure is written down."
+      ]
+    },
+    "economics": {
+      "status": "partial",
+      "claims": [
+        {
+          "id": "public-ledger",
+          "statement": "Operating costs are published with sources, and unknown amounts are shown as unknown.",
+          "evidence": [
+            { "kind": "file", "path": "launch/costs.json" },
+            { "kind": "url", "url": "https://jollyrogercharter.org/costs/" }
+          ],
+          "verification": { "level": "self-reported" }
+        }
+      ],
+      "gaps": [
+        "AI usage costs for the founding conversation and the build sessions are unknown.",
+        "Human attention has not been measured; no valuation method has been adopted."
+      ]
+    },
+    "governance": {
+      "status": "exploring",
+      "claims": [
+        {
+          "id": "open-debate",
+          "statement": "Anyone can propose changes or object through issue templates and GitHub Discussions.",
+          "evidence": [
+            { "kind": "file", "path": ".github/ISSUE_TEMPLATE" },
+            { "kind": "url", "url": "https://github.com/jollyrogercharter/charter/discussions" },
+            { "kind": "file", "path": "community/GOVERNANCE-AND-DEBATE.md" }
+          ],
+          "verification": { "level": "self-reported" }
+        }
+      ],
+      "gaps": [
+        "One person can merge and administer everything; a second owner has been invited but has not joined.",
+        "No decision rule, maintainer process or succession plan has been adopted."
+      ]
+    }
+  },
+  "limitations": [
+    "Written by the AI agent that built most of what it assesses; treat it as a starting point for criticism, not a verdict.",
+    "Independent reproduction: NOT YET VERIFIED. No unaffiliated person has rebuilt or redeployed this project.",
+    "This is not a certification. No one has certified it, and no one has endorsed it."
+  ]
+}

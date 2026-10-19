@@ -19,6 +19,8 @@ const DOC_ROUTES = {
   "transparency/CONVERSATION-PUBLICATION.md": "/conversation/",
   "transparency/AI-PROVENANCE-POLICY.md": "/how-it-was-made/",
   "research/PRECEDENTS.md": "/history/",
+  "spec/JRC-MANIFEST.md": "/spec/",
+  "spec/jrc-0.1.schema.json": "/spec/jrc-0.1.schema.json",
 };
 
 const md = markdownIt({ html: false, linkify: true, typographer: false });
@@ -90,6 +92,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "site/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "MANIFESTO.md": "downloads/MANIFESTO.md", "CHARTER.md": "downloads/CHARTER.md" });
   eleventyConfig.addPassthroughCopy({ "provenance/launch-manifest.json": "provenance/launch-manifest.json" });
+  eleventyConfig.addPassthroughCopy({ "spec/jrc-0.1.schema.json": "spec/jrc-0.1.schema.json", "jrc.json": "check/jrc.json" });
   eleventyConfig.addWatchTarget("./*.md");
 
   return {

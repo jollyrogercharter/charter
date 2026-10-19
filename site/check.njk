@@ -1,0 +1,56 @@
+---
+layout: base.njk
+title: Check a project
+description: "Run a JRCv1 self-assessment of any repository in five minutes, offline, with no account."
+---
+<p class="kicker">jrc · 0.1 draft · offline</p>
+<h1>Check a project in five minutes</h1>
+<p class="lede">Write down how your project meets the six pillars, point at the evidence, and let <code>jrc</code> check what can be checked offline. No account, network, AI provider or permission needed.</p>
+
+<div class="notice"><p><strong>What a report is not:</strong> a licence, a certification or an endorsement. <code>jrc</code> checks the structure of your manifest and the local files it cites. It can't tell whether your statements are true. Readers should treat every report as a claim to scrutinise.</p></div>
+
+<h2>1. Get the tool</h2>
+<p>You need Node 20 or newer. Either run it straight from the repository:</p>
+<pre><code>npx --yes --package=github:jollyrogercharter/charter jrc --help</code></pre>
+<p>or clone it and run it with no install step:</p>
+<pre><code>git clone {{ repoUrl }}.git jrc-tool
+node jrc-tool/bin/jrc.mjs --help</code></pre>
+<p>Below, <code>jrc</code> stands for either form. The tool has no runtime dependencies and is CC0.</p>
+
+<h2>2. Create a manifest</h2>
+<pre><code>cd your-project
+jrc init            # writes jrc.json; refuses to overwrite an existing one</code></pre>
+<p><code>init</code> lists files that look relevant as <em>candidates</em>, such as a licence, a lockfile or CI workflows. It never turns them into claims. That part is yours.</p>
+
+<h2>3. Write claims with evidence</h2>
+<p>Edit <code>jrc.json</code>. For each pillar, set a status and add claims. Each claim points to evidence: a file (optionally pinned by SHA-256), a URL, or a command a reviewer can run. Leave honest gaps. The <a href="/spec/">specification</a> explains every field.</p>
+
+<h2>4. Check it</h2>
+<pre><code>jrc check           # exit 0: valid (incomplete is fine) · 1: invalid · 2: usage error</code></pre>
+<p>It rejects evidence paths that leave your project, hashes that don't match, independence claims without a named reviewer, words like "certified" or "endorsed", hidden or look-alike characters, and anything that looks like an email address, token or home-directory path. <code>jrc report</code> refuses to publish a report that would leak one. It never fetches a URL or runs a command from your manifest.</p>
+
+<h2>5. Publish the report</h2>
+<pre><code>jrc report --out jrc-report     # jrc-report.json, JRC-REPORT.md, jrc-badge.svg</code></pre>
+<p>Reports are byte-identical every time they're generated from the same manifest. Commit them, link them, and invite people to check your claims. If you show the badge, link it to the report. It always says <em>self-reported</em> unless a named, separate reviewer is recorded.</p>
+
+<h2>This project's own report</h2>
+{% set r = jrc.report %}
+<p><img src="/check/badge.svg" alt="JRCv1 draft badge: {{ r.summary.evidenced_pillars }} of {{ r.summary.applicable_pillars }} applicable pillars evidenced, self-reported"> <a href="/check/report.json">report.json</a> · <a href="/check/jrc.json">jrc.json</a></p>
+<p>{{ r.summary.evidenced_pillars }} of {{ r.summary.applicable_pillars }} applicable pillars evidenced, {{ r.summary.partial_pillars }} partly, {{ r.summary.exploring_pillars }} exploring. Basis: {{ r.summary.basis }}. Assessor: {{ r.assessment.assessor }}, {{ r.assessment.date }}.</p>
+<div class="table-scroll"><table>
+  <thead><tr><th scope="col">Pillar</th><th scope="col">Declared</th><th scope="col">Level</th><th scope="col">Gaps we know about</th></tr></thead>
+  <tbody>
+  {%- for p in jrc.pillars %}{% set x = r.pillars[p.key] %}
+    <tr><td>{{ x.title }}</td><td>{{ x.declared_status }}</td><td><span class="badge {% if x.level == 'missing' %}pending{% endif %}">{{ x.level }}</span></td><td>{% if x.applicability %}{{ x.applicability }}{% else %}{{ x.gaps | join("; ") or "—" }}{% endif %}</td></tr>
+  {%- endfor %}
+  </tbody>
+</table></div>
+<ul>
+{%- for l in r.limitations %}
+  <li>{{ l }}</li>
+{%- endfor %}
+</ul>
+<p>Think we've overclaimed? <a href="{{ repoUrl }}/issues/new?template=what-would-make-this-fail.md">Tell us</a>. Corrections to this self-assessment are welcome as pull requests to <code>jrc.json</code>.</p>
+
+<h2>Then take the challenge</h2>
+<p>A report says what you <em>claim</em>. <a href="/challenge/">The Jolly Roger Challenge</a> tests it: someone else tries to rebuild and run your project without you.</p>

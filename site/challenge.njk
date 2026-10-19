@@ -16,4 +16,15 @@ description: "The Jolly Roger reproduction challenge: rebuild, redeploy and take
   <li>Find the cost ledger, the conformance criteria, the decision log and the original sources without asking anyone.</li>
   <li>Report anything that still depends on the founder. <a href="{% sourceLink "OPEN-DEPENDENCIES.md" %}"><code>OPEN-DEPENDENCIES.md</code></a> lists the ones we already know about.</li>
 </ol>
-<p><a href="{{ repoUrl }}/issues/new?template=reproduction-challenge.md">Report an attempt</a>. Partial results and failures count, and they tend to be the most useful reports.</p>
+<h2>Keep a log as you go</h2>
+<p>Download the <a href="/challenge/log-template.md">challenge log template</a> (Markdown), or generate one with <a href="/check/"><code>jrc</code></a>:</p>
+<pre><code>jrc challenge --project "Some Project" --repository https://example.org/repo --out CHALLENGE-LOG.md</code></pre>
+<p>It has a section for each of the nine steps, with places for status, commands with exit codes, blockers and sanitized evidence. Fill in only what you tried. <code>blocked</code> and <code>failed</code> are useful results.</p>
+
+<h2>Report it</h2>
+<ul>
+  <li><a href="{{ repoUrl }}/issues/new?template=reproduction-challenge.md">Open a reproduction report</a> and paste your log. This needs a GitHub account.</li>
+  <li>No GitHub account? Publish the log anywhere public and post the link in <a href="{{ repoUrl }}/discussions">Discussions</a>, or ask someone to file it for you. We'd still count it.</li>
+  <li>Don't include secrets, personal data or anyone else's private information. Use dummy data for any data-export step.</li>
+</ul>
+<p>You don't need to contact or ask the founder at any point. If you had to, that's a finding: put it in the log.</p>

@@ -28,7 +28,7 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 | Community | Public announcements | **pending** | — | Drafts exist in launch/CONTENT-DRAFTS.md. Nothing has been posted. | 2026-10-18T04:51Z | Human reviews and posts from their own accounts. |
 | Economics | Public cost ledger | **implemented** | <https://jollyrogercharter.org/costs/> | Manual entries; AI usage and human attention marked unknown. | 2026-10-18T04:51Z | — |
 | Economics | Billing integrations (Quartermaster) | **pending** | — | Concept only; no code. | 2026-10-18T04:51Z | — |
-| Standard | JRCv1 conformance tool | **pending** | — | Not built yet. | 2026-10-18T04:51Z | — |
+| Standard | JRCv1 conformance tool (jrc 0.1 draft) | **implemented** | <https://jollyrogercharter.org/check/> | Offline CLI with init, check, report and challenge commands and a JSON Schema. 23 CLI tests, 10 of them regression tests from an independent code review and an adversarial review. This repository's own self-assessment is published at /check/. | 2026-10-18T06:30Z | — |
 
 ## Needs the human
 

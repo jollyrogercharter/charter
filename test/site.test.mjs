@@ -7,7 +7,7 @@ import path from "node:path";
 import { renderStatus } from "../scripts/render-status.mjs";
 
 const SITE = "_site";
-const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/how-it-was-made/", "/conversation/", "/conversation/archive/", "/provenance/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/"];
+const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/how-it-was-made/", "/conversation/", "/conversation/archive/", "/provenance/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/", "/check/", "/spec/"];
 const FOUNDING_LINE = "If we can explain how to build it, we should explain how to run it. If we can explain how to run it, we should explain what it costs. And if someone can make it better or cheaper, they should be free to try.";
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => {
@@ -23,7 +23,7 @@ const ids = (html) => [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
 
 test("every route in the site spec is built", () => {
   for (const r of ROUTES) assert.ok(existsSync(routeFile(r)), `missing ${r}`);
-  for (const f of ["feed.xml", "sitemap.xml", "robots.txt", "404.html", "provenance/launch-manifest.json", "downloads/MANIFESTO.md"]) {
+  for (const f of ["check/report.json", "check/badge.svg", "check/jrc.json", "spec/jrc-0.1.schema.json", "challenge/log-template.md", "feed.xml", "sitemap.xml", "robots.txt", "404.html", "provenance/launch-manifest.json", "downloads/MANIFESTO.md"]) {
     assert.ok(existsSync(path.join(SITE, f)), `missing ${f}`);
   }
 });

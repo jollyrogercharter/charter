@@ -91,3 +91,15 @@ A new proposed JRCv1 component is **Proof of Origin and Development History**. W
 ## Website and launch state
 
 The static website in `site/` is generated from these Markdown files: `npm ci && npm test` builds it into `_site/` and checks it. See [`DEPLOYMENT.md`](DEPLOYMENT.md) for hosting anywhere, [`launch/LAUNCH-STATUS.md`](launch/LAUNCH-STATUS.md) for what is and isn't live, [`OPEN-DEPENDENCIES.md`](OPEN-DEPENDENCIES.md) for what still depends on the founder, and [`CHANGELOG.md`](CHANGELOG.md) for history.
+
+## Check a project against JRCv1 (`jrc`, 0.1 draft)
+
+`jrc` is an offline command-line tool in this repository, with no dependencies and CC0. It checks a project's `jrc.json` self-assessment against the six pillars and writes a reproducible report. It never fetches URLs, runs manifest commands, or says "certified".
+
+```bash
+npx --yes --package=github:jollyrogercharter/charter jrc init     # starter jrc.json, never overwrites
+npx --yes --package=github:jollyrogercharter/charter jrc check    # exit 0 valid · 1 invalid · 2 usage
+npx --yes --package=github:jollyrogercharter/charter jrc report --out jrc-report
+```
+
+Spec: [`spec/JRC-MANIFEST.md`](spec/JRC-MANIFEST.md) · Schema: [`spec/jrc-0.1.schema.json`](spec/jrc-0.1.schema.json) · This repository's own assessment: [`jrc.json`](jrc.json), rendered at https://jollyrogercharter.org/check/.
