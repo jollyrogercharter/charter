@@ -25,7 +25,7 @@ const fail = (msg, code = 2) => { process.stderr.write(`qm: ${String(msg).replac
 
 function readJson(file) {
   try { return { value: JSON.parse(readFileSync(file, "utf8").replace(/^\ufeff/, "")) }; }
-  catch (e) { return { error: `${file}: ${e.code ?? e.message}` }; }
+  catch (e) { return { error: `${file}: ${e.code ?? "not valid JSON"}` }; }
 }
 
 function report(errors) {

@@ -130,7 +130,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .adopt-form legend { font-weight: 700; margin-bottom: 0.4rem; padding: 0; }
 .adopt-form label { display: block; font-weight: 600; margin: 0.75rem 0 0.25rem; }
 .adopt-form fieldset label { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 400; margin: 0; }
-.adopt-form input[type=url], .adopt-form input[type=text], .adopt-form textarea { width: 100%; font: 1rem/1.4 var(--mono); padding: 0.55rem 0.6rem; border: 2px solid var(--ink-soft); background: var(--paper); color: var(--ink); border-radius: 0; }
+.adopt-form input[type=url], .adopt-form input[type=text], .adopt-form input[type=number], .adopt-form select, .adopt-form textarea { width: 100%; font: 1rem/1.4 var(--mono); padding: 0.55rem 0.6rem; border: 2px solid var(--ink-soft); background: var(--paper); color: var(--ink); border-radius: 0; }
 .adopt-form input:focus-visible, .adopt-form textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
 .help { font-size: 0.88rem; color: var(--ink-soft); margin: 0.3rem 0 0; }
 button { font: 600 0.95rem/1 var(--sans); padding: 0.55rem 0.9rem; border: 2px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
@@ -169,3 +169,4 @@ button:disabled { opacity: 0.6; cursor: progress; }
   .masthead nav, .status-bar, .skip, .cta { display: none; }
   body { background: #fff; color: #000; }
 }
+.caption-left { text-align: left; padding-bottom: 0.5rem; }

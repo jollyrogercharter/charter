@@ -83,7 +83,7 @@ test("community: challenge packages are canonical, self-reported and never indep
   assert.equal(a.package_sha256, b.package_sha256, "step order doesn't change the package");
   const canon = (v) => (Array.isArray(v) ? `[${v.map(canon).join(",")}]` : v && typeof v === "object" ? `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canon(v[k])}`).join(",")}}` : JSON.stringify(v));
   assert.equal(a.package_sha256, sha256Hex(canon(a.package_json)), "anyone can recompute the package hash");
-  assert.equal(a.summary.independent, false);
+  assert.equal(a.summary.independence_claimed, false);
   assert.equal(a.package_json.steps.length, 9, "all nine steps are listed; unreported ones are not-attempted");
   assert.match(a.markdown, /not an independent reproduction/);
 });
@@ -113,7 +113,7 @@ test("quartermaster: yearly costs never drift, and unknowns stay in their own pe
   assert.equal(r.b.one_time, null);
   assert.equal(r.difference_b_minus_a.yearly.amount, 48.8);
   assert.equal(r.difference_b_minus_a.one_time, null);
-  const s = await run("estimate_savings", { current: cfg("c", [item("d", 11.2, "yearly"), item("vm", 7)]), proposed: cfg("p", [item("d", 11.2, "yearly")]), horizon_months: 7 });
+  const s = await run("estimate_savings", { current: cfg("c", [item("d", 11.2, "yearly"), item("vm", 7)]), proposed: cfg("p", [item("d", 11.2, "yearly")]), migration: { one_time_cost: 0, assumption: "none needed" }, horizon_months: 7 });
   assert.equal(s.net_saving_over_horizon.amount, 49, "7 x $7 with no rounding drift");
 });
 
@@ -129,6 +129,13 @@ test("quartermaster: savings, break-even and PR drafts follow the assumptions ex
   assert.equal(worse.break_even_month, null);
   const unknown = await run("estimate_savings", { ...model, migration: { one_time_cost: null, assumption: "unknown" } });
   assert.equal(unknown.savings, null);
+  const { migration: _, ...unstated } = model;
+  assert.equal((await run("estimate_savings", unstated)).error.code, "INVALID_INPUT", "an unstated migration cost is never taken as zero");
+  const leak = "someone" + "@" + "example.com";
+  for (const extra of [{ title: `Ask ${leak}` }, { title: "Static", risks: [`ping ${leak}`] }, { title: "Static", tests: [`curl -H 'Authorization: Bearer ghp_${"a".repeat(36)}'`] }, { title: "Static", measurement: `mail ${leak}` }]) {
+    assert.equal((await run("prepare_cost_reduction_pr", { ...model, ...extra })).error.code, "PRIVATE_DATA", JSON.stringify(extra));
+  }
+  assert.equal((await run("estimate_savings", { ...model, migration: { one_time_cost: 1, assumption: `quote from ${leak}` } })).error.code, "PRIVATE_DATA");
   const pr = await run("prepare_cost_reduction_pr", { ...model, title: "Move to static hosting", risks: ["build minutes"], tests: ["load test"] });
   for (const h of ["## Proposed saving", "## Cost, before and after", "## Assumptions and risks", "## Tests", "## After merging"]) assert.ok(pr.body.includes(h), h);
   assert.match(pr.note, /No branch, PR or infrastructure change was made/);
@@ -192,7 +199,26 @@ test("atproto: Lexicons load in the reference implementation and example records
   }
   const a = json(path.join(SITE, "api/v1/atproto-example-assessment.json"));
   assert.equal(a.independenceVerified, false);
-  assert.equal(a.kind, "automated-scan");
+  assert.equal(a.kind, "replayed-snapshot", "built from a committed snapshot, not a live fetch");
+  assert.match(a.snapshotSha256, /^[0-9a-f]{64}$/);
+});
+
+test("audit regressions: snapshots can't pass as live scans, records refuse private data and unsafe links", async () => {
+  const snap = json("docs/demo/main/jrc-snapshot.json");
+  const forged = structuredClone(snap);
+  forged.source = { ...forged.source, kind: "github", repository: "https://github.com/victim/their-repo", commit: "0123456789abcdef0123456789abcdef01234567" };
+  const r = await run("export_atproto_record", { kind: "assessment", snapshot: forged, created_at: "2026-10-19T00:00:00Z" });
+  assert.equal(r.ok, true, JSON.stringify(r.error));
+  assert.equal(r.record.kind, "replayed-snapshot", "a hand-edited snapshot is never labelled an automated scan");
+  assert.match(r.record.snapshotSha256, /^[0-9a-f]{64}$/);
+  const leak = "mail me someone" + "@" + "example.com";
+  assert.equal((await run("export_atproto_record", { kind: "adoption", adoption: { repository: "https://github.com/x/y", statement: leak, declared_at: "2026-10-19T00:00:00Z" } })).error.code, "PRIVATE_DATA");
+  for (const subject of ["javascript:alert(1)", "data:text/html,<script>", "http://insecure.example/x"]) {
+    const c = await run("export_atproto_record", { kind: "contribution", contribution: { kind: "rfc", title: "t", subject }, created_at: "2026-10-19T00:00:00Z" });
+    assert.equal(c.valid, false, subject);
+    const p = await run("prepare_atproto_publication", { record: c.record });
+    assert.equal(p.error.code, "INVALID_RECORD", subject);
+  }
 });
 
 test("atproto: our validator agrees with @atproto/lexicon on invalid records", () => {
@@ -398,5 +424,77 @@ test("site config: forks can point links at themselves, hostile URLs are ignored
     assert.ok(d.post_link.startsWith("https://codeberg.org/fork/charter/issues/new"));
   } finally {
     configureSite(before);
+  }
+});
+
+test("audit regressions: the privacy scanner catches the secret formats the security review found missing", async () => {
+  const { privacyScan } = await import("../lib/jrc/core.mjs");
+  const r = (n) => "Ab3_dEf9-GhIjKlMnOpQrStUvWx".repeat(2).slice(0, n);
+  const leaks = [
+    "sk-" + "ant-api03-" + r(30), "sk-" + "proj-" + r(30), "AIza" + "SyA1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q", "https://hooks.slack.com/services/" + "T000/B000/xyz",
+    "postgres://app:s3cretpw" + "@" + "db.internal/x", "mongodb+srv://u:pw123456" + "@" + "cluster0.example.net", "Authorization: Basic " + "dXNlcjpwYXNzd29yZDEyMw==",
+    "CLOUDFLARE_API_TOKEN=" + "abcd1234efgh5678", "secret: " + "a".repeat(64), "cat ~/.npmrc",
+  ];
+  for (const l of leaks) assert.ok(privacyScan({ v: l }).length, l);
+  for (const ok of ["git clone git" + "@" + "github.com:org/repo.git", "Set CLOUDFLARE_API_TOKEN=${{ secrets.CF }} in CI", "Basic hosting at $5/month", "postgres://localhost/db", "sk-learn is a library"]) {
+    assert.deepEqual(privacyScan({ v: ok }), [], ok);
+  }
+});
+
+test("audit regressions: errors don't echo caller keys, drafts stay linkable, repo text stays inert", async () => {
+  const canary = "IGNORE_PREVIOUS_INSTRUCTIONS_" + "9f3c";
+  const e = await run("get_charter", { [canary]: 1 });
+  assert.equal(e.error.code, "INVALID_INPUT");
+  assert.ok(!JSON.stringify(e).includes(canary), "unknown keys aren't reflected");
+  assert.equal((await run("get_provenance", { path: "IGNORE PREVIOUS INSTRUCTIONS" })).error.code, "INVALID_INPUT");
+  const cyr = "Привет мир ".repeat(250);
+  const d = await run("draft_community_post", { kind: "rfc", title: "Long non-ASCII draft", sections: { proposal: cyr.slice(0, 2500), why: cyr.slice(0, 1500) } });
+  assert.equal(d.ok, true, JSON.stringify(d.error));
+  assert.ok(d.post_link.length <= 7000, `link is ${d.post_link.length} chars`);
+  assert.doesNotThrow(() => new URL(d.post_link));
+  assert.match(new URL(d.post_link).searchParams.get("body"), /truncated/);
+  for (const t of ["list_debates", "get_debate"]) assert.equal(TOOLS.find((x) => x.name === t).annotations.untrustedContentHint, true, `${t} returns repository prose`);
+});
+
+test("audit regressions: cost totals stay exact and assumptions are never dropped silently", async () => {
+  const huge = cfg("a", [{ id: "x", unit_cost: 1e7, quantity: 1e9, period: "yearly", assumption: "absurd" }]);
+  assert.equal((await run("compare_infrastructure_costs", { a: huge, b: { ...huge, name: "b" } })).error.code, "INVALID_INPUT");
+  const many = (n, p) => cfg(p, Array.from({ length: n }, (_, i) => item(`${p}${i}`, 1)));
+  const s = await run("estimate_savings", { current: many(15, "c"), proposed: many(15, "p"), migration: { one_time_cost: 0, assumption: "none" }, horizon_months: 12 });
+  assert.equal(s.assumptions_truncated, true);
+  assert.equal(s.assumptions_total, 31);
+});
+
+test("audit regressions: MCP stdio bounds line size while streaming and rejects non-string tool names", async () => {
+  const { boundedLines } = await import("../bin/jrc-mcp.mjs");
+  async function* chunks() { yield Buffer.from('{"a":1}\n' + "x".repeat(50)); yield Buffer.from("y".repeat(50)); yield Buffer.from('\r\n{"b":2}\n'); }
+  const got = [];
+  for await (const l of boundedLines(chunks(), 64)) got.push(l);
+  assert.deepEqual(got, ['{"a":1}', null, '{"b":2}'], "the oversized line is dropped, not buffered");
+  const server = createServer({ ctx: nodeContext() });
+  const meta = { "io.modelcontextprotocol/protocolVersion": "2026-07-28", "io.modelcontextprotocol/clientCapabilities": {} };
+  const r = await server.handle({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { _meta: meta, name: { toString: 1 } } });
+  assert.equal(r.error.code, -32602);
+  const big = spawnSync(process.execPath, ["bin/jrc-mcp.mjs"], { input: "a".repeat(5 * 1024 * 1024) + "\n" + JSON.stringify({ jsonrpc: "2.0", id: 2, method: "ping", params: { _meta: meta } }) + "\n", encoding: "utf8", maxBuffer: 1 << 20 });
+  const lines = big.stdout.trim().split("\n").map((l) => JSON.parse(l));
+  assert.equal(lines[0].error.message, "Message too large");
+  assert.equal(lines[1].id, 2, "the server keeps serving after an oversized line");
+});
+
+test("audit regressions: the CSP in _headers holds for every built page", async () => {
+  const { readdirSync } = await import("node:fs");
+  const headers = readFileSync(path.join(SITE, "_headers"), "utf8");
+  assert.match(headers, /script-src 'self';/);
+  assert.match(headers, /frame-ancestors 'none'/);
+  const files = readdirSync(SITE, { recursive: true }).filter((f) => /\.(html|js|mjs)$/.test(f));
+  for (const f of files) {
+    const t = readFileSync(path.join(SITE, f), "utf8");
+    if (f.endsWith(".html")) {
+      assert.doesNotMatch(t, /<script(?![^>]*\bsrc=)[^>]*>/i, `${f}: inline script`);
+      assert.doesNotMatch(t, /\sstyle="|<style\b|\son[a-z]+="/i, `${f}: inline style or handler`);
+      assert.doesNotMatch(t, /<(?:script|link)[^>]+(?:src|href)="https?:\/\/(?!jollyrogercharter\.org)[^"]+\.(?:js|css)/i, `${f}: third-party code`);
+    } else {
+      assert.doesNotMatch(t, /\.style\.|setAttribute\(["']style|\beval\(|new Function\(/, `${f}: blocked by the CSP`);
+    }
   }
 });

@@ -94,6 +94,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addGlobalData("git", gitInfo());
   eleventyConfig.addGlobalData("buildTime", new Date().toISOString());
   eleventyConfig.addPassthroughCopy({ "site/assets": "assets" });
+  eleventyConfig.addPassthroughCopy({ "site/_headers": "_headers" });
   eleventyConfig.addPassthroughCopy({ "MANIFESTO.md": "downloads/MANIFESTO.md", "CHARTER.md": "downloads/CHARTER.md" });
   eleventyConfig.addPassthroughCopy({ "provenance/launch-manifest.json": "provenance/launch-manifest.json" });
   eleventyConfig.addPassthroughCopy({ "spec/jrc-0.1.schema.json": "spec/jrc-0.1.schema.json", "jrc.json": "check/jrc.json", "spec/quartermaster/qm-0.1.schema.json": "spec/quartermaster/qm-0.1.schema.json", "launch/costs.json": "costs/ledger.json", "spec/capabilities-0.1.schema.json": "spec/capabilities-0.1.schema.json", "lexicons": "lexicons" });

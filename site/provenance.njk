@@ -9,7 +9,7 @@ description: "Proof-of-origin state: exact files, SHA-256 digests, timestamp sta
 <p class="lede">We're preserving the history of creation, not claiming ownership of ideas.</p>
 
 <div class="table-scroll"><table>
-  <caption class="kicker" style="text-align:left;padding-bottom:.5rem">Status as of {{ provenance.hashed_at_utc }}</caption>
+  <caption class="kicker caption-left">Status as of {{ provenance.hashed_at_utc }}</caption>
   <thead><tr><th scope="col">Evidence</th><th scope="col">State</th><th scope="col">Detail</th></tr></thead>
   <tbody>
     <tr><td>Founding package digests</td><td><span class="badge">published</span></td><td>{{ provenance.files.length }} files, SHA-256, from preservation commit <code>{{ provenance.preservation_commit | truncate(7, true, "") }}</code></td></tr>
@@ -58,7 +58,7 @@ shasum -a 256 -c {{ provenance.timestamped_artifact.path }}   # from the origina
 <p>Choose files from your copy of the founding documents. Their SHA-256 hashes are computed <strong>in your browser</strong>; the files never leave your machine, and only the hashes are compared with the published digests (the same check as the <code>verify_hashes</code> agent tool and <code>jrc provenance verify</code>).</p>
 <section data-jrc-verify hidden aria-labelledby="verify-h">
   <h3 id="verify-h" class="visually-hidden">Verify files</h3>
-  <form>
+  <form class="adopt-form">
     <p><label for="verify-files">Files</label><br><input id="verify-files" name="files" type="file" multiple></p>
     <p><button type="submit">Check hashes</button></p>
   </form>

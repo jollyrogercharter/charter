@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 // MCP server over stdio for the JRC capabilities: protocol 2026-07-28 (stateless, per-request _meta) plus legacy initialize.
 import { realpathSync } from "node:fs";
-import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 import { capabilityManifest } from "../lib/capabilities/manifest.mjs";
 import { nodeContext } from "../lib/capabilities/node-runtime.mjs";
@@ -69,7 +68,7 @@ export function createServer({ ctx = nodeContext(), log = () => {} } = {}) {
     }
     if (method === "tools/call") {
       const tool = TOOLS.find((t) => t.name === params.name);
-      if (typeof params.name !== "string" || !tool) return rpcError(id, -32602, `Unknown tool: ${String(params.name).slice(0, 60)}`);
+      if (typeof params.name !== "string" || !tool) return rpcError(id, -32602, typeof params.name === "string" ? `Unknown tool: ${params.name.slice(0, 60)}` : "params.name must be a string");
       const args = params.arguments ?? {};
       if (args === null || typeof args !== "object" || Array.isArray(args)) return rpcError(id, -32602, "arguments must be an object");
       if (inflight.has(id)) return rpcError(id, -32600, "A request with this id is already in progress");
@@ -94,13 +93,33 @@ export function createServer({ ctx = nodeContext(), log = () => {} } = {}) {
   return { handle };
 }
 
+const MAX_LINE = 2 * 1024 * 1024;
+
+// Splits stdin into lines without ever buffering more than MAX_LINE bytes; oversized lines are dropped as they stream.
+export async function* boundedLines(stream, max = MAX_LINE) {
+  let parts = [], size = 0, skipping = false;
+  for await (const chunk of stream) {
+    let start = 0;
+    for (let nl = chunk.indexOf(10); ; nl = chunk.indexOf(10, start)) {
+      const end = nl === -1 ? chunk.length : nl;
+      if (!skipping) {
+        size += end - start;
+        if (size > max) { skipping = true; parts = []; } else parts.push(chunk.subarray(start, end));
+      }
+      if (nl === -1) break;
+      yield skipping ? null : Buffer.concat(parts).toString("utf8").replace(/\r$/, "");
+      parts = []; size = 0; skipping = false; start = nl + 1;
+    }
+  }
+  if (!skipping && size) yield Buffer.concat(parts).toString("utf8");
+}
+
 async function serve() {
   const server = createServer({ log: (m) => process.stderr.write(`jrc-mcp: ${m}\n`) });
-  const rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
   const write = (o) => { if (o) process.stdout.write(JSON.stringify(o) + "\n"); };
-  for await (const line of rl) {
+  for await (const line of boundedLines(process.stdin)) {
+    if (line === null) { write(rpcError(null, -32600, "Message too large")); continue; }
     if (!line.trim()) continue;
-    if (line.length > 2 * 1024 * 1024) { write(rpcError(null, -32600, "Message too large")); continue; }
     let msg;
     try { msg = JSON.parse(line); } catch { write(rpcError(null, -32700, "Parse error")); continue; }
     server.handle(msg).then(write, (e) => write(rpcError(msg?.id, -32603, "Internal error", String(e?.message ?? e).slice(0, 200))));

@@ -28,7 +28,7 @@ const cfg = { name: "current", currency: "USD", items: [{ id: "hosting", unit_co
 const challenge = { project: "Demo", repository: "https://github.com/example-org/tidepool", commit: "abc1234", attempted_by: "A tester", affiliated: false, steps: [{ id: "clean-build", status: "passed" }] };
 const EXT_MINIMAL = {
   get_debate: { id: "rfc-1" }, draft_community_post: { kind: "rfc", title: "Test RFC" }, prepare_challenge_submission: challenge, find_opportunities: { skills: ["writing"] },
-  compare_infrastructure_costs: { a: cfg, b: { ...cfg, name: "b" } }, estimate_savings: { current: cfg, proposed: cfg, horizon_months: 12 }, prepare_cost_reduction_pr: { current: cfg, proposed: cfg, horizon_months: 12, title: "Test" },
+  compare_infrastructure_costs: { a: cfg, b: { ...cfg, name: "b" } }, estimate_savings: { current: cfg, proposed: cfg, migration: { one_time_cost: 0, assumption: "none" }, horizon_months: 12 }, prepare_cost_reduction_pr: { current: cfg, proposed: cfg, migration: { one_time_cost: 0, assumption: "none" }, horizon_months: 12, title: "Test" },
   verify_hashes: { items: [{ sha256: "0".repeat(64) }] }, export_atproto_record: { kind: "adoption", adoption: { repository: "https://github.com/x/y", declared_at: "2026-10-19T00:00:00Z" } },
   prepare_atproto_publication: { record: { $type: "org.jollyrogercharter.contribution", kind: "rfc", title: "t", subject: "https://github.com/x/y", createdAt: "2026-10-19T00:00:00Z" } },
 };

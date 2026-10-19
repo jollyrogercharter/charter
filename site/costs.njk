@@ -40,7 +40,7 @@ description: "Open operating-cost ledger: cash, forecasts, reserves and noncash 
 <p>Describe two ways of running a project as JSON and compare them. Everything is computed in your browser from the numbers you enter, in whole cents; unknown costs stay unknown. These are estimates, not measurements. The same logic is in the <code>compare_infrastructure_costs</code>, <code>estimate_savings</code> and <code>prepare_cost_reduction_pr</code> agent tools and in <code>qm compare</code> / <code>qm savings</code>. The example below is illustrative; the VPS price is a placeholder, not a quote.</p>
 <section data-jrc-compare hidden aria-labelledby="compare-h">
   <h3 id="compare-h" class="visually-hidden">Cost comparison</h3>
-  <form>
+  <form class="adopt-form">
     <p><label for="cfg-a">Configuration A (current)</label><br><textarea id="cfg-a" name="a" rows="10" spellcheck="false">{
   "name": "current",
   "currency": "USD",
@@ -94,7 +94,7 @@ description: "Open operating-cost ledger: cash, forecasts, reserves and noncash 
   ]
 }</textarea></p>
     <p><label for="horizon">Horizon (months)</label> <input id="horizon" name="horizon" type="number" min="1" max="120" value="24"></p>
-    <p><label for="migration">One-time migration cost (optional)</label> <input id="migration" name="migration" type="number" min="0" step="0.01"> <label for="migration-assumption">Based on</label> <input id="migration-assumption" name="migration_assumption" type="text" maxlength="300"></p>
+    <p><label for="migration">One-time migration cost (0 if none; leave blank if unknown)</label> <input id="migration" name="migration" type="number" min="0" step="0.01" value="0"> <label for="migration-assumption">Based on</label> <input id="migration-assumption" name="migration_assumption" type="text" maxlength="300"></p>
     <p><label for="pr-title">PR title (for the PR draft)</label> <input id="pr-title" name="title" type="text" maxlength="100"></p>
     <p><button type="submit" value="compare">Compare</button> <button type="submit" value="savings">Estimate savings</button> <button type="submit" value="pr">Draft a cost-reduction PR</button></p>
   </form>

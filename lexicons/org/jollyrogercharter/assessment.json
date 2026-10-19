@@ -34,10 +34,11 @@
             "knownValues": [
               "self",
               "independent",
-              "automated-scan"
+              "automated-scan",
+              "replayed-snapshot"
             ],
             "maxLength": 32,
-            "description": "Who assessed: the project itself, an unaffiliated person, or an automated scan."
+            "description": "Who assessed: the project itself, an unaffiliated person, an automated scan the tool fetched itself, or a scan of a snapshot someone supplied (which anyone can edit, so it proves nothing about the repository)."
           },
           "pillars": {
             "type": "array",
@@ -61,6 +62,12 @@
             "maxLength": 64,
             "minLength": 64,
             "description": "Lowercase hex SHA-256 of the report bytes."
+          },
+          "snapshotSha256": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 64,
+            "description": "Lowercase hex SHA-256 of the canonical JSON evidence snapshot the scan read. Lets anyone holding the snapshot re-run the scan and compare."
           },
           "independenceVerified": {
             "type": "boolean",

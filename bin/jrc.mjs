@@ -185,7 +185,7 @@ async function toolCommand(rest) {
     let text;
     try { text = parsed.values.input === "-" ? readFileSync(0, "utf8") : readFileSync(parsed.values.input, "utf8"); }
     catch (e) { return fail(`cannot read input: ${e.code ?? e.message}`, 1); }
-    try { input = JSON.parse(text.replace(/^\ufeff/, "")); } catch (e) { return fail(`input is not valid JSON: ${e.message}`, 1); }
+    try { input = JSON.parse(text.replace(/^\ufeff/, "")); } catch { return fail("input is not valid JSON", 1); }
   }
   return runAndPrint(name, input);
 }

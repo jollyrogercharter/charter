@@ -20,13 +20,13 @@ description: "Proposed org.jollyrogercharter Lexicons for JRC adoption, assessme
   {%- endfor %}
   </tbody>
 </table></div>
-<p>An assessment record from an automated scan always says <code>kind: "automated-scan"</code> and <code>independenceVerified: false</code>. Software alone can't establish independence. The example assessment record was built from this repository's own committed evidence snapshot.</p>
+<p>An assessment record always says <code>independenceVerified: false</code>; software alone can't establish independence. A scan the tool fetched from GitHub itself says <code>kind: "automated-scan"</code>. A scan of a snapshot someone supplied says <code>kind: "replayed-snapshot"</code>, because a snapshot can be edited and so proves nothing about the repository. Both carry <code>snapshotSha256</code>, so anyone holding the snapshot can re-run the scan. The example assessment record was built from this repository's own committed snapshot, so it is a replayed snapshot.</p>
 
 <h2 id="record">Prepare a contribution record</h2>
 <p>Fill this in to get a record and the <code>com.atproto.repo.createRecord</code> request to send from your own account. It's built and checked in your browser; nothing is sent.</p>
 <section data-jrc-record hidden aria-labelledby="record-h">
   <h3 id="record-h" class="visually-hidden">Contribution record</h3>
-  <form>
+  <form class="adopt-form">
     <p><label for="r-kind">Kind</label> <select id="r-kind" name="kind">{% for k in ["rfc", "criticism", "response", "reproduction", "code", "documentation", "translation", "cost-saving", "review"] %}<option>{{ k }}</option>{% endfor %}</select></p>
     <p><label for="r-title">Title</label><br><input id="r-title" name="title" type="text" required maxlength="200" size="60"></p>
     <p><label for="r-subject">What it's about (URL)</label><br><input id="r-subject" name="subject" type="url" required maxlength="300" size="60" value="{{ repoUrl }}"></p>
