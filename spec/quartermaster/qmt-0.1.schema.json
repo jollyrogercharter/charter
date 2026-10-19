@@ -560,6 +560,15 @@
         "note": {
           "type": "string",
           "maxLength": 500
+        },
+        "retires": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.:_-]{0,79}$"
+          },
+          "description": "Earlier pending entries this posted entry replaces."
         }
       }
     },

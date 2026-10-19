@@ -23,6 +23,7 @@ export function buildDemo() {
   const p2wpkh = (label) => `0014${hex(program(label))}`;
   const T1 = scriptToAddress(p2wpkh("treasury address 1"), "regtest");
   const T2 = scriptToAddress(p2wpkh("treasury address 2"), "regtest");
+  const T3 = scriptToAddress(p2wpkh("treasury address 3"), "regtest");
   const le = (n, bytes) => { const b = new Uint8Array(bytes); let v = BigInt(n); for (let i = 0; i < bytes; i++) { b[i] = Number(v & 0xffn); v >>= 8n; } return b; };
   const varint = (n) => (n < 0xfd ? new Uint8Array([n]) : concat(new Uint8Array([0xfd]), le(n, 2)));
   const script = (h) => { const b = fromHex(h); return concat(varint(b.length), b); };
@@ -63,11 +64,11 @@ export function buildDemo() {
   const unix = (iso) => Date.parse(iso) / 1000;
   const SATS_BOUGHT = 86087, DONATION_SATS = 21186, PAID_SATS = 50000, FEE_SATS = 1200;
   const withdrawTx = tx([{ txid: fakePrevout("exchange hot wallet"), vout: 3 }], [{ sats: SATS_BOUGHT, script: addressToScript(T1, "regtest") }, { sats: 912345, script: p2wpkh("exchange change") }]);
-  const donationTx = tx([{ txid: fakePrevout("donor wallet"), vout: 0 }], [{ sats: DONATION_SATS, script: addressToScript(T1, "regtest") }, { sats: 40000, script: p2wpkh("donor change") }]);
+  const donationTx = tx([{ txid: fakePrevout("donor wallet"), vout: 0 }], [{ sats: DONATION_SATS, script: addressToScript(T2, "regtest") }, { sats: 40000, script: p2wpkh("donor change") }]);
   const b1 = block(1001, hex(sha256d("JRC SIMULATED regtest block 1000")), [coinbase(1001), withdrawTx], unix("2026-11-14T10:20:00Z"));
   const b2 = block(1002, b1.hash, [coinbase(1002), donationTx], unix("2026-11-20T16:05:00Z"));
   const W = parseTx(withdrawTx).txid, D = parseTx(donationTx).txid;
-  const spendTx = tx([{ txid: W, vout: 0 }, { txid: D, vout: 0 }], [{ sats: PAID_SATS, script: p2wpkh("design studio payee") }, { sats: SATS_BOUGHT + DONATION_SATS - PAID_SATS - FEE_SATS, script: addressToScript(T2, "regtest") }]);
+  const spendTx = tx([{ txid: W, vout: 0 }, { txid: D, vout: 0 }], [{ sats: PAID_SATS, script: p2wpkh("design studio payee") }, { sats: SATS_BOUGHT + DONATION_SATS - PAID_SATS - FEE_SATS, script: addressToScript(T3, "regtest") }]);
   const b3 = block(1003, b2.hash, [coinbase(1003), spendTx], unix("2026-12-01T09:00:00Z"));
   const proof = (b, i, id) => ({ type: "chain_proof", id, network: "regtest", txid: b.txs[i].txid, tx_hex: b.txs[i].hex, header_hex: b.header, merkle: b.txs[i].branch, pos: i, block_height: b.height, source: "src-chain", simulated: SIM });
 
@@ -79,14 +80,16 @@ export function buildDemo() {
   const bankCsv = ["Date,Description,Amount", "2026-10-15,INCOMING TRANSFER PRIVATE DONOR,50.00", "2026-11-05,APPLE DEVELOPER PROCEEDS,104.49", "2026-11-06,ACH TRANSFER TO EXCHANGE,-100.00", "2026-11-20,EXAMPLE HOSTING CO,-25.00"].join("\n") + "\n";
   const exchangeCsv = ["txid,refid,time,type,subtype,aclass,asset,amount,fee,balance", "L1,R-DEP-1,2026-11-06 14:00:00,deposit,,currency,ZUSD,100.0000,0.0000,100.0000", "L2,R-TRD-1,2026-11-13 15:30:00,trade,,currency,ZUSD,-99.0000,1.0000,0.0000", "L3,R-TRD-1,2026-11-13 15:30:00,trade,,currency,XXBT,0.0008608700,0.0000000000,0.0008608700", "L4,R-WD-1,2026-11-14 10:00:00,withdrawal,,currency,XXBT,-0.0008608700,0.0000000000,0.0000000000"].join("\n") + "\n";
   const btcpayInvoice = { id: "SIMinv7Qd2", storeId: "SIMstore", amount: "25.00", paidAmount: "25.00", currency: "USD", type: "Standard", createdTime: unix("2026-11-20T15:58:00Z"), expirationTime: unix("2026-11-20T16:13:00Z"), status: "Settled", additionalStatus: "None", metadata: {} };
-  const btcpayMethods = [{ paymentMethodId: "BTC-CHAIN", currency: "BTC", destination: T1, rate: "118000.00", amount: "0.00021186", due: "0.00000000", payments: [{ id: `${D}-0`, receivedDate: unix("2026-11-20T16:01:00Z"), value: "0.00021186", fee: "0.00000000", status: "Settled", destination: T1 }] }];
+  const btcpayMethods = [{ paymentMethodId: "BTC-CHAIN", currency: "BTC", destination: T2, rate: "118000.00", amount: "0.00021186", due: "0.00000000", payments: [{ id: `${D}-0`, receivedDate: unix("2026-11-20T16:01:00Z"), value: "0.00021186", fee: "0.00000000", status: "Settled", destination: T2 }] }];
 
   // ---- Journal ----
   const base = { simulated: SIM };
   const acct = (id, kind, commodity, description, extra = {}) => ({ type: "account", id, kind, commodity, description, ...extra, ...base });
   const src = (id, kind, description, operator_supplied, doc) => ({ type: "source", id, kind, description, operator_supplied, retrieved_at: "2026-12-02T12:00:00Z", ...(doc ? { document_sha256: sha256Hex(doc) } : {}), ...base });
-  const salt = (id) => sha256Hex(`JRC SIMULATED salt for ${id}; a real operator uses 32 random bytes`);
-  const PRICE_BUY = "115000.00", PRICE_DONATION = "118000.00", PRICE_SPEND = "120000.00";
+  // Deterministic so the demo regenerates byte-for-byte; a real operator uses newSalt(), 32 random bytes.
+  let saltN = 0;
+  const salt = () => sha256Hex(`JRC SIMULATED salt ${++saltN}; a real operator uses 32 random bytes`);
+  const PRICE_BUY = "115000.00", PRICE_SPEND = "120000.00";
 
   const records = [];
   const add = (...rs) => records.splice(0, records.length, ...appendRecords(records, rs));
@@ -96,7 +99,7 @@ export function buildDemo() {
     acct("assets:bank:checking", "asset", "USD", "Business checking account"),
     acct("assets:exchange:usd", "asset", "USD", "US dollars held at the exchange (custodial)"),
     acct("assets:exchange:btc", "asset", "BTC", "Bitcoin held at the exchange (custodial)"),
-    acct("assets:treasury:btc", "asset", "BTC", "Self-custodied treasury, watch-only addresses (regtest)", { onchain: { network: "regtest", addresses: [T1, T2] } }),
+    acct("assets:treasury:btc", "asset", "BTC", "Self-custodied treasury, watch-only addresses (regtest)", { onchain: { network: "regtest", addresses: [T1, T2, T3] } }),
     acct("income:sales:app-store", "income", "USD", "App Store sales at customer price, including any tax Apple collected"),
     acct("income:donations:usd", "income", "USD", "Donations received in dollars"),
     acct("income:donations:btc", "income", "BTC", "Donations received in bitcoin"),
@@ -122,7 +125,6 @@ export function buildDemo() {
   );
   add(
     { type: "price", id: "price-2026-11-13", at: "2026-11-13T15:30:00Z", base: "BTC", quote: "USD", rate: PRICE_BUY, source: "src-prices", ...base },
-    { type: "price", id: "price-2026-11-20", at: "2026-11-20T16:01:00Z", base: "BTC", quote: "USD", rate: PRICE_DONATION, source: "src-prices", ...base },
     { type: "price", id: "price-2026-12-01", at: "2026-12-01T09:00:00Z", base: "BTC", quote: "USD", rate: PRICE_SPEND, source: "src-prices", ...base },
   );
 
@@ -131,16 +133,16 @@ export function buildDemo() {
     { match: "PRIVATE DONOR", counter: "income:donations:usd", kind: "donation", privacy: "committed", description: "Donation (donor withheld)", counter_evidence: { source: "src-bank", ref: "statement line 2" } },
     { match: "HOSTING", counter: "expenses:hosting", kind: "expense", description: "Hosting, November", counter_evidence: { source: "src-invoice-hosting" } },
   ];
-  const bankProps = statementProposals(bank, { account: "assets:bank:checking", source: "src-bank", rules: bankRules, idPrefix: "bank", simulated: SIM });
+  const bankProps = statementProposals(bank, { account: "assets:bank:checking", source: "src-bank", rules: bankRules, idPrefix: "bank", simulated: SIM, salt });
   const donation = bankProps.proposals.find((p) => p.kind === "donation");
-  add({ ...donation, salt: salt(donation.id) });
+  add(donation);
 
-  const apple = appleProposals(parseFinancialReport(appleTsv), { source: "src-apple-report", accounts: { income: "income:sales:app-store", commission: "expenses:marketplace:commission-and-tax", receivable: "assets:receivable:apple" }, simulated: SIM });
+  const apple = appleProposals(parseFinancialReport(appleTsv), { source: "src-apple-report", accounts: { income: "income:sales:app-store", commission: "expenses:marketplace:commission-and-tax", receivable: "assets:receivable:apple" }, simulated: SIM, salt });
   add(...apple.proposals);
-  const [appleSales, appleRefunds] = [apple.proposals.find((p) => p.kind === "sale"), apple.proposals.find((p) => p.kind === "refund")];
-  const proceeds = appleSales.postings[2].amount + appleRefunds.postings[2].amount;
+  const appleSales = apple.proposals[0];
+  const proceeds = appleSales.postings[2].amount;
 
-  add({ type: "transaction", id: "apple-payment-2026-11", kind: "settlement", status: "posted", occurred_at: "2026-11-05T00:00:00Z", description: "Apple pays fiscal September proceeds into the bank", privacy: "public", follows: [appleSales.id, appleRefunds.id],
+  add({ type: "transaction", id: "apple-payment-2026-11", kind: "settlement", status: "posted", occurred_at: "2026-11-05T00:00:00Z", description: "Apple pays fiscal September proceeds into the bank", privacy: "public", follows: [appleSales.id],
     postings: [
       { account: "assets:bank:checking", amount: proceeds, commodity: "USD", evidence: { source: "src-bank", ref: "statement line 3" } },
       { account: "assets:receivable:apple", amount: -proceeds, commodity: "USD", evidence: { source: "src-apple-payments", ref: "fiscal September, USD" } },
@@ -163,8 +165,8 @@ export function buildDemo() {
       { account: "assets:exchange:btc", amount: -SATS_BOUGHT, commodity: "BTC", evidence: { source: "src-exchange", ref: "statement line 5" } },
     ], ...base });
 
-  const btcpay = btcpayProposal(normalizeInvoice(btcpayInvoice, btcpayMethods), { source: "src-btcpay", accounts: { treasury: "assets:treasury:btc", income: "income:donations:btc" }, chainProofId: "proof-donation", chainSource: "src-chain", price: { id: "price-2026-11-20", quote: "USD", rate: PRICE_DONATION }, simulated: SIM }).proposal;
-  add(btcpay);
+  const btcpay = btcpayProposal(normalizeInvoice(btcpayInvoice, btcpayMethods), { source: "src-btcpay", accounts: { treasury: "assets:treasury:btc", income: "income:donations:btc" }, chainProofId: "proof-donation", chainSource: "src-chain", simulated: SIM });
+  add(btcpay.price, btcpay.proposal);
   add(bankProps.proposals.find((p) => p.kind === "expense"));
 
   const spendUsd = convert(PAID_SATS, "BTC", "USD", PRICE_SPEND), feeUsd = convert(FEE_SATS, "BTC", "USD", PRICE_SPEND);
@@ -192,14 +194,15 @@ export function buildDemo() {
   return {
     records, snapshot: snap,
     files: {
-      "sources/apple-financial-US-2026-09.txt": appleTsv,
-      "sources/bank-statement.csv": bankCsv,
-      "sources/exchange-ledgers.csv": exchangeCsv,
-      "sources/btcpay-invoice.json": JSON.stringify({ invoice: btcpayInvoice, payment_methods: btcpayMethods }, null, 2) + "\n",
+      "sources/simulated-apple-financial-US-2026-09.txt": appleTsv,
+      "sources/simulated-bank-statement.csv": bankCsv,
+      "sources/simulated-exchange-ledgers.csv": exchangeCsv,
+      "sources/simulated-btcpay-invoice.json": JSON.stringify({ simulated: true, invoice: btcpayInvoice, payment_methods: btcpayMethods }, null, 2) + "\n",
       "journal.jsonl": serializeJournal(records),
       "public-journal.jsonl": serializeJournal(snap.public_journal),
-      "snapshot.json": snap.snapshot_canonical + "\n",
-      "snapshot.sha256": `${snap.snapshot_sha256}  snapshot.json (canonical bytes without the trailing newline)\n`,
+      "snapshot.json": snap.snapshot_canonical,
+      "snapshot.sha256": `${snap.snapshot_sha256}  snapshot.json\n`,
+      "example-rules.json": JSON.stringify(bankRules, null, 2) + "\n",
       "regtest-anchors.json": JSON.stringify({ note: "SIMULATED. The block hashes a verifier would confirm from their own regtest node; on mainnet you confirm them from your own node or several explorers.", anchors }, null, 2) + "\n",
     },
   };

@@ -12,7 +12,7 @@ import { confirmAnchors, esploraClient, fetchProof, observations } from "../lib/
 import { addressToScript, scriptToAddress } from "../lib/treasury/bitcoin/address.mjs";
 import { verifyTxProof } from "../lib/treasury/bitcoin/spv.mjs";
 import { parseHeader, parseTx } from "../lib/treasury/bitcoin/tx.mjs";
-import { appendRecords, parseJournal, serializeJournal, validateJournal } from "../lib/treasury/journal.mjs";
+import { appendRecords, newSalt, parseJournal, serializeJournal, validateJournal } from "../lib/treasury/journal.mjs";
 import { chainCustody, index } from "../lib/treasury/ledger.mjs";
 import { canonical, inclusionProof, leafHash, merkleRoot, recordLeaf, verifyInclusion } from "../lib/treasury/merkle.mjs";
 import { convert, effectiveRate } from "../lib/treasury/money.mjs";
@@ -202,7 +202,7 @@ test("journal: works with no bitcoin and no payment provider at all", () => {
 test("snapshot: anyone can verify the public journal; withheld records stay verifiable on disclosure", () => {
   const { snapshot, public_journal: pub } = demo.snapshot;
   assert.ok(verifyPublic(pub, snapshot).ok);
-  assert.equal(snapshot.journal.withheld, 2, "the private donation and the single refund (below the aggregate threshold)");
+  assert.equal(snapshot.journal.withheld, 1, "the private donation");
   const hidden = demo.records.find((r) => r.id.startsWith("bank-") && r.privacy === "committed");
   assert.ok(!serializeJournal(pub).includes(hidden.salt), "salts of withheld records are never published");
   const proof = proveRecord(pub, hidden.seq);
@@ -235,7 +235,8 @@ test("ledger: custody follows coins, catches unproven spends and wrong fees; lot
 });
 
 test("apple: both header spellings, footers ignored, mismatched rows flagged, gzip accepted", () => {
-  const tsv = demo.files["sources/apple-financial-US-2026-09.txt"];
+  const tsv = demo.files["sources/simulated-apple-financial-US-2026-09.txt"];
+  const salt = () => newSalt();
   const parsed = parseFinancialReport(tsv);
   assert.equal(parsed.rows.length, 3);
   const older = tsv.replace("ISRC / ISBN", "ISRC/ISBN").replace("Sale or Return", "Sales or Return").replace("Country of Sale", "Country Of Sale");
@@ -244,15 +245,23 @@ test("apple: both header spellings, footers ignored, mismatched rows flagged, gz
   assert.equal(withFooter.rows.length, 3);
   assert.equal(withFooter.footer.length, 2);
   const wrong = parseFinancialReport(tsv.replace("83.88", "93.88"));
-  assert.ok(wrong.issues.some((i) => /Quantity x Partner Share/.test(i.issue)));
-  const { proposals } = appleProposals(parsed, { source: "s", accounts: { income: "i", commission: "c", receivable: "r" } });
-  assert.deepEqual(proposals.map((p) => [p.kind, p.postings.map((q) => q.amount)]), [["sale", [-15948, 4800, 11148]], ["refund", [999, -300, -699]]]);
+  assert.ok(wrong.issues.some((i) => /Quantity x Partner Share; not booked/.test(i.issue)));
+  assert.equal(wrong.rows.length, 2, "a row that doesn't add up is never booked");
+  const { proposals } = appleProposals(parsed, { source: "s", accounts: { income: "i", commission: "c", receivable: "r" }, salt });
+  assert.deepEqual(proposals.map((p) => [p.kind, p.count, p.postings.map((q) => q.amount)]), [["sale", 52, [-14949, 4500, 10449]]], "refunds are netted into the period's entry");
+  assert.ok(proposals.every((p) => /^[0-9a-f]{64}$/.test(p.salt)), "aggregates are salted");
+  const split = appleProposals(parsed, { source: "s", accounts: { income: "i", commission: "c", receivable: "r" }, salt, splitRefunds: true }).proposals;
+  assert.deepEqual(split.map((p) => [p.kind, p.postings.map((q) => q.amount)]), [["sale", [-15948, 4800, 11148]], ["refund", [999, -300, -699]]]);
+  const negPrice = parseFinancialReport(tsv.replace(/(\tR\t[^\n]*\t)9\.99(\tUSD)$/m, "$1-9.99$2"));
+  assert.deepEqual(appleProposals(negPrice, { source: "s", accounts: { income: "i", commission: "c", receivable: "r" }, salt }).proposals[0].postings.map((q) => q.amount), [-14949, 4500, 10449], "a negative Customer Price on a return can't inflate revenue");
+  assert.throws(() => appleProposals(parsed, { source: "s", accounts: {} }), /salt/);
   const gz = gzipSync(tsv);
   const dir = `${process.env.TMPDIR ?? "/tmp"}/qmt-${process.pid}.txt.gz`;
   spawnSync("sh", ["-c", `cat > ${dir}`], { input: gz });
   const cli = spawnSync(process.execPath, ["bin/qm.mjs", "treasury", "import", "apple", dir, "--source", "s", "--income", "i", "--commission", "c", "--receivable", "r"], { encoding: "utf8" });
   assert.equal(cli.status, 0, cli.stderr);
-  assert.equal(JSON.parse(cli.stdout).proposals.length, 2);
+  assert.equal(JSON.parse(cli.stdout).proposals.length, 1);
+  assert.deepEqual(JSON.parse(cli.stdout).issues, [], "parse issues are always printed");
   for (const bad of ["", "just\ttext\n", tsv.replace("Partner Share Currency", "Currency")]) assert.throws(() => parseFinancialReport(bad));
   assert.ok(parseFinancialReport(tsv.replace("08/30/2026", "13/45/2026")).footer.length + parseFinancialReport(tsv.replace("08/30/2026", "13/45/2026")).issues.length >= 1);
 });
@@ -262,20 +271,26 @@ test("statements: declared profiles only, parentheses and debit/credit columns, 
   assert.deepEqual(dc.rows.map((r) => r.amount), [-450, 125]);
   const paren = parseStatement("Date,Description,Amount\n2026-10-01,FEE,\"($1,234.50)\"\n", "generic-signed");
   assert.deepEqual(paren.rows.map((r) => r.amount), [-123450]);
-  const k = parseStatement(demo.files["sources/exchange-ledgers.csv"], "kraken-ledgers");
+  const k = parseStatement(demo.files["sources/simulated-exchange-ledgers.csv"], "kraken-ledgers");
   assert.deepEqual(k.rows.map((r) => [r.asset, r.amount, r.fee]), [["USD", 10000, 0], ["USD", -9900, 100], ["BTC", 86087, 0], ["BTC", -86087, 0]]);
   assert.throws(() => parseStatement("When,What,How much\n", "generic-signed"), /lacks the profile's columns/);
-  const r = statementProposals(parseStatement(demo.files["sources/bank-statement.csv"], "generic-signed"), { account: "a", source: "s", rules: [{ match: "HOSTING", counter: "e", kind: "expense" }], idPrefix: "b" });
+  const bankCsv = demo.files["sources/simulated-bank-statement.csv"];
+  const r = statementProposals(parseStatement(bankCsv, "generic-signed"), { account: "a", source: "s", rules: [{ match: "HOSTING", counter: "e", kind: "expense", description: "Hosting", counter_evidence: { source: "inv" } }], idPrefix: "b" });
   assert.equal(r.proposals.length, 1);
   assert.equal(r.unmatched.length, 3);
+  assert.throws(() => statementProposals(parseStatement(bankCsv, "generic-signed"), { account: "a", source: "s", rules: [{ match: "HOSTING", counter: "e", kind: "expense", counter_evidence: { source: "inv" } }], idPrefix: "b" }), /raw statement memos are never copied/);
+  assert.throws(() => statementProposals(parseStatement(bankCsv, "generic-signed"), { account: "a", source: "s", rules: [{ match: "HOSTING", counter: "e", kind: "expense", description: "Hosting" }], idPrefix: "b" }), /counter_evidence/);
+  assert.ok(parseStatement("Date,Description,Amount\n2026-10-01,X,\"12,50\"\n", "generic-signed").issues.some((i) => /ambiguous/.test(i.issue)), "a decimal comma is refused, not read as 1250");
   assert.ok(parseStatement("Date,Description,Amount\n2026-10-01,X,1.234\n", "generic-signed").issues.length, "sub-cent amounts are refused, not rounded");
 });
 
 test("btcpay: settled on-chain invoices only, ids hashed, client is GET-only with the key never echoed", async () => {
-  const d = JSON.parse(demo.files["sources/btcpay-invoice.json"]);
+  const d = JSON.parse(demo.files["sources/simulated-btcpay-invoice.json"]);
   const inv = normalizeInvoice(d.invoice, d.payment_methods);
   assert.equal(inv.payments[0].value_sats, 21186);
-  const prop = btcpayProposal(inv, { source: "s", accounts: { treasury: "t", income: "i" } }).proposal;
+  const { price, proposal: prop } = btcpayProposal(inv, { source: "s", accounts: { treasury: "t", income: "i" } });
+  assert.equal(price.rate, "118000.00", "valued at BTCPay's own locked rate, not a caller's guess");
+  assert.equal(prop.postings[0].value.amount, 2500);
   assert.ok(!JSON.stringify(prop).includes(d.invoice.id), "the invoice id itself isn't published");
   assert.match(btcpayProposal({ ...inv, status: "Expired" }, { source: "s", accounts: {} }).skipped, /only settled/);
   assert.throws(() => normalizeInvoice({ ...d.invoice, status: "Bogus" }, []));
@@ -317,10 +332,13 @@ test("cli: validate, verify, prove and append-check run on the published demo", 
   assert.equal(run("append-check", "journal.jsonl", "public-journal.jsonl").status, 0, "a redacted copy keeps every leaf hash, so it checks against the private journal");
   assert.equal(run("append-check", "public-journal.jsonl", "public-journal.jsonl").status, 0);
   const chain = run("chain-check", "../../test/fixtures/treasury/block170.json");
-  assert.equal(chain.status, 1, "the fixture wraps the proof; chain-check wants a proof file");
+  assert.equal(chain.status, 0, "a { proof } wrapper is accepted");
+  assert.equal(JSON.parse(chain.stdout).status, "proof-valid-unanchored");
+  assert.equal(run("chain-check", "../../test/fixtures/treasury/block170.json", "--require-anchor").status, 1, "--require-anchor fails without an anchor");
+  assert.match(run("verify").stderr, /missing a journal file/);
   assert.equal(run("nonsense").status, 1);
   assert.match(run("--help").stdout, /Nothing here holds keys/);
-  assert.ok(parseJournal(readFileSync("treasury/demo/public-journal.jsonl", "utf8")).length === 45);
+  assert.ok(parseJournal(readFileSync("treasury/demo/public-journal.jsonl", "utf8")).length === demo.records.length);
 });
 
 test("schema: every demo record, private and public, matches the published JSON Schema", async () => {
@@ -369,6 +387,123 @@ test("[simulated] /treasury/ page: the in-browser check recomputes the published
   assert.equal(live.textContent, "Record 30 verified.");
   form.elements.seq.value = "999";
   await submit({ preventDefault() {} });
-  assert.match(live.textContent, /Choose a record from 1 to 45/);
+  assert.match(live.textContent, new RegExp(`Choose a record from 1 to ${demo.records.length}`));
   delete globalThis.document;
+});
+
+// ---- Regression tests for the five review passes on bf44014 ----
+
+test("review (privacy): nothing withheld can be recovered from the snapshot, and leaky publications are refused", async () => {
+  const hiddenIds = demo.records.filter((r, i) => demo.snapshot.public_journal[i].type === "commitment");
+  const text = demo.snapshot.snapshot_canonical + readFileSync("_site/api/v1/treasury-demo.json", "utf8") + readFileSync("_site/treasury/index.html", "utf8");
+  for (const r of hiddenIds) {
+    for (const needle of [r.id, r.occurred_at, r.description, r.salt]) assert.ok(!text.includes(needle), `withheld ${r.seq} leaks ${needle}`);
+  }
+  assert.equal(demo.snapshot.snapshot.balances["income:donations:usd"], undefined, "a withheld donation's income account doesn't appear with its amount");
+  assert.equal(demo.snapshot.snapshot.balances["assets:bank:checking"].USD, -2051, "public balances leave the withheld deposit out");
+  const committedTrade = rechain(edit(demo.records, "exchange-trade-" + demo.records.find((r) => r.kind === "conversion").id.split("-").pop(), (r) => ({ ...r, privacy: "committed", salt: newSalt() })));
+  const refused = buildSnapshot(committedTrade);
+  assert.equal(refused.error.code, "WOULD_LEAK");
+  assert.match(JSON.stringify(refused.error.problems), /names withheld record/);
+  const committedChain = rechain(edit(demo.records, "pay-design-studio-2026-12-01", (r) => ({ ...r, privacy: "committed", salt: newSalt() })));
+  assert.match(JSON.stringify(buildSnapshot(committedChain).error.problems), /on-chain proof, which is public anyway/);
+});
+
+test("review (privacy): salts on every withholdable record, never weak or reused; scanner gaps closed", () => {
+  const sale = (more = {}) => tx("sale", "sale", [{ account: "assets:bank", amount: 500, commodity: "USD", evidence: ev }, { account: "income:sales", amount: -500, commodity: "USD", evidence: ev }], more);
+  assert.match(errs(tiny([sale({ privacy: "aggregated", count: 5 })])), /salt/);
+  assert.match(errs(tiny([sale({ privacy: "committed", salt: "0".repeat(64) })])), /salt/);
+  const s1 = newSalt();
+  assert.match(errs(tiny([sale({ privacy: "committed", salt: s1 }), { ...sale({ privacy: "committed", salt: s1 }), id: "sale2" }])), /never reused/);
+  for (const leak of ["GB82WEST12345698765432", "ABA 021000021", "acct no. 12345678", "Invoice INV-2026-0001", "SSN 123-45-6789", "call (555) 123-4567", "zpub6rFR7y4Q2AijBEqTUquhVz398htDFrtymD9xYYfG1m4wAcvPhXNfE3EfH1r1ADqtfSdVCToUG868RvUUkgDKf31mGDtKsAYz2oz2AGutZYs"]) {
+    assert.ok(errs(tiny([sale({ description: leak })])).includes("looks like"), leak);
+  }
+  assert.ok(errs(tiny([sale({ note_hex: "4111 1111 1111 1111" })])).includes("card or account number"), "no field-name exemption bypass");
+  assert.ok(errs(tiny([sale({ ["acct 98765432"]: 1 })])).includes("looks like"), "object keys are scanned");
+});
+
+test("review (accounting): moving or converting money never touches expenses except fees; amounts are exact", () => {
+  const exp = { type: "account", id: "expenses:svc", kind: "expense", commodity: "USD", description: "Services" };
+  const expBtc = { type: "account", id: "expenses:btc", kind: "expense", commodity: "BTC", description: "BTC services" };
+  assert.match(errs(tiny([exp, tx("t", "transfer", [{ account: "assets:bank", amount: -5, commodity: "USD", evidence: ev }, { account: "expenses:svc", amount: 5, commodity: "USD", evidence: ev }])])), /can't post to expense account/);
+  assert.match(errs(tiny([expBtc, tx("c", "conversion", [{ account: "assets:bank", amount: -500, commodity: "USD", evidence: ev }, { account: "equity:conv:usd", amount: 500, commodity: "USD" }, { account: "assets:btc", amount: 4000, commodity: "BTC", evidence: ev }, { account: "expenses:btc", amount: -4000, commodity: "BTC", evidence: ev }])])), /expense account|must be an asset, conversion or fee/);
+  const M = Number.MAX_SAFE_INTEGER;
+  assert.match(errs(tiny([tx("big", "transfer", [{ account: "assets:bank", amount: M, commodity: "USD", evidence: ev }, { account: "assets:bank", amount: 1, commodity: "USD", evidence: ev }, { account: "assets:bank", amount: 1, commodity: "USD", evidence: ev }, { account: "assets:bank", amount: -M, commodity: "USD", evidence: ev }, { account: "assets:bank", amount: -1, commodity: "USD", evidence: ev }])])), /doesn't balance/);
+  assert.match(errs(tiny([exp, tx("park", "expense", [{ account: "expenses:svc", amount: 5, commodity: "USD", evidence: ev }, { account: "equity:conv:usd", amount: -5, commodity: "USD" }])])), /conversion accounts are only for/);
+});
+
+test("review (accounting): sells, foreign-currency buys, date order, reversals and pending estimates", () => {
+  const extra = [
+    { type: "account", id: "assets:eur", kind: "asset", commodity: "EUR", description: "Euro account" },
+    { type: "account", id: "equity:conv:eur", kind: "equity", commodity: "EUR", description: "Conversion", conversion: true },
+  ];
+  const buy = (id, at, usd, sats) => tx(id, "conversion", [{ account: "assets:bank", amount: -usd, commodity: "USD", evidence: ev }, { account: "equity:conv:usd", amount: usd, commodity: "USD" }, { account: "assets:btc", amount: sats, commodity: "BTC", evidence: ev }, { account: "equity:conv:btc", amount: -sats, commodity: "BTC" }], { occurred_at: at });
+  const sell = tx("sell", "conversion", [{ account: "assets:btc", amount: -100000, commodity: "BTC", evidence: ev }, { account: "equity:conv:btc", amount: 100000, commodity: "BTC" }, { account: "assets:bank", amount: 15000, commodity: "USD", evidence: ev }, { account: "equity:conv:usd", amount: -15000, commodity: "USD" }], { occurred_at: "2026-10-20T00:00:00Z" });
+  // The older buy is recorded second; FIFO must still use it first.
+  const recs = tiny([...extra, buy("new", "2026-10-10T00:00:00Z", 12000, 100000), buy("old", "2026-10-01T00:00:00Z", 9000, 100000), sell]);
+  assert.deepEqual(validateJournal(recs), []);
+  const rep = fullReport(recs);
+  const s = rep.conversions.find((c) => c.transaction === "sell");
+  assert.equal(s.direction, "sell");
+  assert.equal(s.effective_rate, "150000.00");
+  assert.deepEqual([rep.lots.disposals[0].proceeds_cents, rep.lots.disposals[0].basis_cents, rep.lots.disposals[0].lots[0].acquired_in], [15000, 9000, "old"]);
+  const eurBuy = tx("eurbuy", "conversion", [{ account: "assets:eur", amount: -5000, commodity: "EUR", evidence: ev }, { account: "equity:conv:eur", amount: 5000, commodity: "EUR" }, { account: "assets:btc", amount: 50000, commodity: "BTC", evidence: ev }, { account: "equity:conv:btc", amount: -50000, commodity: "BTC" }]);
+  assert.equal(fullReport(tiny([...extra, eurBuy])).lots.open_lots["assets:btc"][0].basis_cents, null, "paid in another currency: unknown basis, never zero");
+  const rev = tx("rev", "reversal", buy("x", "2026-10-19T00:00:00Z", 1, 1).postings.map((p) => ({ account: p.account, amount: -p.amount, commodity: p.commodity })), { reverses: "x" });
+  const reversed = fullReport(tiny([buy("x", "2026-10-19T00:00:00Z", 1, 1), rev]));
+  assert.deepEqual([reversed.conversions.length, reversed.lots.disposals.length], [0, 0], "a reversed conversion is neither a conversion nor a disposal");
+  const est = tx("est", "sale", [{ account: "assets:bank", amount: 900, commodity: "USD" }, { account: "income:sales", amount: -900, commodity: "USD" }], { status: "pending" });
+  assert.match(errs(tiny([est, tx("r2", "reversal", [{ account: "assets:bank", amount: -900, commodity: "USD" }, { account: "income:sales", amount: 900, commodity: "USD" }], { reverses: "est" })])), /can't reverse a pending/);
+  const actual = tx("act", "sale", [{ account: "assets:bank", amount: 850, commodity: "USD", evidence: ev }, { account: "income:sales", amount: -850, commodity: "USD", evidence: ev }], { retires: ["est"] });
+  const settled = fullReport(tiny([est, actual]));
+  assert.deepEqual(settled.pending, {}, "a retired estimate stops counting as pending");
+  assert.match(errs(tiny([est, actual, { ...actual, id: "act2", retires: ["est"] }])), /once each/);
+});
+
+test("review (accounting): a price more than a day from its entry can't value it, and pending entries don't move as_of", () => {
+  const price = { type: "price", id: "p", at: "2026-06-01T00:00:00Z", base: "BTC", quote: "USD", rate: "100000.00", source: "bank" };
+  const t = tx("d", "donation", [{ account: "assets:btc", amount: 1000, commodity: "BTC", evidence: ev, value: { amount: 100, commodity: "USD", price: "p" } }, { account: "income:btc", amount: -1000, commodity: "BTC", evidence: ev }]);
+  assert.match(errs(tiny([price, t])), /more than a day/);
+  const future = tx("f", "sale", [{ account: "assets:bank", amount: 1, commodity: "USD" }, { account: "income:sales", amount: -1, commodity: "USD" }], { status: "pending", occurred_at: "2030-01-01T00:00:00Z" });
+  const sale = tx("s", "sale", [{ account: "assets:bank", amount: 1, commodity: "USD", evidence: ev }, { account: "income:sales", amount: -1, commodity: "USD", evidence: ev }]);
+  assert.equal(buildSnapshot(tiny([sale, future])).snapshot.as_of, "2026-10-19T00:00:00Z");
+});
+
+test("review (reproducibility): anchors output feeds --anchors directly; the stamped digest is the published one; CRLF is explained", async () => {
+  const { readAnchors } = await import("../lib/treasury/cli.mjs");
+  const p = B170.proof;
+  const routes = { "/block-height/170": B170.block_hash };
+  const mk = () => esploraClient({ baseUrl: "https://e.example/api", fetch: async (url) => ({ ok: true, status: 200, text: async () => routes[String(url).replace("https://e.example/api", "")] }) });
+  const r = await confirmAnchors([170], [mk(), mk()]);
+  const fileShape = { network: "mainnet", ...r, anchors: { mainnet: r.anchors } };
+  for (const shape of [fileShape, { anchors: r.anchors }]) {
+    const anchors = readAnchors(JSON.parse(JSON.stringify(shape)), "mainnet");
+    assert.equal(verifyTxProof(p, { anchors: anchors.mainnet }).status, "chain-verified", JSON.stringify(shape).slice(0, 60));
+  }
+  const snapFile = readFileSync("treasury/demo/snapshot.json");
+  assert.equal(createHash("sha256").update(snapFile).digest("hex"), readFileSync("treasury/demo/snapshot.sha256", "utf8").split(" ")[0], "shasum and ots stamp see the published digest");
+  assert.match(readFileSync("treasury/demo/snapshot.sha256", "utf8"), /^[0-9a-f]{64} {2}snapshot\.json\n$/, "sha256sum -c format");
+  const dir = `${process.env.TMPDIR ?? "/tmp"}/qmt-crlf-${process.pid}`;
+  spawnSync("mkdir", ["-p", dir]);
+  spawnSync("sh", ["-c", `cp treasury/demo/public-journal.jsonl ${dir}/ && printf '%s\\r\\n' "$(cat treasury/demo/snapshot.json)" > ${dir}/snapshot.json`]);
+  const v = spawnSync(process.execPath, ["bin/qm.mjs", "treasury", "verify", `${dir}/public-journal.jsonl`, `${dir}/snapshot.json`], { encoding: "utf8" });
+  assert.equal(v.status, 1);
+  assert.match(JSON.parse(v.stdout).why, /Windows line endings/);
+  assert.equal(canonical({ ["é"]: 1 }), canonical({ ["é"]: 1 }), "keys are NFC-normalized like values");
+  assert.throws(() => canonical({ ["é"]: 1, ["é"]: 2 }), /equal after NFC/);
+  assert.equal(canonical({ "￿": 2, "\u{1F600}": 1 }), '{"\u{1F600}":1,"￿":2}', "keys sort by UTF-16 code units, as in RFC 8785");
+});
+
+test("review (reproducibility): trades import from the CLI, watch needs a named explorer", () => {
+  const t = spawnSync(process.execPath, ["bin/qm.mjs", "treasury", "import", "trades", "treasury/demo/sources/simulated-exchange-ledgers.csv", "--profile", "kraken-ledgers", "--source", "s", "--account", "a:usd", "--btc-account", "a:btc", "--conversion-fiat", "c:usd", "--conversion-btc", "c:btc", "--fee-account", "f:usd"], { encoding: "utf8" });
+  assert.equal(t.status, 0, t.stderr);
+  const props = JSON.parse(t.stdout).proposals;
+  assert.equal(props.length, 1);
+  assert.ok(!props[0].id.includes("trd"), "exchange reference ids aren't published");
+  const w = spawnSync(process.execPath, ["bin/qm.mjs", "treasury", "watch", "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"], { encoding: "utf8" });
+  assert.equal(w.status, 1);
+  assert.match(w.stderr, /needs --explorer/);
+  const addrs = demo.records.find((r) => r.id === "assets:treasury:btc").onchain.addresses;
+  const payTo = demo.records.filter((r) => r.type === "chain_proof").flatMap((p) => parseTx(p.tx_hex).outputs.map((o) => o.script)).filter((sc) => addrs.map((a) => addressToScript(a, "regtest")).includes(sc));
+  assert.equal(new Set(payTo).size, payTo.length, "the demo never reuses a treasury address");
 });

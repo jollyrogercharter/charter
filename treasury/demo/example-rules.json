@@ -1,0 +1,22 @@
+[
+  {
+    "match": "PRIVATE DONOR",
+    "counter": "income:donations:usd",
+    "kind": "donation",
+    "privacy": "committed",
+    "description": "Donation (donor withheld)",
+    "counter_evidence": {
+      "source": "src-bank",
+      "ref": "statement line 2"
+    }
+  },
+  {
+    "match": "HOSTING",
+    "counter": "expenses:hosting",
+    "kind": "expense",
+    "description": "Hosting, November",
+    "counter_evidence": {
+      "source": "src-invoice-hosting"
+    }
+  }
+]

@@ -1,4 +1,5 @@
 {
+  "simulated": true,
   "invoice": {
     "id": "SIMinv7Qd2",
     "storeId": "SIMstore",
@@ -16,18 +17,18 @@
     {
       "paymentMethodId": "BTC-CHAIN",
       "currency": "BTC",
-      "destination": "bcrt1qpsdvejwhpqeh43eyk5hxmf2gecmr47rsa5vewn",
+      "destination": "bcrt1qppueyvkg36ey0c65rem4jehewj7r7gf22cdx3h",
       "rate": "118000.00",
       "amount": "0.00021186",
       "due": "0.00000000",
       "payments": [
         {
-          "id": "14f7ab923d337493710325dcee8de60559c2c38621d734797254cd633cf06ef7-0",
+          "id": "b610271ecf5712fe594add01df2fd497e39590b854742f2fe09603fe2cd48d41-0",
           "receivedDate": 1795190460,
           "value": "0.00021186",
           "fee": "0.00000000",
           "status": "Settled",
-          "destination": "bcrt1qpsdvejwhpqeh43eyk5hxmf2gecmr47rsa5vewn"
+          "destination": "bcrt1qppueyvkg36ey0c65rem4jehewj7r7gf22cdx3h"
         }
       ]
     }

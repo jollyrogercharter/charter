@@ -9,7 +9,13 @@ An append-only, double-entry journal that any project can publish, and a snapsho
 
 ## File format
 
-JSON Lines, UTF-8. Each line is one record in canonical JSON: keys sorted, no whitespace, integers only (no floats anywhere), strings NFC-normalized.
+JSON Lines, UTF-8, LF line endings. Each line is one record in **canonical JSON**:
+- object keys and string values NFC-normalized; two keys equal after normalization are an error;
+- keys sorted by UTF-16 code units (as in RFC 8785, and JavaScript's default sort);
+- no whitespace; strings escaped as `JSON.stringify` does (`"`, `\\` and control characters escaped; other characters, including non-ASCII, written as UTF-8);
+- numbers are integers in the safe range ±(2^53 − 1), with no floats and no `-0` anywhere; keys whose value is undefined are omitted.
+
+Test vectors: `{"b":1,"a":[true,null,"é"]}` → `{"a":[true,null,"é"],"b":1}`; keys `"\uffff"` and `"😀"` sort as `"😀"` first (UTF-16 surrogates sort below U+FFFF).
 
 Every record has:
 - `seq`: 1, 2, 3…
@@ -44,9 +50,13 @@ A **posting** is `{ account, amount, commodity, evidence: { source, ref? }, valu
 4. Income accounts appear only in `sale`, `donation`, `refund`, `revenue-adjustment` and `reversal`. **Transfers, conversions, deposits and withdrawals are never revenue.**
 5. Posted transactions cite evidence on every posting, except conversion-account legs. Use a `manual` or `estimate` source when that's all there is.
 6. Chain evidence is allowed only on postings to `onchain` accounts and on that transaction's BTC network fee. The transaction must reference a `chain_proof` whose bytes hash to its `txid`. An inflow must equal what the proven transaction pays to the account's addresses.
-7. A posting `value` must equal `amount × rate`, rounded half away from zero.
-8. `committed` transactions carry a 32-byte random `salt`; `aggregated` ones state their `count`.
-9. No email addresses, tokens, keys, home paths, card or account numbers, or extended private keys or WIF keys anywhere.
+   - `merkle` hashes are in display order (byte-reversed). Reverse each, then at level *i* hash `sha256d(sibling ‖ h)` if bit *i* of `pos` is 1, else `sha256d(h ‖ sibling)`; the result, reversed, must equal the header's Merkle root.
+   - Proof of work: the header hash, read as a big-endian number after reversal, must not exceed the target decoded from `bits`, and that target must not exceed the network's limit (mainnet and testnet `0x1d00ffff`, regtest `0x207fffff`).
+7. A posting `value` must equal `amount × rate`, rounded half away from zero, using a price dated within a day of the entry.
+8. `committed` and `aggregated` transactions carry a random 32-byte `salt` (64 hex digits, at least 10 distinct, never reused); `aggregated` ones also state their `count` (units, not distinct people).
+9. No email addresses, tokens, keys, home paths, card, account, IBAN, routing, SSN/EIN or phone numbers, extended keys (private or public) or WIF keys, in values or in keys. This is pattern matching: it can't recognise a person's name, so descriptions come from the operator's rules, never from raw bank memos.
+10. Transfers, conversions, deposits, withdrawals and settlements post to expense accounts only as positive fees. Conversion accounts appear only in conversion, settlement and reversal entries.
+11. A reversal has the same status as the entry it reverses. A posted entry may list `retires: [ids]` to replace earlier pending estimates, each once; retired estimates leave the pending balances.
 
 ## Evidence classes
 
@@ -68,9 +78,9 @@ Computed at read time per posting, never stored:
 - attention;
 - fixed statements of what the snapshot can't show.
 
-Its SHA-256 (of the canonical bytes, without the trailing newline) is what gets timestamped.
+`snapshot.json` is written without a trailing newline, so its file SHA-256 (`shasum -a 256 snapshot.json`, also in `snapshot.sha256` in `sha256sum -c` format) is the digest `ots stamp snapshot.json` timestamps. Every figure in it is computed from the **public** records only.
 
-The **public journal** replaces each `committed` transaction, and each aggregate whose `count` is below `policy.min_aggregate_count` (default 3), with `{ seq, type: "commitment", leaf }`. Every leaf hash is unchanged, so:
+The **public journal** replaces each `committed` transaction, and each aggregate whose `count` is below `policy.min_aggregate_count` (default 3), with `{ seq, type: "commitment", leaf }`. Publication is refused if a public record names a withheld one (`follows`, `reverses`, `covers`) or a withheld record has a chain proof. A withheld record's existence is visible, and neighbouring public records may reveal its size. Every leaf hash is unchanged, so:
 - `verifyPublic(public, snapshot)` checks record count, Merkle root, head, the hash chain across visible records and the withheld count;
 - `checkDisclosure(record, proof, root)` lets an auditor confirm a withheld record later;
 - `appendCheck(old, new)` works between private and public copies.
@@ -80,8 +90,8 @@ The **public journal** replaces each `committed` transaction, and each aggregate
 1. **Recompute the snapshot.** `qm treasury verify public-journal.jsonl snapshot.json` recomputes the leaves, root and chain.
 2. **Check the stamp.** `ots verify snapshot.json.ots` checks the timestamp; this needs a Bitcoin node, or use the explorer method in [`provenance/VERIFY.md`](../../provenance/VERIFY.md).
 3. **Anchor on-chain postings.**
-   - `qm treasury anchors HEIGHT --explorer blockstream --explorer mempool` gets agreeing block hashes, or take them from your own node.
-   - Then `qm treasury report journal.jsonl --anchors anchors.json` reclassifies those postings.
+   - `qm treasury anchors HEIGHT --explorer blockstream --explorer mempool > anchors.json` gets agreeing block hashes, or write `{ "anchors": { "mainnet": { "HEIGHT": "HASH" } } }` from your own node.
+   - Then `qm treasury report public-journal.jsonl --anchors anchors.json` reclassifies those postings, or check one proof with `grep '"type":"chain_proof"' public-journal.jsonl | head -1 > proof.json` and `qm treasury chain-check proof.json --anchors anchors.json --require-anchor`.
 4. **Check the code itself.** The algorithms (SHA-256, RFC 6962 Merkle trees, Bitcoin serialization) are standard, so an independent implementation in any language can check the same files.
 
 ## Not in 0.1
@@ -90,5 +100,6 @@ The **public journal** replaces each `committed` transaction, and each aggregate
 - Multi-currency FX gain and loss.
 - Consistency proofs between snapshots (`append-check` needs both journals).
 - An OFX or CAMT.053 bank importer.
+- A guard against operator-written rule regexes that backtrack badly (rules are trusted input).
 - A River export profile (headers not confirmed).
 - Exports to plain-text accounting tools.

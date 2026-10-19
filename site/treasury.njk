@@ -60,7 +60,8 @@ description: "A verifiable treasury journal: append-only books, Merkle commitmen
 <p>Network fee on the spend, recomputed from the chain: {{ treasury.treasury.custody.spends[0].network_fee_sats }} sats. Proofs show coins arrived and were spent as recorded; whether a coin is still unspent today is something a watch-only node or explorer reports, not something these proofs show.</p>
 
 <h2 id="fiat">Fiat not yet converted</h2>
-<p>Held in dollars: <strong>{{ treasury.fiat.unconverted }}</strong> (bank and exchange). Owed by Apple: {{ treasury.fiat.receivable }}. Pending, estimated and not counted in balances: {{ treasury.fiat.pending }}.</p>
+<p>Held in dollars, from public records: <strong>{{ treasury.fiat.unconverted }}</strong> (bank and exchange). Owed by Apple: {{ treasury.fiat.receivable }}. Pending, estimated and not counted in balances: {{ treasury.fiat.pending }}.</p>
+{% if treasury.fiat.bankNegative %}<p>The bank account shows <strong>{{ treasury.fiat.bank }}</strong>. It looks overdrawn because every figure here comes from public records only, and a withheld deposit isn't included. That's the honest limit of withholding: a reader can see <em>that</em> something was withheld, and roughly how much at least, but not what it was.</p>{% endif %}
 {{ txrows(treasury.revenue) }}
 
 <h2 id="conversions">Conversions</h2>
@@ -75,7 +76,7 @@ description: "A verifiable treasury journal: append-only books, Merkle commitmen
 
 <h2 id="expenses">Expenses</h2>
 {{ txrows(treasury.expenses) }}
-<p>Paying in bitcoin is a disposal for US tax purposes. Under FIFO per account, the {{ treasury.lots.disposals[0].sats }}-sat payment had a cost basis of ${{ (treasury.lots.disposals[0].basis_cents / 100) | round(2) }} and was worth ${{ (treasury.lots.disposals[0].proceeds_cents / 100) | round(2) }}: a gain of ${{ (treasury.lots.disposals[0].gain_cents / 100) | round(2) }}. That's a record under one stated method, not tax advice. How the network fee is treated is flagged for an adviser.</p>
+{% if treasury.lots.disposals.length %}<p>For most US taxpayers, paying in bitcoin is a disposal. Under FIFO per account, the {{ treasury.lots.disposals[0].sats }}-sat payment had a cost basis of ${{ (treasury.lots.disposals[0].basis_cents / 100) | round(2) }} and was worth ${{ (treasury.lots.disposals[0].proceeds_cents / 100) | round(2) }}: a gain of ${{ (treasury.lots.disposals[0].gain_cents / 100) | round(2) }}. The network fee paid in bitcoin is a disposal too; its basis is recorded separately. This is a record under one stated method, not tax advice.</p>{% endif %}
 
 <h2 id="gaps">Gaps and unverified claims</h2>
 <p>{{ treasury.gaps.length }} posting(s) are pending, estimated, self-reported or unknown, and {{ treasury.operatorOnly.length }} rest on documents only the operator holds (Apple, bank, exchange, BTCPay, invoices). The operator can publish each document's SHA-256 in the journal and show the document to an auditor later.</p>
@@ -91,7 +92,7 @@ description: "A verifiable treasury journal: append-only books, Merkle commitmen
 <dl>
   <dt>Snapshot SHA-256</dt><dd><code class="hash">{{ treasury.snapshot_sha256 }}</code></dd>
   <dt>Merkle root of {{ treasury.snapshot.journal.records }} records</dt><dd><code class="hash">{{ treasury.snapshot.journal.merkle_root }}</code></dd>
-  <dt>Withheld records</dt><dd>{{ treasury.snapshot.journal.withheld }}: a private donation (committed with a salt), and a refund line below the aggregation threshold of {{ treasury.snapshot.journal.policy.min_aggregate_count }}. They're included in the balances and published as hashes only.</dd>
+  <dt>Withheld records</dt><dd>{{ treasury.snapshot.journal.withheld }}, each published as a salted leaf hash only and left out of every figure on this page:{% for w in treasury.withheld %} record {{ w.seq }} <code class="hash">{{ w.leaf }}</code>{% if not loop.last %};{% endif %}{% endfor %}. An auditor shown the full record can check it against the Merkle root.</dd>
   <dt>Timestamp</dt><dd><span class="badge unknown">not stamped</span>: this example is simulated. A real snapshot would be stamped with <code>ots stamp snapshot.json</code> and its proof published next to it.</dd>
   <dt>Build check</dt><dd>{% if treasury.publicCheck.ok %}The public journal matched this snapshot when the site was built.{% endif %}</dd>
 </dl>
@@ -109,9 +110,12 @@ description: "A verifiable treasury journal: append-only books, Merkle commitmen
 
 <h3>From the command line</h3>
 <pre tabindex="0" aria-label="Verification commands"><code>git clone {{ repoUrl }}.git &amp;&amp; cd charter/treasury/demo
+shasum -a 256 snapshot.json            # equals snapshot.sha256; this is what gets timestamped
 node ../../bin/qm.mjs treasury verify public-journal.jsonl snapshot.json
-node ../../bin/qm.mjs treasury report journal.jsonl --anchors regtest-anchors.json
-node ../../bin/qm.mjs treasury append-check journal.jsonl public-journal.jsonl</code></pre>
+node ../../bin/qm.mjs treasury report public-journal.jsonl --anchors regtest-anchors.json
+grep '"type":"chain_proof"' public-journal.jsonl | head -1 &gt; proof.json
+node ../../bin/qm.mjs treasury chain-check proof.json --anchors regtest-anchors.json --require-anchor</code></pre>
+<p>Until the draft pull request is merged, these files are on the <code>feat/treasury</code> branch, not <code>main</code>.</p>
 <p>The formats are standard (SHA-256, RFC 6962 Merkle trees, Bitcoin serialization), so you can check them with your own code. Spec: <a href="{% sourceLink "spec/quartermaster/QMT-JOURNAL.md" %}">QMT-JOURNAL.md</a>; schema: <a href="/spec/quartermaster/qmt-0.1.schema.json"><code>qmt-0.1.schema.json</code></a>.</p>
 
 <h2 id="downloads">Downloads (simulated data)</h2>
