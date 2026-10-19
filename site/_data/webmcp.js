@@ -14,6 +14,7 @@ export default async function () {
   for (const [file, toolName] of [["debates", "list_debates"], ["cost-categories", "explain_costs"], ["timestamp", "get_timestamp_status"], ["lexicons", "get_atproto_lexicons"]]) {
     endpoints.push({ file, body: JSON.stringify(await runTool(TOOLS.find((t) => t.name === toolName), {}, ctx), null, 2) + "\n" });
   }
+  endpoints.push({ file: "opportunities", body: JSON.stringify(bundle.opportunities, null, 2) + "\n" });
   const manifest = capabilityManifest();
   const snapshot = JSON.parse(readFileSync("docs/demo/main/jrc-snapshot.json", "utf8"));
   const examples = {};

@@ -47,10 +47,12 @@ test("community: opportunity matching is deterministic and uses only supplied sk
   assert.deepEqual(INTERESTS, cat.interests);
   for (const o of cat.opportunities) {
     assert.ok(o.skills.every((s) => cat.skills.includes(s)) && o.interests.every((s) => cat.interests.includes(s)), o.id);
-    assert.match(o.where, /^https:\/\/github\.com\/jollyrogercharter\/charter/, `${o.id} links into the project`);
-    const local = /\/(?:blob|tree)\/main\/(.+)$/.exec(o.where)?.[1];
+    assert.doesNotMatch(o.where, /^\/|:\/\/|\.\.|^\/\//, `${o.id} stays relative to the repository`);
+    const local = /^(?:blob|tree)\/main\/([^?#]+)$/.exec(o.where)?.[1];
     if (local) assert.ok(existsSync(local), `${o.id} points at ${local}, which must exist`);
   }
+  const bundle = await loadNodeBundle();
+  for (const o of bundle.opportunities.opportunities) assert.ok(o.where.startsWith("https://github.com/jollyrogercharter/charter"), `${o.id} resolves into the repo`);
   const a = await run("find_opportunities", { skills: ["legal", "writing"], interests: ["standards"] });
   const b = await run("find_opportunities", { interests: ["standards"], skills: ["writing", "legal"] });
   assert.deepEqual(a.matches, b.matches, "order of inputs doesn't matter");
@@ -380,4 +382,21 @@ test("interfaces agree: CLI, static API and tools return the same results", asyn
   assert.deepEqual(strip(JSON.parse(cli.stdout)), strip(await run("get_debate", { id: "rfc-1" })));
   assert.equal(spawnSync(process.execPath, ["bin/jrc.mjs", "tool", "nope"], { encoding: "utf8" }).status, 2);
   assert.equal(spawnSync(process.execPath, ["bin/jrc.mjs", "tool", "get_debate", "--input", "-"], { input: "{bad", encoding: "utf8" }).status, 1);
+});
+
+test("site config: forks can point links at themselves, hostile URLs are ignored", async () => {
+  const { site, configureSite } = await import("../lib/jrc/site-config.mjs");
+  const before = { ...site };
+  try {
+    for (const bad of ["javascript:alert(1)", "https://x.example/\"><script>", "//evil.example", "", 42]) {
+      configureSite({ repoUrl: bad, siteUrl: bad });
+      assert.deepEqual({ ...site }, before, `ignored ${String(bad)}`);
+    }
+    configureSite({ repoUrl: "https://codeberg.org/fork/charter/", siteUrl: "https://fork.example" });
+    assert.equal(site.repoUrl, "https://codeberg.org/fork/charter");
+    const d = await run("draft_community_post", { kind: "rfc", title: "Fork test", sections: { proposal: "x" } });
+    assert.ok(d.post_link.startsWith("https://codeberg.org/fork/charter/issues/new"));
+  } finally {
+    configureSite(before);
+  }
 });

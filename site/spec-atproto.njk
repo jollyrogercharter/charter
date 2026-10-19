@@ -29,7 +29,7 @@ description: "Proposed org.jollyrogercharter Lexicons for JRC adoption, assessme
   <form>
     <p><label for="r-kind">Kind</label> <select id="r-kind" name="kind">{% for k in ["rfc", "criticism", "response", "reproduction", "code", "documentation", "translation", "cost-saving", "review"] %}<option>{{ k }}</option>{% endfor %}</select></p>
     <p><label for="r-title">Title</label><br><input id="r-title" name="title" type="text" required maxlength="200" size="60"></p>
-    <p><label for="r-subject">What it's about (URL)</label><br><input id="r-subject" name="subject" type="url" required maxlength="300" size="60" value="https://github.com/jollyrogercharter/charter"></p>
+    <p><label for="r-subject">What it's about (URL)</label><br><input id="r-subject" name="subject" type="url" required maxlength="300" size="60" value="{{ repoUrl }}"></p>
     <p><label for="r-url">Where it lives (URL, optional)</label><br><input id="r-url" name="url" type="url" maxlength="300" size="60"></p>
     <p><label for="r-summary">Summary (optional)</label><br><textarea id="r-summary" name="summary" rows="3" maxlength="1000"></textarea></p>
     <p><label><input type="checkbox" name="ai"> AI tools materially helped make it</label></p>

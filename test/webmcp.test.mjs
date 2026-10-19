@@ -203,7 +203,7 @@ async function loadBrowserModule() {
     assert.equal(url, "/webmcp/data.json", "only same-origin static data is fetched");
     return { ok: true, status: 200, json: async () => JSON.parse(read(path.join(SITE, "webmcp/data.json"))) };
   };
-  const src = read(path.join(SITE, "assets/webmcp.js")).replace(/"\/js\/lib\/([\w/.-]+)"/g, (_, p) => JSON.stringify(pathToFileURL(path.resolve(SITE, "js/lib", p)).href));
+  const src = read(path.join(SITE, "assets/webmcp.js")).replaceAll('"/js/lib/', JSON.stringify(pathToFileURL(path.resolve(SITE, "js/lib")).href + "/").slice(0, -1));
   const tmp = path.join(mkdtempSync(path.join(tmpdir(), "jrc-webmcp-")), "webmcp.mjs");
   writeFileSync(tmp, src);
   return import(pathToFileURL(tmp).href);

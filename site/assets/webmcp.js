@@ -1,8 +1,11 @@
 // Registers the site's read-only JRC tools with WebMCP (document.modelContext) when the browser supports it; otherwise does nothing.
 import { runTool, TOOLS } from "/js/lib/capabilities/tools.mjs";
+import { configureSite } from "/js/lib/jrc/site-config.mjs";
 import { createSession } from "/js/lib/assess/session.mjs";
 
 const DATA_URL = "/webmcp/data.json";
+const metaContent = (n) => globalThis.document?.querySelector?.(`meta[name="${n}"]`)?.content;
+configureSite({ repoUrl: metaContent("jrc:repo-url"), siteUrl: metaContent("jrc:site-url") });
 let bundlePromise = null;
 
 const abortError = (signal) => signal.reason ?? new DOMException("The operation was aborted.", "AbortError");

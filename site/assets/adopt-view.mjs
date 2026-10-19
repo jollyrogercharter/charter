@@ -1,3 +1,5 @@
+// Reads the repository URL the page was built for, so forks show their own reproduce command.
+const npxPackage = () => { const u = globalThis.document?.querySelector?.('meta[name="jrc:repo-url"]')?.content ?? ""; return /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+$/.test(u) ? u.replace("https://github.com/", "github:") : "github:jollyrogercharter/charter"; };
 // Pure rendering for /adopt/: data in, escaped HTML strings out. Repository-derived text only ever passes through e().
 const e = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const safeUrl = (u) => (typeof u === "string" && /^https:\/\/(github\.com|jollyrogercharter\.org)\//.test(u) ? u : null);
@@ -69,7 +71,7 @@ export function downloadsHtml(files, links = {}) {
 }
 
 export function reproduceHtml(r) {
-  return `<h3 id="reproduce">Reproduce this assessment</h3><p>Download the evidence snapshot, then anyone can regenerate this exact report offline:</p><pre><code>npx --yes --package=github:jollyrogercharter/charter jrc assess --snapshot jrc-snapshot.json --format json</code></pre>${r.snapshot.sha256 ? `<p>Snapshot SHA-256 <code class="hash">${e(r.snapshot.sha256)}</code>.</p>` : ""}`;
+  return `<h3 id="reproduce">Reproduce this assessment</h3><p>Download the evidence snapshot, then anyone can regenerate this exact report offline:</p><pre><code>npx --yes --package=${e(npxPackage())} jrc assess --snapshot jrc-snapshot.json --format json</code></pre>${r.snapshot.sha256 ? `<p>Snapshot SHA-256 <code class="hash">${e(r.snapshot.sha256)}</code>.</p>` : ""}`;
 }
 
 export function manifestHtml(a, plan) {

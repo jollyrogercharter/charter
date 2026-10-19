@@ -18,6 +18,8 @@
   {%- if site.webmcpOriginTrialToken %}
   <meta http-equiv="origin-trial" content="{{ site.webmcpOriginTrialToken }}">
   {%- endif %}
+  <meta name="jrc:repo-url" content="{{ repoUrl }}">
+  <meta name="jrc:site-url" content="{{ siteUrl }}">
   <script type="module" src="/assets/webmcp.js"></script>
 </head>
 <body>
