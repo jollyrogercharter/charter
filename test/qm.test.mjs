@@ -21,11 +21,16 @@ test("the published ledger is valid and the CLI agrees", () => {
 
 test("unknown is never zero, and categories are never added together", () => {
   const s = summarize(ledger());
-  assert.equal(s.cash_known_total, 8.5);
-  assert.equal(s.cash_unknown_entries, 3);
-  assert.equal(s.categories.forecast.known_amount, 11.2, "forecast kept apart");
+  assert.equal(s.cash_known_total, 138.5);
+  assert.equal(s.cash_unknown_entries, 0);
+  assert.equal(s.categories.forecast.known_amount, 141.2, "forecast kept apart");
   assert.equal(s.categories["donated-labor"].unmeasured_hours, 1);
-  assert.match(s.statement, /3 cash item\(s\) of unknown amount/);
+  const l = ledger();
+  l.entries.push({ id: "probe", category: "cash", item: "Unknown bill", provider: "x", amount: null, status: "unknown", source: "no-billing-access", privacy: "public" });
+  const u = summarize(l);
+  assert.equal(u.cash_known_total, 138.5, "an unknown adds nothing");
+  assert.equal(u.cash_unknown_entries, 1);
+  assert.match(u.statement, /1 cash item\(s\) of unknown amount/);
   assert.match(errs((l) => delete l.entries[0].amount), /never 0 for unknown/);
 });
 

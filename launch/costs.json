@@ -3,7 +3,7 @@
   "qm": "0.1",
   "project": "Jolly Roger Charter",
   "currency": "USD",
-  "as_of_utc": "2026-10-18T06:45Z",
+  "as_of_utc": "2026-10-20T15:20Z",
   "note": "Manual entries. A null amount means unknown, never zero. Billing integrations are not connected. Noncash time is reported separately and never added to money.",
   "sources": [
     { "id": "cf-invoice-2026-10-17", "kind": "invoice", "description": "Cloudflare invoice dated 2026-10-17, read by the agent in the dashboard and confirmed by the human initiator. Invoice number withheld.", "retrieved_utc": "2026-10-18T04:45Z" },
@@ -11,17 +11,19 @@
     { "id": "github-api", "kind": "provider-api", "description": "GitHub REST API: organization plan is free.", "retrieved_utc": "2026-10-18T04:51Z" },
     { "id": "cf-pages-dashboard", "kind": "provider-dashboard", "description": "Cloudflare Pages project on the free plan.", "retrieved_utc": "2026-10-18T04:22Z" },
     { "id": "charter-policy", "kind": "manual", "description": "Zero paid media, as stated in the charter's marketing plan.", "retrieved_utc": "2026-10-18T04:51Z", "url": "https://github.com/jollyrogercharter/charter/blob/main/launch/ORGANIC-MARKETING-PLAN.md" },
-    { "id": "no-billing-access", "kind": "manual", "description": "The agent cannot see AI provider billing for these sessions; nobody has supplied it.", "retrieved_utc": "2026-10-18T06:45Z" }
+    { "id": "no-billing-access", "kind": "manual", "description": "The agent cannot see AI provider billing for these sessions; nobody has supplied it.", "retrieved_utc": "2026-10-18T06:45Z" },
+    { "id": "founder-statement-2026-10-20", "kind": "manual", "description": "The founder's statement of the monthly prices of the AI subscriptions used to build the project. Both are personal subscriptions shared with the founder's other work.", "retrieved_utc": "2026-10-20T15:20Z" }
   ],
   "entries": [
     { "id": "domain-first-year", "category": "cash", "item": "Domain jollyrogercharter.org, first year", "provider": "Cloudflare Registrar", "amount": 8.5, "date": "2026-10-17", "recurrence": "one-time", "status": "paid", "source": "cf-invoice-2026-10-17", "attribution": "Charter website", "privacy": "public" },
     { "id": "github-org", "category": "cash", "item": "GitHub organization and public repository", "provider": "GitHub", "amount": 0, "date": "2026-10-18", "recurrence": "monthly", "status": "free plan", "source": "github-api", "privacy": "public" },
     { "id": "hosting", "category": "cash", "item": "Static hosting", "provider": "Cloudflare Pages", "amount": 0, "date": "2026-10-18", "recurrence": "monthly", "status": "free plan", "source": "cf-pages-dashboard", "privacy": "public" },
     { "id": "paid-ads", "category": "cash", "item": "Paid advertising", "provider": "none", "amount": 0, "status": "policy: zero paid media", "source": "charter-policy", "privacy": "public" },
-    { "id": "ai-founding", "category": "cash", "item": "Founding ideation conversation", "provider": "OpenAI ChatGPT", "amount": null, "date": "2026-10-17", "status": "unknown", "source": "no-billing-access", "privacy": "public" },
-    { "id": "ai-launch-session", "category": "cash", "item": "Launch implementation session", "provider": "Anthropic Claude (Claude Code)", "amount": null, "date": "2026-10-17", "status": "unknown", "source": "no-billing-access", "privacy": "public" },
-    { "id": "ai-overnight-session", "category": "cash", "item": "Overnight build session (jrc, Quartermaster schema)", "provider": "Anthropic Claude (Claude Code)", "amount": null, "date": "2026-10-18", "status": "unknown", "source": "no-billing-access", "privacy": "public" },
+    { "id": "ai-claude-code", "category": "cash", "item": "Claude Code subscription (shared): launch, overnight and later implementation sessions", "provider": "Anthropic", "amount": 100, "date": "2026-10-01", "period_end": "2026-10-31", "recurrence": "monthly", "status": "paid. Flat monthly subscription, shared with the founder's other work. The full price is shown as an upper bound; the share used by this project isn't measured.", "source": "founder-statement-2026-10-20", "attribution": "Implementation", "privacy": "public" },
+    { "id": "ai-openai", "category": "cash", "item": "OpenAI subscription (shared): founding ideation conversation", "provider": "OpenAI", "amount": 30, "date": "2026-10-01", "period_end": "2026-10-31", "recurrence": "monthly", "status": "paid. Flat monthly subscription, shared with the founder's other work. The full price is shown as an upper bound; the share used by this project isn't measured.", "source": "founder-statement-2026-10-20", "attribution": "Founding documents", "privacy": "public" },
     { "id": "domain-renewal", "category": "forecast", "item": "Domain renewal", "provider": "Cloudflare Registrar", "amount": 11.2, "date": "2027-09-17", "recurrence": "yearly", "status": "auto-renew scheduled", "source": "cf-registrar-page", "privacy": "public" },
+    { "id": "ai-claude-code-next", "category": "forecast", "item": "Claude Code subscription (shared), next month", "provider": "Anthropic", "amount": 100, "date": "2026-11-01", "period_end": "2026-11-30", "recurrence": "monthly", "status": "expected while the subscription continues. Flat monthly subscription, shared with the founder's other work. The full price is shown as an upper bound; the share used by this project isn't measured.", "source": "founder-statement-2026-10-20", "privacy": "public" },
+    { "id": "ai-openai-next", "category": "forecast", "item": "OpenAI subscription (shared), next month", "provider": "OpenAI", "amount": 30, "date": "2026-11-01", "period_end": "2026-11-30", "recurrence": "monthly", "status": "expected while the subscription continues. Flat monthly subscription, shared with the founder's other work. The full price is shown as an upper bound; the share used by this project isn't measured.", "source": "founder-statement-2026-10-20", "privacy": "public" },
     { "id": "initiator-attention", "category": "donated-labor", "item": "Human initiator: direction, review and approvals", "provider": "none", "amount": null, "hours": null, "status": "not measured; no valuation method adopted", "source": "no-billing-access", "privacy": "aggregated" }
   ]
 }

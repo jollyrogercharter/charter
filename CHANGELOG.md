@@ -2,7 +2,11 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
-## 2026-10-20 — Pre-launch polish (branch `fix/prelaunch-polish`, not deployed)
+## 2026-10-20 — AI subscription costs recorded (branch `docs/ai-subscription-costs`, not deployed)
+
+- `launch/costs.json`: the three unknown AI items are replaced by the founder's subscriptions, Claude Code ($100/month) and OpenAI ($30/month). They're recorded as October cash at full price, labeled as shared with the founder's other work, so the figures are an upper bound. November is a forecast. Known cash is now $138.50.
+
+## 2026-10-20 — Pre-launch polish (#19; deployed 2026-10-20, live footer shows `18c166a`)
 
 - **Contradictions fixed:** README, `legal/LICENSE-AND-RISK.md` and seed RFC 2 no longer imply CC0 is unapplied. They now distinguish the applied dedication, the missing legal review, third-party licences and future-software patent questions. The licence itself is unchanged.
 - **Economics:** the charter gains a plain "Money, in plain terms" section, and `standard/OPEN-ECONOMICS.md` notes that its efficiency pledge is under review. No normative JRCv1 text changed. Wording about hourly work, in the manifesto, stewardship economy, README and home page, no longer reads as a ban.
