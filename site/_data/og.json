@@ -1,0 +1,7 @@
+{
+  "/": { "file": "default.png", "title": "Free. Libre. Truly Free.", "line": "Free the code. Reward the stewards. Give people their time back." },
+  "/manifesto/": { "file": "manifesto.png", "title": "The Jolly Roger Manifesto", "line": "Software should be free. Stewardship should be rewarded. Human attention is precious." },
+  "/stewardship/": { "file": "stewardship.png", "title": "The Open Stewardship Economy", "line": "Earning a good living from free software, without lock-in. A proposal, not a proven model." },
+  "/get-involved/": { "file": "get-involved.png", "title": "How can I help test this?", "line": "Become a steward, consider paying one, or challenge the idea." },
+  "/pilot/": { "file": "pilot.png", "title": "Stewardship Pilot", "line": "One steward, one free application, five to ten paying customers. Proposed, not started." }
+}

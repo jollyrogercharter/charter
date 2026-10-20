@@ -6,6 +6,12 @@ Factual record of changes. Dates are UTC. Nothing here has been deployed unless 
 
 - `launch/costs.json`: the three unknown AI items are replaced by the founder's subscriptions, Claude Code ($100/month) and OpenAI ($30/month). They're recorded as October cash at full price, labeled as shared with the founder's other work, so the figures are an upper bound. November is a forecast. Known cash is now $138.50.
 
+## 2026-10-20 — Social cards (#20; deployed 2026-10-20, live footer shows `0786165`)
+
+- There are now 1200×630 share cards for the home, manifesto, stewardship, Get Involved and pilot pages. The default card covers every other page. There's also a 180×180 touch icon.
+- Every page sets `og:image` (with alt text) and uses a large Twitter card.
+- Card text lives in `site/_data/og.json`. `npm run og` re-renders the cards with local headless Chrome, and the PNGs are committed, so neither the build nor CI needs Chrome.
+
 ## 2026-10-20 — Pre-launch polish (#19; deployed 2026-10-20, live footer shows `18c166a`)
 
 - **Contradictions fixed:** README, `legal/LICENSE-AND-RISK.md` and seed RFC 2 no longer imply CC0 is unapplied. They now distinguish the applied dedication, the missing legal review, third-party licences and future-software patent questions. The licence itself is unchanged.

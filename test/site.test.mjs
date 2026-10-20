@@ -123,6 +123,21 @@ test("accessibility smoke checks", () => {
   }
 });
 
+test("every page has a 1200x630 social card and the touch icon exists", () => {
+  const png = (f) => { const b = readFileSync(f); assert.equal(b.toString("latin1", 1, 4), "PNG", `${f} is not a PNG`); return [b.readUInt32BE(16), b.readUInt32BE(20)]; };
+  const cards = JSON.parse(read("site/_data/og.json"));
+  for (const c of Object.values(cards)) assert.deepEqual(png(path.join(SITE, "assets/og", c.file)), [1200, 630], c.file);
+  assert.deepEqual(png(path.join(SITE, "assets/apple-touch-icon.png")), [180, 180]);
+  for (const f of htmlFiles) {
+    const html = read(f);
+    const img = html.match(/<meta property="og:image" content="https?:\/\/[^/]+(\/assets\/og\/[^"]+)">/)?.[1];
+    assert.ok(img && existsSync(path.join(SITE, img)), `${f} og:image`);
+    assert.match(html, /<meta name="twitter:card" content="summary_large_image">/, f);
+    const url = "/" + path.relative(SITE, f).replace(/index\.html$/, "");
+    if (cards[url]) assert.ok(img.endsWith(cards[url].file), `${f} should use ${cards[url].file}`);
+  }
+});
+
 test("licence and notice are present and linked", () => {
   assert.match(read("LICENSE"), /CC0 1\.0 Universal/);
   assert.ok(existsSync("NOTICE.md"));
