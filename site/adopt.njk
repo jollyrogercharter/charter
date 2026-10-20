@@ -1,34 +1,116 @@
 ---
 layout: base.njk
-title: Adopt the charter
-description: "Raise the flag without asking permission: self-assessment, evidence and honest progress levels."
+title: Adopt JRCv1
+description: "Assess a repository against JRCv1 in your browser: see what's evidenced, what's missing and an ordered path to adoption, with files to review. No account, nothing uploaded."
 ---
-<p class="kicker">Raise the flag</p>
-<h1>Adopt without asking</h1>
-<p class="lede">No application, fee or approval. Publish your evidence and say which level you're at.</p>
+<p class="kicker">Adopt · JRCv1 draft · no account</p>
+<h1>Could your software survive without you?</h1>
+<p class="lede">Point this at a public GitHub repository. You'll see, pillar by pillar, what's evidenced, what's missing and why, and an ordered path to fix it, with starter files you review before using any of them.</p>
 
-<h2>Three honest levels</h2>
+<div class="notice">
+  <p><strong>What this is:</strong> an automated scan of public files at one commit. Your browser reads them straight from GitHub (<code>api.github.com</code> and <code>raw.githubusercontent.com</code>, without sign-in). Nothing is sent to this site or stored.</p>
+  <p><strong>What it isn't:</strong> a review, a verification or a certification. Finding a file shows it exists, not that it's correct. Not finding one shows only that it isn't in the repository.</p>
+</div>
+
+<form id="adopt-form" class="adopt-form" novalidate>
+  <fieldset>
+    <legend>What do you want to assess?</legend>
+    <label><input type="radio" name="source" value="repository" checked> A public GitHub repository</label>
+    <label><input type="radio" name="source" value="manifest"> A <code>jrc.json</code> manifest</label>
+    <label><input type="radio" name="source" value="snapshot"> A saved evidence snapshot</label>
+  </fieldset>
+
+  <div data-panel="repository">
+    <label for="adopt-repository">Repository URL</label>
+    <input id="adopt-repository" name="repository" type="url" inputmode="url" autocomplete="url" spellcheck="false" maxlength="200" placeholder="https://github.com/owner/repo" aria-describedby="adopt-repository-help">
+    <p id="adopt-repository-help" class="help">Public repositories only. GitHub allows 60 anonymous requests an hour per address, and one assessment uses about three API requests.</p>
+    <label for="adopt-ref">Branch, tag or commit <span class="muted">(optional)</span></label>
+    <input id="adopt-ref" name="ref" type="text" spellcheck="false" maxlength="100" placeholder="default branch">
+  </div>
+
+  <div data-panel="manifest" hidden>
+    <label for="adopt-manifest">Paste <code>jrc.json</code></label>
+    <textarea id="adopt-manifest" name="manifest" rows="8" spellcheck="false" aria-describedby="adopt-manifest-help"></textarea>
+    <label for="adopt-manifest-file">or choose a file</label>
+    <input id="adopt-manifest-file" name="manifestFile" type="file" accept="application/json,.json">
+    <p id="adopt-manifest-help" class="help">Assessed in this page with the same engine as <code>jrc check</code>. Up to 64 KiB.</p>
+  </div>
+
+  <div data-panel="snapshot" hidden>
+    <label for="adopt-snapshot-file">Evidence snapshot (<code>jrc-snapshot.json</code>)</label>
+    <input id="adopt-snapshot-file" name="snapshotFile" type="file" accept="application/json,.json" aria-describedby="adopt-snapshot-help">
+    <p id="adopt-snapshot-help" class="help">Re-assess a saved snapshot offline. The same snapshot always gives the same report.</p>
+  </div>
+
+  <p><button type="submit" class="primary">Assess</button></p>
+</form>
+
+<noscript><div class="notice"><p>This assessment runs in your browser and needs JavaScript. Without it, the command line does the same assessment: <code>npx --yes --package=github:jollyrogercharter/charter jrc assess https://github.com/OWNER/REPO</code></p></div></noscript>
+
+<p id="adopt-announce" class="visually-hidden" aria-live="polite" role="status"></p>
+<div id="adopt-progress"></div>
+<section id="adopt-results" aria-labelledby="results-heading" aria-live="off"></section>
+
+<h2 id="agents">Ask an AI agent to do it</h2>
+<p>In a browser with <a href="/agents/">WebMCP</a>, tell your agent: <em>"Evaluate my repository against JRCv1, identify where it falls short, and help me make it Truly Free."</em> It can call the same tools this page uses:</p>
+<div class="table-scroll"><table>
+  <thead><tr><th scope="col">Tool</th><th scope="col">What it does</th></tr></thead>
+  <tbody>
+    <tr><td><code>assess_repository</code></td><td>Each pillar's status, concerns and next step</td></tr>
+    <tr><td><code>prepare_adoption_roadmap</code></td><td>Ordered steps with effort, impact and dependencies</td></tr>
+    <tr><td><code>generate_jrc_manifest</code></td><td>A candidate <code>jrc.json</code>, checked by the jrc engine</td></tr>
+    <tr><td><code>prepare_contribution</code></td><td>A PR description, checklist, patch or challenge log, plus links</td></tr>
+    <tr><td><code>run_challenge_checks</code></td><td>The challenge steps that are safe to run from public files</td></tr>
+    <tr><td><code>generate_assessment_report</code></td><td>The full report as Markdown or JSON</td></tr>
+  </tbody>
+</table></div>
+<p>All of them are read-only. An agent can <em>prepare</em> a pull request, an issue or a challenge submission. It can't open one, because no tool can sign in to GitHub or write to any repository. You review what it prepared and submit it yourself.</p>
+
+<h2 id="cli">Or use the command line</h2>
+<pre><code>jrc assess https://github.com/OWNER/REPO --out jrc-adopt   # public GitHub repository
+jrc assess .                                               # a local checkout, no network
+jrc assess --snapshot jrc-snapshot.json                    # reproduce a saved assessment</code></pre>
+<p><code>jrc assess</code> writes the same files this page offers. <a href="/check/">Getting the tool</a> takes one command.</p>
+
+<h2 id="raise-the-flag">Raise the Flag</h2>
+<p>No application, fee, login or approval. Publish your evidence, say how far you've got, and invite people to check.</p>
+<ol>
+  <li><a href="/check/">Write a <code>jrc.json</code></a> for your project (the candidate above is a start) and run <code>jrc check</code>.</li>
+  <li>Publish the report (<code>jrc report --out jrc-report</code>) in your repository.</li>
+  <li>Optionally show the badge, linked to that report.</li>
+  <li>Ask someone unaffiliated to <a href="/challenge/">take the challenge</a> on your project.</li>
+</ol>
+
+<h3>What raising the flag means</h3>
+<ul>
+  <li>You've written down, in a checkable format, how your project meets each pillar, and what it doesn't meet yet.</li>
+  <li>The evidence files you cite exist, and any you pinned by hash haven't changed.</li>
+  <li>You're willing to be corrected in public.</li>
+</ul>
+
+<h3>What it does not mean</h3>
+<ul>
+  <li><strong>It doesn't certify or endorse anything.</strong> Nobody, including this project, has checked that your statements are true. The badge says <em>self-reported</em> for that reason.</li>
+  <li><strong>It isn't a licence.</strong> Your project's rights come from its actual licence. JRCv1 doesn't grant or require any particular one, though the code-and-rights pillar asks you to document yours.</li>
+  <li><strong>It isn't independent verification.</strong> That only exists when a named, unaffiliated reviewer publishes their own reproduction report, and even then <code>jrc</code> records the claim without verifying it.</li>
+  <li><strong>It isn't permanent.</strong> A report describes one manifest at one date. Re-run it when things change.</li>
+</ul>
+
+<h3>Three honest levels</h3>
 <div class="table-scroll"><table>
   <thead><tr><th scope="col">Level</th><th scope="col">What you can claim</th><th scope="col">What it is not</th></tr></thead>
   <tbody>
     <tr><td><strong>Exploring</strong></td><td>You're interested and you've written down your gaps.</td><td>Any conformance claim at all</td></tr>
-    <tr><td><strong>Implemented (self-reported)</strong></td><td>You've published evidence links for the pillars you meet.</td><td>Independent certification</td></tr>
-    <tr><td><strong>Independently reproduced</strong></td><td>An outside reviewer has reproduced your claim and published their method and results.</td><td>A permanent badge. Claims are tied to a version and a date.</td></tr>
+    <tr><td><strong>Self-reported</strong></td><td>Your manifest passes <code>jrc check</code> and cites evidence for the pillars you list.</td><td>Independent certification</td></tr>
+    <tr><td><strong>Independently reproduced</strong></td><td>An unaffiliated reviewer has reproduced your claim and published their method and results.</td><td>A permanent badge. Claims are tied to a version and a date.</td></tr>
   </tbody>
 </table></div>
-<p>Partial adoption is normal. "4 of 6 pillars evidenced, help wanted on the other two" is a good claim to make.</p>
+<p>Partial adoption is normal and useful. "3 of 5 applicable pillars evidenced, help wanted on the rest" is a good thing to publish.</p>
 
-<h2>Self-assessment checklist</h2>
-<ol>
-  <li><strong>Code and rights:</strong> a real licence or dedication for your original code, plus a dependency inventory with licences.</li>
-  <li><strong>Development:</strong> specs, decisions, agent and tool versions where known, tests, and build instructions a stranger can follow.</li>
-  <li><strong>Data:</strong> a working export and import, documented data boundaries, and AT Protocol where it applies, or an honest note on why it doesn't yet.</li>
-  <li><strong>Operations:</strong> a deployment and rollback procedure with no secret steps, backup and restore, and a path to another host.</li>
-  <li><strong>Economics:</strong> dated, sourced costs. Billed, estimated and donated costs are kept separate, and unknowns are marked unknown.</li>
-  <li><strong>Governance:</strong> open proposals, documented decisions, and a succession plan that doesn't run through one person.</li>
-</ol>
-<p>The full criteria are in <a href="/charter/#conformance">the conformance section</a>. For a machine-readable record, start from <a href="{% sourceLink "templates/open-infrastructure.example.yaml" %}"><code>templates/open-infrastructure.example.yaml</code></a>. It's an illustrative template, not a working integration.</p>
+<h3>Names and the flag</h3>
+<p>"Jolly Roger Charter", "JRCv1" and the flag aren't registered trademarks, and you don't need permission to use them to describe an honest self-assessment. Please don't use them to suggest this project has reviewed or endorsed yours. The artwork is CC0.</p>
 
-<h2>Tell people</h2>
-<p>Raising the flag doesn't need our permission. If you'd like a link from here, open an issue with your evidence. Listing a project here doesn't mean we've audited it.</p>
-<p><span class="badge">Adopters listed: 0</span> We won't list adopters who haven't asked to be listed.</p>
+<h3>Projects flying the flag</h3>
+<p><span class="badge">Listed: 0</span> We only list projects that ask to be listed and publish a report. Listing a project doesn't mean we've audited it.</p>
+
+<script type="module" src="/assets/adopt.js"></script>

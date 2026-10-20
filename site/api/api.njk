@@ -1,0 +1,9 @@
+---
+pagination:
+  data: webmcp.endpoints
+  size: 1
+  alias: endpoint
+permalink: "/api/v1/{{ endpoint.file }}.json"
+eleventyExcludeFromCollections: true
+---
+{{ endpoint.body | safe }}

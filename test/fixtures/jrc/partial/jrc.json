@@ -1,0 +1,63 @@
+{
+  "$schema": "https://jollyrogercharter.org/spec/jrc-0.1.schema.json",
+  "jrc": "0.1",
+  "project": {
+    "name": "Partial example",
+    "repository": "https://example.org/demo"
+  },
+  "assessment": {
+    "kind": "self",
+    "assessor": "Example Maintainer",
+    "date": "2026-10-01"
+  },
+  "pillars": {
+    "code_rights": {
+      "status": "exploring",
+      "claims": [
+        {
+          "id": "intent",
+          "statement": "We intend to choose a permissive licence.",
+          "evidence": [],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "development": {
+      "status": "not-started",
+      "claims": [],
+      "gaps": [
+        "Nothing yet."
+      ]
+    },
+    "data": {
+      "status": "not-started",
+      "claims": [],
+      "gaps": [
+        "Nothing yet."
+      ]
+    },
+    "operations": {
+      "status": "not-started",
+      "claims": [],
+      "gaps": [
+        "Nothing yet."
+      ]
+    },
+    "economics": {
+      "status": "not-started",
+      "claims": [],
+      "gaps": [
+        "Nothing yet."
+      ]
+    },
+    "governance": {
+      "status": "not-started",
+      "claims": [],
+      "gaps": [
+        "Nothing yet."
+      ]
+    }
+  }
+}

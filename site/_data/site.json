@@ -1,23 +1,26 @@
 {
   "title": "Jolly Roger Charter",
   "tagline": "Free. Libre. Truly Free.",
-  "description": "A draft charter for software that can survive without its creators: free code, reproducible agentic development, open costs, user-controlled data and replaceable stewardship.",
-  "status": "Draft. JRCv1 is a working conformance standard, not a software licence, and nothing here is certified.",
+  "description": "Free the code. Reward the stewards. Give people their time back. A movement for earning a good living from free software, without hourly billing, locked-up code or captive customers.",
+  "webmcpOriginTrialToken": "",
+  "status": "Early draft. The ideas are open for debate, the economic model is untested, and JRCv1 is a working standard, not a licence or a certification.",
   "nav": [
     { "url": "/manifesto/", "label": "Manifesto" },
     { "url": "/charter/", "label": "Charter" },
-    { "url": "/challenge/", "label": "Challenge" },
-    { "url": "/debate/", "label": "Debate" },
-    { "url": "/how-it-was-made/", "label": "How it was made" },
-    { "url": "/provenance/", "label": "Provenance" },
-    { "url": "/costs/", "label": "Costs" }
+    { "url": "/stewardship/", "label": "Stewardship" },
+    { "url": "/pilot/", "label": "Pilot" },
+    { "url": "/projects/", "label": "Projects" },
+    { "url": "/debate/", "label": "Debate" }
   ],
   "footerNav": [
     { "url": "/status/", "label": "Status" },
-    { "url": "/conversation/", "label": "Founding conversation" },
-    { "url": "/history/", "label": "History" },
     { "url": "/adopt/", "label": "Adopt" },
+    { "url": "/check/", "label": "Check" },
+    { "url": "/challenge/", "label": "Challenge" },
+    { "url": "/costs/", "label": "Costs" },
     { "url": "/quartermaster/", "label": "Quartermaster" },
+    { "url": "/agents/", "label": "For AI agents" },
+    { "url": "/history/", "label": "History" },
     { "url": "/governance/", "label": "Governance" },
     { "url": "/feed.xml", "label": "Atom feed" }
   ]

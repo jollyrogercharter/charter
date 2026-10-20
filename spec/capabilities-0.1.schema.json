@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jollyrogercharter.org/spec/capabilities-0.1.schema.json",
+  "title": "JRC capability manifest, version 0.1 draft",
+  "description": "Every capability the Jolly Roger Charter project exposes to people and agents: schemas, safety class, maturity and the interfaces that really support it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version",
+    "tools_version",
+    "safety_classes",
+    "interfaces",
+    "capabilities",
+    "planned"
+  ],
+  "properties": {
+    "manifest_version": {
+      "const": "0.1"
+    },
+    "tools_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "safety_classes": {
+      "type": "object",
+      "required": [
+        "read-only",
+        "prepare-only",
+        "consequential"
+      ],
+      "additionalProperties": {
+        "type": "string"
+      },
+      "properties": {
+        "read-only": {
+          "type": "string"
+        },
+        "prepare-only": {
+          "type": "string"
+        },
+        "consequential": {
+          "type": "string"
+        }
+      }
+    },
+    "interfaces": {
+      "type": "object",
+      "required": [
+        "webmcp",
+        "mcp_stdio",
+        "http_static",
+        "cli",
+        "website"
+      ],
+      "additionalProperties": {
+        "type": "string"
+      },
+      "properties": {
+        "webmcp": {
+          "type": "string"
+        },
+        "mcp_stdio": {
+          "type": "string"
+        },
+        "http_static": {
+          "type": "string"
+        },
+        "cli": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "title",
+          "group",
+          "description",
+          "safety",
+          "network",
+          "echoes_untrusted_input",
+          "maturity",
+          "inputSchema",
+          "annotations",
+          "interfaces"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "group": {
+            "enum": [
+              "charter",
+              "status",
+              "conformance",
+              "quartermaster",
+              "community",
+              "adoption",
+              "atproto"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "safety": {
+            "enum": [
+              "read-only",
+              "prepare-only",
+              "consequential"
+            ]
+          },
+          "network": {
+            "type": "string"
+          },
+          "echoes_untrusted_input": {
+            "type": "boolean"
+          },
+          "maturity": {
+            "enum": [
+              "implemented",
+              "draft",
+              "planned"
+            ]
+          },
+          "inputSchema": {
+            "type": "object"
+          },
+          "annotations": {
+            "type": "object",
+            "required": [
+              "readOnlyHint",
+              "untrustedContentHint",
+              "consequentialHint"
+            ],
+            "properties": {
+              "readOnlyHint": {
+                "type": "boolean"
+              },
+              "untrustedContentHint": {
+                "type": "boolean"
+              },
+              "consequentialHint": {
+                "type": "boolean"
+              }
+            }
+          },
+          "interfaces": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "webmcp",
+              "mcp_stdio",
+              "http_static",
+              "cli",
+              "website",
+              "cli_shortcut"
+            ],
+            "properties": {
+              "webmcp": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              },
+              "mcp_stdio": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              },
+              "http_static": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              },
+              "cli": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              },
+              "website": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              },
+              "cli_shortcut": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              }
+            }
+          },
+          "maturity_note": {
+            "type": "string",
+            "maxLength": 300
+          }
+        }
+      }
+    },
+    "planned": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "maturity",
+          "why_not_yet"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "maturity": {
+            "enum": [
+              "planned",
+              "not-planned"
+            ]
+          },
+          "why_not_yet": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "interface_verification": {
+      "type": "object",
+      "description": "How each interface has actually been checked, in plain words. Absent means unstated, not verified.",
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 300
+      }
+    }
+  }
+}

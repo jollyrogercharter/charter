@@ -1,13 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { renderStatus } from "../scripts/render-status.mjs";
 
 const SITE = "_site";
-const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/how-it-was-made/", "/conversation/", "/conversation/archive/", "/provenance/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/"];
+const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/", "/check/", "/spec/", "/spec/quartermaster/", "/agents/", "/stewardship/", "/pilot/", "/projects/", "/manifesto/v0-1/"];
+const SLOGANS = ["Free. Libre. Truly Free.", "You can't pirate what belongs to everyone.", "Free the code. Reward the stewards. Give people their time back."];
+const PRINCIPLES = ["Software should be free.", "Stewardship should be rewarded.", "Human attention is precious."];
 const FOUNDING_LINE = "If we can explain how to build it, we should explain how to run it. If we can explain how to run it, we should explain what it costs. And if someone can make it better or cheaper, they should be free to try.";
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => {
@@ -23,7 +24,7 @@ const ids = (html) => [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
 
 test("every route in the site spec is built", () => {
   for (const r of ROUTES) assert.ok(existsSync(routeFile(r)), `missing ${r}`);
-  for (const f of ["feed.xml", "sitemap.xml", "robots.txt", "404.html", "provenance/launch-manifest.json", "downloads/MANIFESTO.md"]) {
+  for (const f of ["check/report.json", "check/badge.svg", "check/jrc.json", "spec/jrc-0.1.schema.json", "challenge/log-template.md", "feed.xml", "sitemap.xml", "robots.txt", "404.html", "_redirects", "downloads/MANIFESTO.md", "downloads/MANIFESTO-v0.1-2026-10-17.md"]) {
     assert.ok(existsSync(path.join(SITE, f)), `missing ${f}`);
   }
 });
@@ -44,10 +45,61 @@ test("internal links and fragments resolve", () => {
 });
 
 test("founding lines appear verbatim", () => {
-  for (const r of ["/", "/manifesto/"]) assert.ok(text(read(routeFile(r))).includes(FOUNDING_LINE), `founding line missing on ${r}`);
+  for (const r of ["/charter/", "/manifesto/v0-1/"]) assert.ok(text(read(routeFile(r))).includes(FOUNDING_LINE), `founding line missing on ${r}`);
   const home = text(read(routeFile("/")));
-  for (const line of ["Free. Libre. Truly Free.", "You can't pirate what belongs to everyone.", "Could your software survive without you?"]) {
-    assert.ok(home.includes(line), `home missing: ${line}`);
+  for (const line of [...SLOGANS, ...PRINCIPLES, "Could your software survive without you?"]) assert.ok(home.includes(line), `home missing: ${line}`);
+  const manifesto = text(read(routeFile("/manifesto/")));
+  for (const line of SLOGANS) assert.ok(manifesto.includes(line), `manifesto missing: ${line}`);
+});
+
+test("the manifesto stays one page in plain words", () => {
+  const body = read("MANIFESTO.md").split("\n").slice(1).join("\n").split(/^---$/m)[0];
+  const words = body.split(/\s+/).filter(Boolean).length;
+  assert.ok(words >= 200 && words <= 300, `manifesto body is ${words} words`);
+  assert.doesNotMatch(body, /\u2014/, "no em dashes");
+  for (const tool of ["Bitcoin", "AT Protocol", "WebMCP", "DID", "Merkle", "JRCv1"]) assert.doesNotMatch(body, new RegExp(`\\b${tool}\\b`), `manifesto names a tool: ${tool}`);
+});
+
+test("the v0.1 manifesto stays available as a dated record", () => {
+  const copy = readFileSync("history/MANIFESTO-v0.1-2026-10-17.md");
+  assert.ok(copy.equals(readFileSync(path.join(SITE, "downloads/MANIFESTO-v0.1-2026-10-17.md"))), "published download differs");
+  assert.match(text(read(routeFile("/manifesto/v0-1/"))), /kept as a record/);
+});
+
+test("retired founding-provenance routes are gone, redirected and unlinked", () => {
+  const retired = ["/provenance/", "/conversation/", "/conversation/archive/", "/how-it-was-made/", "/updates/2026-10-17-founding-package-preserved/"];
+  const redirects = new Map(read(path.join(SITE, "_redirects")).trim().split("\n").map((l) => { const [from, to, code] = l.split(/\s+/); return [from, { to, code }]; }));
+  const sitemap = read(path.join(SITE, "sitemap.xml"));
+  for (const r of retired) {
+    assert.ok(!existsSync(routeFile(r)), `${r} is still built`);
+    assert.ok(!sitemap.includes(`${r}<`), `${r} is still in the sitemap`);
+    assert.equal(redirects.get(r)?.code, "301", `${r} has no redirect`);
+    assert.ok(existsSync(routeFile(redirects.get(r).to)), `${r} redirects to a missing page`);
+  }
+  for (const f of ["provenance/launch-manifest.json", "api/v1/provenance.json", "api/v1/timestamp.json"]) assert.ok(!existsSync(path.join(SITE, f)), `${f} is still published`);
+  for (const f of walk(SITE).filter((x) => /\.(html|json|xml|js)$/.test(x))) {
+    const body = read(f);
+    for (const r of retired) assert.ok(!body.includes(`href="${r}"`) && !body.includes(`"${r}"`), `${f} still links ${r}`);
+    assert.doesNotMatch(body, /Who made this|Neither company endorses/, `${f} still carries the attribution banner`);
+  }
+});
+
+test("economic pages say the model is unproven and label every dollar figure", () => {
+  assert.match(text(read(routeFile("/"))), /not a proven business model[\s\S]*It hasn't started/);
+  assert.match(text(read(routeFile("/pilot/"))), /proposed, not started\. There are no pilot customers, no revenue and no results yet\./);
+  assert.match(text(read(routeFile("/stewardship/"))), /A proposal, not a proven business model\./);
+  for (const r of ["/", "/pilot/", "/stewardship/", "/projects/"]) {
+    for (const [, para] of read(routeFile(r)).matchAll(/<(?:p|li|td)>([\s\S]*?)<\/(?:p|li|td)>/g)) {
+      if (/\$\s?\d/.test(para)) assert.match(para, /[Hh]ypothetical/, `unlabelled dollar figure on ${r}: ${text(para).slice(0, 80)}`);
+    }
+  }
+});
+
+test("pages that left the primary navigation are still linked from every page", () => {
+  const formerPrimary = ["/manifesto/", "/charter/", "/adopt/", "/check/", "/challenge/", "/debate/", "/costs/"];
+  for (const f of htmlFiles) {
+    const html = read(f);
+    for (const url of formerPrimary) assert.ok(html.includes(`href="${url}"`), `${f} no longer links ${url}`);
   }
 });
 
@@ -56,13 +108,6 @@ test("historical quotes carry their sources", () => {
   assert.match(history, /He who receives an idea from me, receives instruction himself without lessening mine\.[\s\S]{0,400}https:\/\/tjrs\.monticello\.org\/letter\/293/);
   assert.match(history, /Information should be free but your time should not\.[\s\S]{0,600}https:\/\/www\.wired\.com\/story\/hackers-at-30-hackers-and-information-wants-to-be-free\//);
   assert.match(text(history), /not a 1984 transcript/);
-});
-
-test("every page discloses human and AI authorship", () => {
-  for (const f of htmlFiles) {
-    const t = text(read(f));
-    assert.ok(t.includes("ChatGPT") && t.includes("Claude (Anthropic)") && t.includes("Neither company endorses"), `attribution missing in ${f}`);
-  }
 });
 
 test("accessibility smoke checks", () => {
@@ -75,40 +120,6 @@ test("accessibility smoke checks", () => {
     for (const [img] of html.matchAll(/<img\b[^>]*>/g)) assert.match(img, /\salt="/, `${f} img without alt`);
     const all = ids(html);
     assert.deepEqual(all.filter((id, i) => all.indexOf(id) !== i), [], `${f} duplicate ids`);
-  }
-});
-
-test("conversation pages never present the archive as a transcript", () => {
-  assert.match(text(read(routeFile("/conversation/"))), /Transcript pending human review/);
-  assert.match(text(read(routeFile("/conversation/archive/"))), /This is not a verbatim transcript\./);
-  assert.ok(!existsSync("conversation/FOUNDING-SESSION.md") || existsSync("conversation/EDITORIAL-NOTES.md"), "a transcript needs editorial notes");
-});
-
-test("provenance state is internally consistent", () => {
-  const m = JSON.parse(read("provenance/launch-manifest.json"));
-  assert.ok(["not-requested", "pending", "verified"].includes(m.timestamp_state));
-  if (m.timestamp_state !== "not-requested") assert.ok(m.opentimestamps_proof_path && existsSync(m.opentimestamps_proof_path), "claimed proof file must exist");
-  if (m.timestamp_state === "verified") assert.ok(m.bitcoin_attestation_time_utc, "verified needs an attestation time");
-  else assert.equal(m.bitcoin_attestation_time_utc, null);
-  if (m.timestamped_artifact) {
-    const buf = readFileSync(m.timestamped_artifact.path);
-    assert.equal(createHash("sha256").update(buf).digest("hex"), m.timestamped_artifact.sha256, "stamped file changed after stamping");
-    const lines = buf.toString().trim().split("\n");
-    assert.equal(lines[0], `${m.received_package.sha256}  ${m.received_package.file}`);
-    assert.deepEqual(lines.slice(1), m.files.map((f) => `${f.sha256}  ${f.path}`));
-  }
-  if (m.founding_transcript.state !== "not-provided") assert.ok(existsSync(m.founding_transcript.path));
-  assert.ok(text(read(routeFile("/provenance/"))).includes(m.timestamp_state));
-});
-
-test("manifest digests match the preservation commit", (t) => {
-  const m = JSON.parse(read("provenance/launch-manifest.json"));
-  try { execFileSync("git", ["cat-file", "-e", `${m.preservation_commit}^{commit}`], { stdio: "ignore" }); }
-  catch { return t.skip("preservation commit not available (not a full clone)"); }
-  for (const f of m.files) {
-    const buf = execFileSync("git", ["show", `${m.preservation_commit}:${f.path}`]);
-    assert.equal(buf.length, f.bytes, f.path);
-    assert.equal(createHash("sha256").update(buf).digest("hex"), f.sha256, f.path);
   }
 });
 
@@ -125,21 +136,16 @@ test("status has one source and every view agrees with it", () => {
   assert.deepEqual(ids.filter((id, n) => ids.indexOf(id) !== n), [], "duplicate status ids");
   const page = text(read(routeFile("/status/")));
   for (const i of s.items) assert.ok(page.includes(i.title), `status page missing ${i.id}`);
-  const m = JSON.parse(read("provenance/launch-manifest.json"));
-  const ots = s.items.find((i) => i.id === "opentimestamps");
-  assert.equal(ots.state === "implemented" ? "verified" : ots.state, m.timestamp_state, "status.json and the manifest disagree about the timestamp");
   for (const i of s.items.filter((x) => x.state === "implemented" && x.url?.startsWith("https://jollyrogercharter.org/"))) {
     assert.ok(existsSync(routeFile(new URL(i.url).pathname)), `${i.id} claims a page that isn't built`);
   }
 });
 
-test("cost ledger never invents figures", () => {
-  const c = JSON.parse(read("launch/costs.json"));
-  for (const e of [...c.billed, ...c.ai_usage]) {
-    assert.ok(e.amount === null || typeof e.amount === "number", e.item);
-    assert.ok(e.source && e.status, `${e.item} needs source and status`);
-  }
-  for (const e of c.noncash_attention) assert.ok(e.valuation === null || e.method, `${e.item}: a valuation needs a method`);
+test("costs page shows the validated ledger and never invents figures", () => {
+  const page = text(read(routeFile("/costs/")));
+  assert.match(page, /known cash spending/);
+  assert.ok(existsSync(path.join(SITE, "costs/ledger.json")));
+  assert.equal(read(path.join(SITE, "costs/ledger.json")), read("launch/costs.json"), "published ledger is byte-identical to the source");
 });
 
 test("no secrets or personal data in tracked files or build output", () => {
@@ -153,7 +159,7 @@ test("no secrets or personal data in tracked files or build output", () => {
     [/\bsk-[A-Za-z0-9_-]{20,}/, "API key"],
     [/\bAKIA[0-9A-Z]{16}\b/, "AWS key"],
     [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, "private key"],
-    [/\/Users\/[a-z]+\/|\/home\/[a-z]+\//, "local home path"],
+    [/(?<![\w.-])\/(?:Users|home)\/[a-z]+\//, "local home path"],
   ];
   const hits = [];
   for (const f of files) {

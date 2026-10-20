@@ -9,7 +9,7 @@ An application is not truly independently reproducible if others can only copy t
 1. Product rationale, user requirements, tradeoffs, roadmap and structured specifications.
 2. Architecture decisions and rejected alternatives, including performance and security tradeoffs.
 3. Agent instructions (for example `AGENTS.md`), model/tool and runtime versions, skills and safe environment setup.
-4. Sanitized prompts, conversation transcripts or equivalent structured intent histories, with provenance and redaction indicators.
+4. Decision records that explain why the software works as it does. Publishing prompts or agent transcripts is optional, not a requirement (founder decision, 2026-10-19, open for review).
 5. Build scripts, lockfiles, dependency manifests, test suites, validation commands and expected outputs.
 6. CI/CD workflows, environment templates, release checklist, release signing method, rollback instructions and deployment playbooks.
 7. Infrastructure-as-code and open infrastructure manifest, with safe stand-ins for secrets and billing IDs.

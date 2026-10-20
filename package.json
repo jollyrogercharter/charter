@@ -2,21 +2,47 @@
   "name": "jolly-roger-charter",
   "version": "0.1.0",
   "private": true,
-  "description": "Founding documents and static website for the Jolly Roger Charter (JRCv1 draft).",
+  "description": "Jolly Roger: free the code, reward the stewards, give people their time back. Manifesto, charter, JRCv1 draft tools and website.",
   "license": "CC0-1.0",
   "type": "module",
+  "bin": {
+    "jrc": "bin/jrc.mjs",
+    "qm": "bin/qm.mjs",
+    "jrc-mcp": "bin/jrc-mcp.mjs"
+  },
+  "files": [
+    "CHARTER.md",
+    "DECISIONS-AND-QUESTIONS.md",
+    "LICENSE",
+    "NOTICE.md",
+    "OPEN-DEPENDENCIES.md",
+    "README.md",
+    "SECURITY.md",
+    "bin/",
+    "community/opportunities.json",
+    "launch/RFC-DRAFTS-OVERNIGHT.md",
+    "launch/RFC-SEEDS.md",
+    "launch/costs.json",
+    "launch/status.json",
+    "lexicons/",
+    "lib/",
+    "spec/"
+  ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "build": "eleventy",
     "serve": "eleventy --serve",
-    "manifest": "node scripts/hash-manifest.mjs",
     "status": "node scripts/render-status.mjs",
-    "test": "npm run build && node --test test/*.test.mjs"
+    "test": "npm run build && node --test test/*.test.mjs",
+    "jrc": "node bin/jrc.mjs",
+    "demo": "node scripts/render-demo.mjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "3.1.6",
+    "@atproto/lexicon": "0.7.15",
+    "ajv": "8.20.0",
     "markdown-it": "14.3.2"
   }
 }

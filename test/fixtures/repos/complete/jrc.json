@@ -1,0 +1,164 @@
+{
+  "$schema": "https://jollyrogercharter.org/spec/jrc-0.1.schema.json",
+  "jrc": "0.1",
+  "project": {
+    "name": "Tidepool",
+    "repository": "https://github.com/example-org/tidepool"
+  },
+  "assessment": {
+    "kind": "self",
+    "assessor": "Tidepool maintainers",
+    "date": "2026-10-01"
+  },
+  "pillars": {
+    "code_rights": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "mit",
+          "statement": "Released under the MIT licence.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "LICENSE",
+              "sha256": "dcbf399d1ef990e7ebacf76e96e75ca39f853750d6360a8035449f9788ee8c5a"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        },
+        {
+          "id": "lock",
+          "statement": "Dependencies are locked.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "package-lock.json"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "development": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "build",
+          "statement": "Build and test instructions are in the README.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "README.md"
+            },
+            {
+              "kind": "file",
+              "path": "test"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "data": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "export",
+          "statement": "Users can export all their records.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "docs/data-export.md"
+            },
+            {
+              "kind": "file",
+              "path": "PRIVACY.md"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "operations": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "deploy",
+          "statement": "Deployment, backup and rollback are documented.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "DEPLOYMENT.md"
+            },
+            {
+              "kind": "file",
+              "path": "Dockerfile"
+            },
+            {
+              "kind": "file",
+              "path": "SECURITY.md"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "economics": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "ledger",
+          "statement": "Costs are published as a Quartermaster ledger.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "costs.json"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "governance": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "gov",
+          "statement": "Two maintainers and an open contribution process.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "GOVERNANCE.md"
+            },
+            {
+              "kind": "file",
+              "path": "CONTRIBUTING.md"
+            },
+            {
+              "kind": "file",
+              "path": ".github/CODEOWNERS"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Fixture project for tests."
+  ]
+}

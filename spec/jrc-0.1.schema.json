@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jollyrogercharter.org/spec/jrc-0.1.schema.json",
+  "title": "JRCv1 conformance manifest (jrc.json), version 0.1 draft",
+  "description": "A project's own account of how it meets the six Jolly Roger Charter pillars, with evidence. Draft: fields may change through the RFC process. Not a licence or a certification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["jrc", "project", "assessment", "pillars"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "jrc": { "const": "0.1" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "repository": { "$ref": "#/$defs/httpUrl" },
+        "homepage": { "$ref": "#/$defs/httpUrl" },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "assessor", "date"],
+      "properties": {
+        "kind": { "enum": ["self", "independent"], "description": "self: the project assessing itself. independent: someone unaffiliated assessing it." },
+        "assessor": { "type": "string", "minLength": 1, "description": "A name, handle or role. Do not put email addresses here." },
+        "date": { "$ref": "#/$defs/date" },
+        "commit": { "type": "string", "pattern": "^[0-9a-f]{7,64}$" },
+        "method": { "type": "string", "minLength": 1 }
+      }
+    },
+    "pillars": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code_rights", "development", "data", "operations", "economics", "governance"],
+      "properties": {
+        "code_rights": { "$ref": "#/$defs/pillar" },
+        "development": { "$ref": "#/$defs/pillar" },
+        "data": { "$ref": "#/$defs/pillar" },
+        "operations": { "$ref": "#/$defs/pillar" },
+        "economics": { "$ref": "#/$defs/pillar" },
+        "governance": { "$ref": "#/$defs/pillar" }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "httpUrl": { "type": "string", "pattern": "^https?://\\S+$" },
+    "pillar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "claims"],
+      "properties": {
+        "status": {
+          "enum": ["not-started", "exploring", "partial", "evidenced", "not-applicable"],
+          "description": "The project's own judgement. not-applicable requires an applicability reason."
+        },
+        "applicability": { "type": "string", "minLength": 10 },
+        "claims": { "type": "array", "items": { "$ref": "#/$defs/claim" } },
+        "gaps": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "candidates": { "type": "array", "items": { "type": "string", "minLength": 1 }, "description": "Files that might become evidence. Never counted as evidence." }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence", "verification"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "statement": { "type": "string", "minLength": 3 },
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["level"],
+          "properties": {
+            "level": { "enum": ["self-reported", "independently-reproduced"] },
+            "reviewer": { "type": "string", "minLength": 1 },
+            "reviewed": { "$ref": "#/$defs/date" },
+            "report": { "$ref": "#/$defs/httpUrl" }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "path"],
+          "properties": {
+            "kind": { "const": "file" },
+            "path": { "type": "string", "minLength": 1, "description": "Relative to the manifest's directory. Must stay inside it." },
+            "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "note": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "url"],
+          "properties": {
+            "kind": { "const": "url" },
+            "url": { "$ref": "#/$defs/httpUrl" },
+            "note": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "command"],
+          "properties": {
+            "kind": { "const": "command" },
+            "command": { "type": "string", "minLength": 1, "description": "A command a reviewer can run. jrc never executes it." },
+            "expect": { "type": "string", "minLength": 1 },
+            "note": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    }
+  }
+}

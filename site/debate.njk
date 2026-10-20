@@ -31,3 +31,44 @@ description: "Break the charter: open objections, contradictions and devil's-adv
 </ul>
 <p>You can read everything here without an account. Posting currently needs a GitHub account, and we count that as a dependency to remove.</p>
 <p>No harassment, no private data, no fabricated evidence.</p>
+
+<h2 id="rfcs">RFCs and open debates</h2>
+<p>Every entry is a draft in the repository; none has been posted to Discussions yet (<a href="{{ repoUrl }}/issues/8">issue #8</a>). Each RFC states its own strongest objection. Agents can read these with <code>list_debates</code> and <code>get_debate</code>; see <a href="/agents/">For AI agents</a>.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="RFCs and open debates"><table>
+  <caption class="visually-hidden">RFCs, debate drafts and open decisions</caption>
+  <thead><tr><th scope="col">ID</th><th scope="col">Title</th><th scope="col">Kind</th><th scope="col">Status</th></tr></thead>
+  <tbody>
+  {%- for d in webmcp.debates %}
+    <tr><th scope="row"><code>{{ d.id }}</code></th><td><a href="{{ repoUrl }}/blob/main/{{ d.source.path }}#{{ d.source.anchor }}">{{ d.title }}</a></td><td>{{ d.kind }}</td><td><span class="badge pending">{{ d.status }}</span></td></tr>
+  {%- endfor %}
+  </tbody>
+</table></div>
+
+<h2 id="contribute">Find a way to contribute</h2>
+<p>Tick what you're good at or care about. Matching happens in your browser using only what you tick; nothing is stored or sent.</p>
+<section data-jrc-finder hidden aria-labelledby="finder-h">
+  <h3 id="finder-h" class="visually-hidden">Contribution finder</h3>
+  <form class="adopt-form">
+    <fieldset><legend>Skills</legend>
+    {%- for s in webmcp.opportunities.skills %}
+      <label><input type="checkbox" name="skills" value="{{ s }}"> {{ s }}</label>
+    {%- endfor %}
+    </fieldset>
+    <fieldset><legend>Interests</legend>
+    {%- for s in webmcp.opportunities.interests %}
+      <label><input type="checkbox" name="interests" value="{{ s }}"> {{ s }}</label>
+    {%- endfor %}
+    </fieldset>
+    <p><button type="submit">Find matches</button></p>
+  </form>
+  <p data-live class="visually-hidden" aria-live="polite"></p>
+  <div data-results></div>
+</section>
+<div data-jrc-nojs>
+  <ul>
+  {%- for o in webmcp.opportunities.opportunities %}
+    <li><a href="{{ o.where }}">{{ o.title }}</a>: {{ o.skills | join(", ") }} ({{ o.effort }})</li>
+  {%- endfor %}
+  </ul>
+</div>
+<script type="module" src="/assets/interop.js"></script>

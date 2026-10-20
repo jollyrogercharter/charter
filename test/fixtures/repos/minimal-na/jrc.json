@@ -1,0 +1,70 @@
+{
+  "$schema": "https://jollyrogercharter.org/spec/jrc-0.1.schema.json",
+  "jrc": "0.1",
+  "project": {
+    "name": "leftpad-ish"
+  },
+  "assessment": {
+    "kind": "self",
+    "assessor": "leftpad-ish maintainer",
+    "date": "2026-10-02"
+  },
+  "pillars": {
+    "code_rights": {
+      "status": "partial",
+      "claims": [
+        {
+          "id": "isc",
+          "statement": "ISC licence.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "LICENSE"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "development": {
+      "status": "partial",
+      "claims": [
+        {
+          "id": "tests",
+          "statement": "Has tests.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "index.test.js"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "data": {
+      "status": "not-applicable",
+      "applicability": "A pure function library: it stores no user data and runs no service.",
+      "claims": []
+    },
+    "operations": {
+      "status": "not-started",
+      "claims": [],
+      "gaps": [
+        "Nothing to deploy; considering marking not-applicable."
+      ]
+    },
+    "economics": {
+      "status": "not-started",
+      "claims": []
+    },
+    "governance": {
+      "status": "not-started",
+      "claims": []
+    }
+  }
+}

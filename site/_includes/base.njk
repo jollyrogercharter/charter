@@ -10,11 +10,18 @@
   <link rel="icon" href="/assets/flag.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/site.css">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ site.title }}">
   <meta property="og:title" content="{{ title or site.title }}">
   <meta property="og:description" content="{{ description or site.description }}">
   <meta property="og:url" content="{{ siteUrl }}{{ page.url }}">
   <meta name="twitter:card" content="summary">
   <meta name="generator" content="Eleventy">
+  {%- if site.webmcpOriginTrialToken %}
+  <meta http-equiv="origin-trial" content="{{ site.webmcpOriginTrialToken }}">
+  {%- endif %}
+  <meta name="jrc:repo-url" content="{{ repoUrl }}">
+  <meta name="jrc:site-url" content="{{ siteUrl }}">
+  <script type="module" src="/assets/webmcp.js"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -34,12 +41,6 @@
   <main id="main" class="wrap{% if wide %} wide{% endif %}">
     {{ content | safe }}
   </main>
-  <aside class="attribution" aria-labelledby="attribution-heading">
-    <div class="wrap">
-      <h2 id="attribution-heading">Who made this</h2>
-      <p>This project was conceived in a conversation between a human initiator and OpenAI's ChatGPT. Claude (Anthropic) implemented this site and repository under the human's direction. Neither company endorses the project. <a href="/how-it-was-made/">How it was made</a> · <a href="/provenance/">Provenance</a></p>
-    </div>
-  </aside>
   <footer class="site-footer">
     <div class="wrap">
       <nav aria-label="Secondary">

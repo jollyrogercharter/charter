@@ -1,0 +1,50 @@
+---
+layout: base.njk
+title: AT Protocol Lexicons (proposed)
+wide: true
+permalink: /spec/atproto/
+description: "Proposed org.jollyrogercharter Lexicons for JRC adoption, assessment and contribution records, with example records and how to publish from your own account."
+---
+<p class="kicker">AT Protocol · proposed · not yet published</p>
+<h1>AT Protocol Lexicons</h1>
+<div class="notice">
+  <p><strong>Proposed only.</strong> These Lexicons aren't yet published under jollyrogercharter.org's <code>_lexicon</code> DNS record, so other apps can't resolve them, and field names may change through RFC. Nothing on this site publishes records: you publish from your own AT Protocol account, on any server, if and when you choose. Records are public and can be copied; deleting one doesn't remove copies.</p>
+</div>
+
+<h2>The three record types</h2>
+<div class="table-scroll"><table>
+  <thead><tr><th scope="col">NSID</th><th scope="col">What it records</th><th scope="col">Schema</th><th scope="col">Example</th></tr></thead>
+  <tbody>
+  {%- for l in webmcp.lexicons %}{% set short = l.id | replace("org.jollyrogercharter.", "") %}
+    <tr><td><code>{{ l.id }}</code></td><td>{{ l.defs.main.description }}</td><td><a href="/lexicons/org/jollyrogercharter/{{ short }}.json">{{ short }}.json</a></td><td><a href="/api/v1/atproto-example-{{ short }}.json">example</a></td></tr>
+  {%- endfor %}
+  </tbody>
+</table></div>
+<p>An assessment record always says <code>independenceVerified: false</code>; software alone can't establish independence. A scan the tool fetched from GitHub itself says <code>kind: "automated-scan"</code>. A scan of a snapshot someone supplied says <code>kind: "replayed-snapshot"</code>, because a snapshot can be edited and so proves nothing about the repository. Both carry <code>snapshotSha256</code>, so anyone holding the snapshot can re-run the scan. The example assessment record was built from this repository's own committed snapshot, so it is a replayed snapshot.</p>
+
+<h2 id="record">Prepare a contribution record</h2>
+<p>Fill this in to get a record and the <code>com.atproto.repo.createRecord</code> request to send from your own account. It's built and checked in your browser; nothing is sent.</p>
+<section data-jrc-record hidden aria-labelledby="record-h">
+  <h3 id="record-h" class="visually-hidden">Contribution record</h3>
+  <form class="adopt-form">
+    <p><label for="r-kind">Kind</label> <select id="r-kind" name="kind">{% for k in ["rfc", "criticism", "response", "reproduction", "code", "documentation", "translation", "cost-saving", "review"] %}<option>{{ k }}</option>{% endfor %}</select></p>
+    <p><label for="r-title">Title</label><br><input id="r-title" name="title" type="text" required maxlength="200" size="60"></p>
+    <p><label for="r-subject">What it's about (URL)</label><br><input id="r-subject" name="subject" type="url" required maxlength="300" size="60" value="{{ repoUrl }}"></p>
+    <p><label for="r-url">Where it lives (URL, optional)</label><br><input id="r-url" name="url" type="url" maxlength="300" size="60"></p>
+    <p><label for="r-summary">Summary (optional)</label><br><textarea id="r-summary" name="summary" rows="3" maxlength="1000"></textarea></p>
+    <p><label><input type="checkbox" name="ai"> AI tools materially helped make it</label></p>
+    <p><button type="submit">Prepare record</button></p>
+  </form>
+  <p data-live aria-live="polite"></p>
+  <div data-results></div>
+</section>
+<p data-jrc-nojs>Without JavaScript: <code>jrc tool export_atproto_record --input FILE</code>, then <code>jrc tool prepare_atproto_publication --input FILE</code>.</p>
+
+<h2>What publishing would involve</h2>
+<ol>
+  <li>Your own account on any PDS. Nothing here picks one.</li>
+  <li>A client you trust signs you in (app password or OAuth) and sends the prepared request body to your PDS.</li>
+  <li>Your PDS returns the record's <code>at://</code> URI and CID.</li>
+</ol>
+<p>Publishing directly from this site with your account is <strong>planned, not built</strong>: it needs an AT Protocol OAuth client and an explicit consent step. See the <a href="/agents/">capability list</a>.</p>
+<script type="module" src="/assets/interop.js"></script>

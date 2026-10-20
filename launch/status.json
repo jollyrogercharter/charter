@@ -1,13 +1,13 @@
 {
   "schema": "jrc-status-0.1",
-  "as_of_utc": "2026-10-18T17:30Z",
+  "as_of_utc": "2026-10-19T22:00Z",
   "states": {
     "implemented": "Exists and was verified on the date shown.",
     "pending": "Started or requested, but not complete.",
     "blocked": "Cannot proceed without a named person or decision.",
     "historical": "True when written; kept as a record, not a current claim."
   },
-  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced, and the founding transcript is not published. The founding digest list has a verified Bitcoin timestamp.",
+  "summary": "The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced. The stewardship economic model is untested: a pilot is proposed and has not started.",
   "items": [
     {
       "id": "repo",
@@ -61,7 +61,7 @@
       "title": "Hosting and HTTPS",
       "state": "implemented",
       "url": "https://jollyrogercharter.org",
-      "evidence": "Cloudflare Pages free plan, auto-deploys from main. HTTP redirects to HTTPS with a 301. Served provenance manifest matches the repository byte for byte.",
+      "evidence": "Cloudflare Pages free plan, auto-deploys from main. HTTP redirects to HTTPS with a 301.",
       "verified_utc": "2026-10-18T04:51Z"
     },
     {
@@ -99,34 +99,6 @@
       "evidence": "No counsel has reviewed it.",
       "verified_utc": "2026-10-18T04:51Z",
       "next": "Find a volunteer or paid open-source licensing reviewer.",
-      "owner": "human"
-    },
-    {
-      "id": "provenance-digests",
-      "area": "Provenance",
-      "title": "SHA-256 digests of the founding package",
-      "state": "implemented",
-      "url": "https://jollyrogercharter.org/provenance/",
-      "evidence": "36 files plus the received ZIP; a test re-verifies them against Git.",
-      "verified_utc": "2026-10-18T04:51Z"
-    },
-    {
-      "id": "opentimestamps",
-      "area": "Provenance",
-      "title": "OpenTimestamps proof of the digest list",
-      "state": "implemented",
-      "url": "https://jollyrogercharter.org/provenance/",
-      "evidence": "Verified 2026-10-18T17:24Z: attested in Bitcoin block 971948 (block time 2026-10-18T04:45:37Z) and three later blocks. Commitments checked against block headers from blockstream.info and mempool.space, not a local node. Proves existence no later than that time, not authorship or priority.",
-      "verified_utc": "2026-10-18T17:24Z"
-    },
-    {
-      "id": "transcript",
-      "area": "Provenance",
-      "title": "Founding conversation transcript",
-      "state": "blocked",
-      "evidence": "No ChatGPT export has been supplied. The site shows a curated archive labelled as a summary.",
-      "verified_utc": "2026-10-18T04:51Z",
-      "next": "Human exports the conversation; the agent drafts a redacted edition for review.",
       "owner": "human"
     },
     {
@@ -171,7 +143,7 @@
       "area": "Community",
       "title": "Public announcements",
       "state": "pending",
-      "evidence": "Drafts exist in launch/CONTENT-DRAFTS.md. Nothing has been posted.",
+      "evidence": "Nothing has been posted.",
       "verified_utc": "2026-10-18T04:51Z",
       "next": "Human reviews and posts from their own accounts.",
       "owner": "human"
@@ -182,24 +154,87 @@
       "title": "Public cost ledger",
       "state": "implemented",
       "url": "https://jollyrogercharter.org/costs/",
-      "evidence": "Manual entries; AI usage and human attention marked unknown.",
-      "verified_utc": "2026-10-18T04:51Z"
+      "evidence": "Validated qm 0.1 ledger: $8.50 known cash plus 3 unknown AI-usage items; domain renewal kept as a forecast; human attention unmeasured. The build fails if the ledger is invalid.",
+      "verified_utc": "2026-10-18T07:00Z"
     },
     {
       "id": "billing-integrations",
       "area": "Economics",
-      "title": "Billing integrations (Quartermaster)",
+      "title": "Quartermaster: ledger format and billing integrations",
       "state": "pending",
-      "evidence": "Concept only; no code.",
-      "verified_utc": "2026-10-18T04:51Z"
+      "evidence": "Ledger format qm 0.1 (draft), with validator, CSV import and summary tool. The cost page is now built from the validated ledger. No provider integrations: no credentials-free public sample data was available to build one against.",
+      "verified_utc": "2026-10-18T07:00Z",
+      "url": "https://jollyrogercharter.org/spec/quartermaster/"
+    },
+    {
+      "id": "stewardship-pilot",
+      "area": "Economics",
+      "title": "Stewardship pilot",
+      "state": "blocked",
+      "url": "https://jollyrogercharter.org/pilot/",
+      "evidence": "STEWARDSHIP-PILOT.md (proposal) and STEWARDSHIP-ECONOMY.md (explanation). No steward, application, customers, revenue or results exist.",
+      "verified_utc": "2026-10-19T20:45Z",
+      "next": "A human picks the steward, application, price, success thresholds, upstream share and reviewer, and publishes them first.",
+      "owner": "human"
     },
     {
       "id": "conformance-tool",
       "area": "Standard",
-      "title": "JRCv1 conformance tool",
+      "title": "JRCv1 conformance tool (jrc 0.1 draft)",
+      "state": "implemented",
+      "evidence": "Offline CLI with init, check, report and challenge commands and a JSON Schema. 23 CLI tests, 10 of them regression tests from an independent code review and an adversarial review. This repository's own self-assessment is published at /check/.",
+      "verified_utc": "2026-10-18T06:30Z",
+      "url": "https://jollyrogercharter.org/check/"
+    },
+    {
+      "id": "webmcp",
+      "area": "Standard",
+      "title": "WebMCP tools for AI browser agents",
       "state": "pending",
-      "evidence": "Not built yet.",
-      "verified_utc": "2026-10-18T04:51Z"
+      "url": "https://jollyrogercharter.org/agents/",
+      "evidence": "Read-only and prepare-only tools (29 after the interoperability work, 24 after the founding-provenance tools were retired on 2026-10-19) and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155 (2026-10-18), the original 13 tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable; the newer tools ran there only through the page forms. Native registration not yet verified: needs the flag or an origin-trial token.",
+      "verified_utc": "2026-10-18T18:30Z",
+      "next": "Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.",
+      "owner": "human"
+    },
+    {
+      "id": "mcp-server",
+      "area": "Standard",
+      "title": "Local MCP server for any agent",
+      "state": "implemented",
+      "url": "https://jollyrogercharter.org/agents/#mcp",
+      "evidence": "bin/jrc-mcp.mjs: stdio, protocol 2026-07-28 plus legacy initialize, all 24 tools, no dependencies. Protocol conformance and error paths are tested with real messages. Not yet tried with third-party MCP clients.",
+      "verified_utc": "2026-10-19T18:08Z",
+      "next": "Try it with several MCP clients and record the results."
+    },
+    {
+      "id": "capability-manifest",
+      "area": "Standard",
+      "title": "Versioned capability manifest",
+      "state": "implemented",
+      "url": "https://jollyrogercharter.org/api/v1/capabilities.json",
+      "evidence": "Every capability with schema, safety class, maturity and interfaces. Validated against spec/capabilities-0.1.schema.json; tests check each listed interface exists.",
+      "verified_utc": "2026-10-19T18:08Z"
+    },
+    {
+      "id": "atproto-lexicons",
+      "area": "Standard",
+      "title": "AT Protocol Lexicons for JRC records",
+      "state": "pending",
+      "url": "https://jollyrogercharter.org/spec/atproto/",
+      "evidence": "Proposed org.jollyrogercharter.{assessment,adoption,contribution} Lexicons and example records, validated with @atproto/lexicon. Not published for resolution; no records published.",
+      "verified_utc": "2026-10-19T18:08Z",
+      "next": "RFC on naming, then the owner adds the _lexicon DNS record and publishes the schemas."
+    },
+    {
+      "id": "adopt",
+      "area": "Standard",
+      "title": "Adoption journey",
+      "state": "pending",
+      "url": "https://jollyrogercharter.org/adopt/",
+      "evidence": "On draft branch feat/adopt, not deployed. Scans public GitHub files at one commit (or a local checkout) and reports each pillar as evidenced, partially-evidenced, missing, not-applicable or unknown, with a roadmap and reviewable files. Live demo of this repository reproduced from its snapshot. Tested in Node with fixture, hostile and mutation tests; the page hasn't been driven in a real browser yet.",
+      "verified_utc": "2026-10-18T21:00Z",
+      "next": "Human review of the draft PR; check /adopt/ in a browser; merge after the stack below it."
     },
     {
       "id": "founding-status-2026-10-17",

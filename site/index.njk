@@ -1,50 +1,37 @@
 ---
 layout: base.njk
-description: "Free. Libre. Truly Free. A draft charter for software that can survive without its creators."
+description: "Free the code. Reward the stewards. Give people their time back. A movement for earning a good living from free software, without hourly billing, locked-up code or captive customers."
 ---
 <section class="hero">
-  <img class="flag" src="/assets/flag.svg" alt="The Jolly Roger Charter flag: a white skull over two crossed bars, one ending in a pen nib and one in a wrench ring, on a dark field">
-  <p class="kicker">The Pirate Charter · JRCv1 draft</p>
+  <img class="flag" src="/assets/flag.svg" alt="The Jolly Roger flag: a white skull over two crossed bars, one ending in a pen nib and one in a wrench ring, on a dark field">
+  <p class="kicker">The Jolly Roger · free code, rewarded stewards</p>
   <h1>Free. Libre. Truly Free.</h1>
-  <p class="lede">You can't pirate what belongs to everyone.</p>
-  <p>The software is free. The process is open. The costs are visible. Your data remains under your control. Anyone can carry the work forward.</p>
+  <p class="lede">Free the code. Reward the stewards. Give people their time back.</p>
+  <p>AI is making software cheap to write. We think that's good news, as long as the people who look after software can still earn a good living. Our idea: give the code away, and get paid for keeping it safe, reliable and useful. No hourly billing, no locked-up code, no trapped customers.</p>
   <ul class="cta">
-    <li><a class="primary" href="/charter/">Read the Charter</a></li>
-    <li><a href="/challenge/">Take the Challenge</a></li>
-    <li><a href="/debate/">Challenge Our Ideas</a></li>
+    <li><a class="primary" href="/manifesto/">Read the manifesto</a></li>
+    <li><a href="/stewardship/">How stewards get paid</a></li>
+    <li><a href="/pilot/">Help prove it works</a></li>
   </ul>
 </section>
 
-<blockquote>
-  <p>If we can explain how to build it, we should explain how to run it. If we can explain how to run it, we should explain what it costs. And if someone can make it better or cheaper, they should be free to try.</p>
-</blockquote>
-
-<h2>Six freedoms</h2>
-<ul class="pillars">
-  <li><strong>Creation</strong> Anyone may reuse, fork and sell eligible project code without asking.</li>
-  <li><strong>Development</strong> The specs, decisions, agent sessions and build steps are published, not just the output.</li>
-  <li><strong>Data</strong> People control their records and can leave, with AT Protocol as the default.</li>
-  <li><strong>Stewardship</strong> Another provider can operate and maintain the software.</li>
-  <li><strong>Economics</strong> Operating costs are public, sourced and dated.</li>
-  <li><strong>Governance</strong> Independent contributors can improve the work or continue it without us.</li>
+<h2>Three ideas</h2>
+<ul class="pillars principles">
+  <li><strong>Software should be free.</strong> Anyone can use, copy, change, share and sell it, and its future doesn't depend on whoever wrote it first. You can't pirate what belongs to everyone.</li>
+  <li><strong>Stewardship should be rewarded.</strong> The people who look after software, its stewards, should earn a good living by keeping software reliable, secure and supported, and by answering for it. Not by counting hours or locking anyone in.</li>
+  <li><strong>Human attention is precious.</strong> Software should give people their time back, not track them, sell their focus or keep them hooked. Stewards are paid for their attention so that yours isn't needed.</li>
 </ul>
-<p>What ties them together is <strong>the freedom to continue</strong>: the work should stay useful when its creator, host, maintainer, AI vendor or sponsor disappears.</p>
+
+<h2>So how does anyone get paid?</h2>
+<p>The code is free, so anyone can run it themselves. Many people would rather not. They could pay a <strong>steward</strong> to host it, update it, fix it and stand behind it, typically for a flat monthly fee with a promised level of service. If the steward does a poor job, customers can take their data and leave, to another steward or to running it themselves. The aim is a business where the only way to keep customers is to deserve them.</p>
+<p>AI makes the work faster. If stewards are paid for results instead of hours, faster work could mean a better living, not a smaller invoice.</p>
+<p><strong>We're not against profit. We're against manufacturing dependence to extract it.</strong> <a href="/stewardship/">Read how the stewardship economy could work</a>.</p>
+
+<h2>Not proven yet</h2>
+<p>This is an idea, not a proven business model. Our next step is a small, real pilot: one steward, one free application, five to ten paying customers, and published results whether it works or not. <strong>It hasn't started.</strong> <a href="/pilot/">Read the pilot plan</a>, offer to take part, or <a href="/debate/">tell us where we're wrong</a>.</p>
 
 <h2>Could your software survive without you?</h2>
-<p>That's the test we're asking every project to take, starting with this one. A person with no inside knowledge should be able to clone this repository, build the site, deploy it somewhere else and find every cost and decision. <a href="/challenge/">The challenge</a> explains how to try it and how to report what failed.</p>
-
-<h2>An old idea, carried further</h2>
-<blockquote>
-  <p>“He who receives an idea from me, receives instruction himself without lessening mine.”</p>
-  <cite>Thomas Jefferson to Isaac McPherson, August 13, 1813. <a href="https://tjrs.monticello.org/letter/293">Monticello transcription</a> (spelling normalized).</cite>
-</blockquote>
-<p>We didn't invent software freedom. GNU, SQLite, Creative Commons and many others came first. <a href="/history/">The history page</a> credits them and says what we're adding.</p>
+<p>If the code is truly free, someone else should be able to pick it up and carry on. <a href="/challenge/">The challenge</a> asks anyone to try that with this project. Tools, standards and experiments that help put these ideas into practice are on <a href="/projects/">the projects page</a>, and none of them is required to take part.</p>
 
 <h2>Where things stand</h2>
-<p>{{ status.summary }}</p>
-<ul>
-{%- for i in status.items %}{% if i.state != "historical" and i.state != "implemented" %}
-  <li><span class="badge {{ i.state }}">{{ i.state }}</span> {{ i.title }}</li>
-{%- endif %}{% endfor %}
-</ul>
-<p><a href="/status/">Full status, with evidence and dates</a>. JRCv1 is a proposed conformance standard, not a software licence, and nothing here has been independently certified.</p>
+<p>{{ status.summary }} <a href="/status/">Full status, with evidence and dates</a>.</p>

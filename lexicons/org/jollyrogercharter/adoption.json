@@ -1,0 +1,53 @@
+{
+  "lexicon": 1,
+  "id": "org.jollyrogercharter.adoption",
+  "description": "A project's own declaration that it is working toward JRCv1, pointing to its manifest and, optionally, an assessment record. PROPOSED draft (jrc lexicons 0.1). Not yet published under the _lexicon DNS record; field names may change through RFC.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A project's own declaration that it is working toward JRCv1, pointing to its manifest and, optionally, an assessment record.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "subject",
+          "standard",
+          "declaredAt",
+          "createdAt"
+        ],
+        "properties": {
+          "subject": {
+            "type": "ref",
+            "ref": "org.jollyrogercharter.assessment#subject"
+          },
+          "standard": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "manifestUri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "assessment": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "An org.jollyrogercharter.assessment record about this project."
+          },
+          "statement": {
+            "type": "string",
+            "maxGraphemes": 300,
+            "maxLength": 3000
+          },
+          "declaredAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

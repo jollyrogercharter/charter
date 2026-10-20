@@ -1,0 +1,461 @@
+{
+  "jrc_assessment": "0.1",
+  "tool": {
+    "name": "jrc",
+    "version": "0.1.0"
+  },
+  "snapshot": {
+    "version": "0.1",
+    "sha256": "b8c99c6883c63aa76e5ec670baa4d666fa5e95d3b4e1f8ffb7b92880211ccba3",
+    "kind": "github",
+    "repository": "https://github.com/jollyrogercharter/charter",
+    "name": "charter",
+    "ref": "main",
+    "commit": "37365e155664b685b7bb7f93757dc05089073dd6",
+    "retrieved_at": "2026-10-18T20:43:29Z",
+    "file_list_complete": true,
+    "files_read": 5,
+    "skipped_unsafe_paths": 0,
+    "unavailable": []
+  },
+  "summary": {
+    "evidenced": 3,
+    "partially-evidenced": 2,
+    "missing": 0,
+    "not-applicable": 0,
+    "unknown": 1,
+    "concerns": 0,
+    "contradictions": 0,
+    "manifest": "absent",
+    "basis": "automated scan of public files; not a review"
+  },
+  "pillars": {
+    "code_rights": {
+      "title": "Code and rights",
+      "question": "Can anyone legally copy, modify, sell and fork the original work? Are licences and dependencies documented?",
+      "status": "evidenced",
+      "basis": "observed",
+      "explanation": "Every core check found public evidence (3 of 3 core checks found, plus 1 supporting). This shows the files exist, not that they're correct.",
+      "checks": [
+        {
+          "id": "licence-declared",
+          "core": true,
+          "title": "A licence is declared",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "LICENSE"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "licence-permits-reuse",
+          "core": true,
+          "title": "The licence lets anyone copy, modify, sell and fork",
+          "outcome": "found",
+          "why": "Recognised as CC0-1.0, which permits copying, modification, resale and forking.",
+          "evidence": [
+            "LICENSE",
+            "package.json"
+          ],
+          "evidence_total": 2
+        },
+        {
+          "id": "dependency-lock",
+          "core": true,
+          "title": "Dependencies are pinned in a lockfile",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "package-lock.json"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "dependency-inventory",
+          "core": false,
+          "title": "A dependency or third-party licence inventory exists",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "NOTICE.md"
+          ],
+          "evidence_total": 1
+        }
+      ],
+      "concerns": 0
+    },
+    "development": {
+      "title": "Reproducible development",
+      "question": "Can a stranger rebuild it from public specs, decisions, agent/tool records, lockfiles, tests and build instructions?",
+      "status": "evidenced",
+      "basis": "observed",
+      "explanation": "Every core check found public evidence (4 of 4 core checks found, plus 2 supporting). This shows the files exist, not that they're correct.",
+      "checks": [
+        {
+          "id": "readme",
+          "core": true,
+          "title": "A README explains the project",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "README.md"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "build-instructions",
+          "core": true,
+          "title": "Build or install instructions are written down",
+          "outcome": "found",
+          "why": "The deployment document has a build or install section.",
+          "evidence": [
+            "DEPLOYMENT.md"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "tests",
+          "core": true,
+          "title": "Automated tests exist",
+          "outcome": "found",
+          "why": "Found 2 matching path(s).",
+          "evidence": [
+            "test",
+            "test/site.test.mjs"
+          ],
+          "evidence_total": 2
+        },
+        {
+          "id": "ci",
+          "core": true,
+          "title": "Continuous integration runs the build",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            ".github/workflows/ci.yml"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "decision-records",
+          "core": false,
+          "title": "Design decisions are recorded",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "launch/RFC-SEEDS.md"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "agent-records",
+          "core": false,
+          "title": "AI-agent instructions are published, if agents are used",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "AGENTS.md"
+          ],
+          "evidence_total": 1
+        }
+      ],
+      "concerns": 0
+    },
+    "data": {
+      "title": "User data and AT Protocol",
+      "question": "Can people export, migrate and control their records? Mark not-applicable, with a reason, if the project holds no user data.",
+      "status": "unknown",
+      "basis": "unchecked",
+      "explanation": "A file list can't show whether a project holds user data. Add jrc.json and either evidence this pillar or mark it not-applicable with a reason.",
+      "checks": [
+        {
+          "id": "data-policy",
+          "core": true,
+          "title": "User data handling is documented",
+          "outcome": "not-found",
+          "why": "No privacy or data-handling document was found.",
+          "evidence": [],
+          "evidence_total": 0
+        },
+        {
+          "id": "data-export",
+          "core": true,
+          "title": "Users can export and migrate their data",
+          "outcome": "not-found",
+          "why": "No export, migration or AT Protocol lexicon files were found.",
+          "evidence": [],
+          "evidence_total": 0
+        }
+      ],
+      "concerns": 0
+    },
+    "operations": {
+      "title": "Operations and resiliency",
+      "question": "Can someone else deploy, back up, restore, roll back and run it without secret steps?",
+      "status": "partially-evidenced",
+      "basis": "observed",
+      "explanation": "Partly evidenced: some core evidence is missing (1 of 2 core checks found, plus 2 supporting).",
+      "checks": [
+        {
+          "id": "deploy-docs",
+          "core": true,
+          "title": "Deployment is documented",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "DEPLOYMENT.md"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "deploy-automation",
+          "core": false,
+          "title": "Deployment is reproducible from configuration",
+          "outcome": "not-found",
+          "why": "No container, infrastructure-as-code or hosting configuration was found.",
+          "evidence": [],
+          "evidence_total": 0
+        },
+        {
+          "id": "security-policy",
+          "core": true,
+          "title": "There is a security reporting policy",
+          "outcome": "not-found",
+          "why": "No SECURITY policy was found, so there's no public way to report a vulnerability.",
+          "evidence": [],
+          "evidence_total": 0
+        },
+        {
+          "id": "backup-restore",
+          "core": false,
+          "title": "Backup, restore or rollback is described",
+          "outcome": "found",
+          "why": "The deployment document mentions backup, restore or rollback.",
+          "evidence": [
+            "DEPLOYMENT.md"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "release-process",
+          "core": false,
+          "title": "Releases are documented",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "CHANGELOG.md"
+          ],
+          "evidence_total": 1
+        }
+      ],
+      "concerns": 0
+    },
+    "economics": {
+      "title": "Economics and human attention",
+      "question": "Are operating costs public, dated and sourced, with billed, estimated, donated and user-attention costs kept separate?",
+      "status": "evidenced",
+      "basis": "observed",
+      "explanation": "Every core check found public evidence (1 of 1 core checks found). This shows the files exist, not that they're correct.",
+      "checks": [
+        {
+          "id": "cost-records",
+          "core": true,
+          "title": "Operating costs are published",
+          "outcome": "found",
+          "why": "Found 2 matching path(s).",
+          "evidence": [
+            "launch/costs.json",
+            "product/QUARTERMASTER.md"
+          ],
+          "evidence_total": 2
+        },
+        {
+          "id": "funding-disclosure",
+          "core": false,
+          "title": "Funding sources are disclosed",
+          "outcome": "not-found",
+          "why": "No funding or sponsorship file was found.",
+          "evidence": [],
+          "evidence_total": 0
+        }
+      ],
+      "concerns": 0
+    },
+    "governance": {
+      "title": "Governance and stewardship",
+      "question": "Can independent contributors propose changes, see decisions, and continue the work without the founder?",
+      "status": "partially-evidenced",
+      "basis": "observed",
+      "explanation": "Partly evidenced: some core evidence is missing (1 of 2 core checks found, plus 1 supporting).",
+      "checks": [
+        {
+          "id": "contributing",
+          "core": true,
+          "title": "Contribution instructions exist",
+          "outcome": "not-found",
+          "why": "No CONTRIBUTING guide was found.",
+          "evidence": [],
+          "evidence_total": 0
+        },
+        {
+          "id": "governance-doc",
+          "core": true,
+          "title": "Decision-making and stewardship are documented",
+          "outcome": "found",
+          "why": "Found 1 matching path(s).",
+          "evidence": [
+            "community/GOVERNANCE-AND-DEBATE.md"
+          ],
+          "evidence_total": 1
+        },
+        {
+          "id": "multiple-stewards",
+          "core": false,
+          "title": "More than one person can maintain it",
+          "outcome": "not-found",
+          "why": "No CODEOWNERS file was found. Without signing in, GitHub doesn't show how many people can merge, so this scan can't tell.",
+          "evidence": [],
+          "evidence_total": 0
+        },
+        {
+          "id": "open-proposals",
+          "core": false,
+          "title": "Anyone can propose changes in the open",
+          "outcome": "found",
+          "why": "Issues or Discussions are open on GitHub.",
+          "evidence": [
+            ".github/ISSUE_TEMPLATE"
+          ],
+          "evidence_total": 1
+        }
+      ],
+      "concerns": 0
+    }
+  },
+  "concerns": [],
+  "roadmap": [
+    {
+      "step": 1,
+      "id": "create-manifest",
+      "action": "Add jrc.json from the candidate below, fill in the assessor, and review every claim",
+      "pillar": null,
+      "effort": "small",
+      "impact": "high",
+      "after": [],
+      "why": "A manifest is how a project states its own claims, gaps and evidence. The candidate is a starting point built from what this scan found.",
+      "template": "jrc.json",
+      "priority": "high"
+    },
+    {
+      "step": 2,
+      "id": "data-policy",
+      "action": "Say whether the project holds user data and, if so, how people control it",
+      "pillar": "data",
+      "effort": "small",
+      "impact": "high",
+      "after": [],
+      "why": "No privacy or data-handling document was found.",
+      "template": "DATA.md",
+      "priority": "high"
+    },
+    {
+      "step": 3,
+      "id": "contributing",
+      "action": "Add CONTRIBUTING.md: how to propose a change and how it gets decided",
+      "pillar": "governance",
+      "effort": "small",
+      "impact": "high",
+      "after": [],
+      "why": "No CONTRIBUTING guide was found.",
+      "template": "CONTRIBUTING.md",
+      "priority": "high"
+    },
+    {
+      "step": 4,
+      "id": "multiple-stewards",
+      "action": "Give a second, independent person the rights to review, merge and release",
+      "pillar": "governance",
+      "effort": "medium",
+      "impact": "high",
+      "after": [],
+      "why": "No CODEOWNERS file was found. Without signing in, GitHub doesn't show how many people can merge, so this scan can't tell.",
+      "priority": "high"
+    },
+    {
+      "step": 5,
+      "id": "data-export",
+      "action": "Document (and test) how a user exports their data and moves it elsewhere",
+      "pillar": "data",
+      "effort": "large",
+      "impact": "high",
+      "after": [
+        "data-policy"
+      ],
+      "why": "No export, migration or AT Protocol lexicon files were found.",
+      "priority": "high"
+    },
+    {
+      "step": 6,
+      "id": "security-policy",
+      "action": "Add SECURITY.md: how to report a vulnerability and who responds",
+      "pillar": "operations",
+      "effort": "small",
+      "impact": "medium",
+      "after": [],
+      "why": "No SECURITY policy was found, so there's no public way to report a vulnerability.",
+      "template": "SECURITY.md",
+      "priority": "medium"
+    },
+    {
+      "step": 7,
+      "id": "deploy-automation",
+      "action": "Commit the deployment configuration (container, IaC or host config)",
+      "pillar": "operations",
+      "effort": "medium",
+      "impact": "medium",
+      "after": [],
+      "why": "No container, infrastructure-as-code or hosting configuration was found.",
+      "priority": "medium"
+    },
+    {
+      "step": 8,
+      "id": "funding-disclosure",
+      "action": "Say how the project is funded, even if the answer is 'it isn't'",
+      "pillar": "economics",
+      "effort": "small",
+      "impact": "low",
+      "after": [],
+      "why": "No funding or sponsorship file was found.",
+      "priority": "low"
+    },
+    {
+      "step": 9,
+      "id": "publish-report",
+      "action": "Run jrc check and publish the report in the repository",
+      "pillar": null,
+      "effort": "small",
+      "impact": "medium",
+      "after": [
+        "create-manifest"
+      ],
+      "why": "Readers can only check claims they can see.",
+      "priority": "medium"
+    },
+    {
+      "step": 10,
+      "id": "invite-challenge",
+      "action": "Ask someone unaffiliated to take the Jolly Roger Challenge",
+      "pillar": null,
+      "effort": "medium",
+      "impact": "high",
+      "after": [
+        "publish-report"
+      ],
+      "why": "This scan and any self-assessment are claims. Independent reproduction is the real test of whether the project could survive without you.",
+      "priority": "high"
+    }
+  ],
+  "manifest": null,
+  "disclaimer": "Automated scan of public files at one commit. Finding a file shows that it exists, not that it is correct or followed. Not finding one shows only that it isn't in this repository; the evidence may live elsewhere. Nothing here is independently verified, and JRCv1 is a draft standard, not a certification."
+}

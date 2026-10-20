@@ -1,0 +1,35 @@
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+new file mode 100644
+--- /dev/null
++++ b/CONTRIBUTING.md
+@@ -0,0 +1,12 @@
++# Contributing
++
++Anyone may propose a change. No permission is needed to fork.
++
++## Proposing a change
++
++1. Open an issue or a pull request describing the problem and the proposed change.
++2. REPLACE: build and test commands a contributor must run first.
++
++## How changes are decided
++
++REPLACE: who reviews, how long reviews take, and how disagreements are settled. See GOVERNANCE.md.
+diff --git a/SECURITY.md b/SECURITY.md
+new file mode 100644
+--- /dev/null
++++ b/SECURITY.md
+@@ -0,0 +1,13 @@
++# Security policy
++
++## Reporting a vulnerability
++
++REPLACE: how to report privately (for example GitHub private vulnerability reporting), and what reporters can expect.
++
++## Who responds
++
++REPLACE: at least two people or a team, so reports don't depend on one person.
++
++## Supported versions
++
++REPLACE: which releases receive security fixes.

@@ -1,0 +1,15 @@
+{
+  "qm": "0.1",
+  "project": "Tidepool",
+  "currency": "USD",
+  "as_of_utc": "2026-10-01T00:00Z",
+  "sources": [
+    {
+      "id": "host-invoice",
+      "kind": "invoice",
+      "description": "Hosting invoice, number withheld.",
+      "retrieved_utc": "2026-10-01T00:00Z"
+    }
+  ],
+  "entries": []
+}

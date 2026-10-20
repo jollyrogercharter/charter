@@ -15,10 +15,18 @@ const DOC_ROUTES = {
   "community/THE-CHALLENGE.md": "/challenge/",
   "community/GOVERNANCE-AND-DEBATE.md": "/governance/",
   "product/QUARTERMASTER.md": "/quartermaster/",
-  "provenance/README.md": "/provenance/",
-  "transparency/CONVERSATION-PUBLICATION.md": "/conversation/",
-  "transparency/AI-PROVENANCE-POLICY.md": "/how-it-was-made/",
   "research/PRECEDENTS.md": "/history/",
+  "spec/JRC-MANIFEST.md": "/spec/",
+  "spec/jrc-0.1.schema.json": "/spec/jrc-0.1.schema.json",
+  "spec/quartermaster/QM-LEDGER.md": "/spec/quartermaster/",
+  "spec/quartermaster/qm-0.1.schema.json": "/spec/quartermaster/qm-0.1.schema.json",
+  "launch/costs.json": "/costs/ledger.json",
+  "docs/WEBMCP.md": "/agents/",
+  "STEWARDSHIP-ECONOMY.md": "/stewardship/",
+  "STEWARDSHIP-PILOT.md": "/pilot/",
+  "PROJECTS.md": "/projects/",
+  "history/MANIFESTO-v0.1-2026-10-17.md": "/manifesto/v0-1/",
+  "launch/LAUNCH-STATUS.md": "/status/",
 };
 
 const md = markdownIt({ html: false, linkify: true, typographer: false });
@@ -88,8 +96,13 @@ export default function (eleventyConfig) {
   eleventyConfig.addGlobalData("git", gitInfo());
   eleventyConfig.addGlobalData("buildTime", new Date().toISOString());
   eleventyConfig.addPassthroughCopy({ "site/assets": "assets" });
-  eleventyConfig.addPassthroughCopy({ "MANIFESTO.md": "downloads/MANIFESTO.md", "CHARTER.md": "downloads/CHARTER.md" });
-  eleventyConfig.addPassthroughCopy({ "provenance/launch-manifest.json": "provenance/launch-manifest.json" });
+  eleventyConfig.addPassthroughCopy({ "site/_headers": "_headers", "site/_redirects": "_redirects" });
+  eleventyConfig.addPassthroughCopy({ "MANIFESTO.md": "downloads/MANIFESTO.md", "CHARTER.md": "downloads/CHARTER.md", "history/MANIFESTO-v0.1-2026-10-17.md": "downloads/MANIFESTO-v0.1-2026-10-17.md" });
+  eleventyConfig.addPassthroughCopy({ "spec/jrc-0.1.schema.json": "spec/jrc-0.1.schema.json", "jrc.json": "check/jrc.json", "spec/quartermaster/qm-0.1.schema.json": "spec/quartermaster/qm-0.1.schema.json", "launch/costs.json": "costs/ledger.json", "spec/capabilities-0.1.schema.json": "spec/capabilities-0.1.schema.json", "lexicons": "lexicons" });
+  // Platform-neutral modules only: the browser runs the same engine as the CLI. Node-only files (check.mjs, init.mjs) stay out.
+  for (const f of ["jrc/core.mjs", "jrc/site-config.mjs", "jrc/validate.mjs", "jrc/report.mjs", "jrc/constants.mjs", "jrc/challenge.mjs", "qm/expenses.mjs", "capabilities/capabilities.mjs", "capabilities/tools.mjs", "capabilities/input.mjs", "capabilities/tools-extended.mjs", "capabilities/manifest.mjs", "community/community.mjs", "qm/compare.mjs", "atproto/records.mjs", "assess/snapshot.mjs", "assess/github.mjs", "assess/evaluate.mjs", "assess/artifacts.mjs", "assess/session.mjs"]) {
+    eleventyConfig.addPassthroughCopy({ [`lib/${f}`]: `js/lib/${f}` });
+  }
   eleventyConfig.addWatchTarget("./*.md");
 
   return {

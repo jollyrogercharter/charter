@@ -1,0 +1,99 @@
+{
+  "$schema": "https://jollyrogercharter.org/spec/jrc-0.1.schema.json",
+  "jrc": "0.1",
+  "project": {
+    "name": "Lighthouse",
+    "repository": "https://github.com/example-org/lighthouse"
+  },
+  "assessment": {
+    "kind": "self",
+    "assessor": "Lighthouse team",
+    "date": "2026-09-30"
+  },
+  "pillars": {
+    "code_rights": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "open",
+          "statement": "Anyone may reuse and resell the code.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "LICENSE",
+              "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "development": {
+      "status": "partial",
+      "claims": [
+        {
+          "id": "build",
+          "statement": "make builds it.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "Makefile"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "data": {
+      "status": "not-started",
+      "claims": []
+    },
+    "operations": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "deploy",
+          "statement": "Deployment is documented.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "DEPLOYMENT.md"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "economics": {
+      "status": "not-started",
+      "claims": []
+    },
+    "governance": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "stewards",
+          "statement": "Several independent maintainers.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": ".github/CODEOWNERS"
+            }
+          ],
+          "verification": {
+            "level": "independently-reproduced",
+            "reviewer": "Lighthouse team",
+            "reviewed": "2026-09-30",
+            "report": "https://example.org/review"
+          }
+        }
+      ]
+    }
+  }
+}

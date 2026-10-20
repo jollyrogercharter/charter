@@ -1,0 +1,125 @@
+{
+  "$schema": "https://jollyrogercharter.org/spec/jrc-0.1.schema.json",
+  "jrc": "0.1",
+  "project": {
+    "name": "Misleading example",
+    "repository": "https://example.org/demo"
+  },
+  "assessment": {
+    "kind": "self",
+    "assessor": "Example Maintainer",
+    "date": "2026-10-01"
+  },
+  "pillars": {
+    "code_rights": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "licence",
+          "statement": "JRCv1 certified and fully compliant.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "LICENSE",
+              "sha256": "c377654af1286a73fe5054cdcd15d1bbcdab9bd048c3bfaed5fe23d53a6db520"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "development": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "build",
+          "statement": "Builds from a clean clone.",
+          "evidence": [
+            {
+              "kind": "file",
+              "path": "docs/BUILD.md"
+            },
+            {
+              "kind": "command",
+              "command": "npm ci && npm test",
+              "expect": "exit 0"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "data": {
+      "status": "not-applicable",
+      "claims": [],
+      "applicability": "Static site with no user accounts or stored records."
+    },
+    "operations": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "deploy",
+          "statement": "Deploys to any static host.",
+          "evidence": [
+            {
+              "kind": "url",
+              "url": "https://example.org/deploy"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ]
+    },
+    "economics": {
+      "status": "partial",
+      "claims": [
+        {
+          "id": "costs",
+          "statement": "Hosting cost is published.",
+          "evidence": [
+            {
+              "kind": "url",
+              "url": "https://example.org/costs"
+            }
+          ],
+          "verification": {
+            "level": "self-reported"
+          }
+        }
+      ],
+      "gaps": [
+        "Human attention not measured."
+      ]
+    },
+    "governance": {
+      "status": "evidenced",
+      "claims": [
+        {
+          "id": "repro",
+          "statement": "An unaffiliated reviewer rebuilt release 1.0.",
+          "evidence": [
+            {
+              "kind": "url",
+              "url": "https://example.org/review"
+            }
+          ],
+          "verification": {
+            "level": "independently-reproduced",
+            "reviewer": "Independent Reviewer",
+            "reviewed": "2026-09-30",
+            "report": "https://example.org/review"
+          }
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Example fixture; not a real project. Not certified by anyone."
+  ]
+}

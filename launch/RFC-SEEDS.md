@@ -111,7 +111,7 @@ Publish a short inventory of what the repository contains and who has contribute
 
 #### Decision status
 
-Open. (Maintainers fill in.) Blocked on legal review per the launch gate in `CLAUDE-LAUNCH-HANDOFF.md`.
+Open. (Maintainers fill in.) Blocked on legal review.
 
 ---
 
@@ -159,47 +159,9 @@ Open. (Maintainers fill in.)
 
 ---
 
-### RFC 4
+### RFC 4 (withdrawn)
 
-**Title:** RFC: Source transcript, redaction and publication policy for the founding conversation
-
-#### What should change?
-
-The charter says the founding conversation with ChatGPT should be published with truthful provenance. The existing founding archive is an edited reconstruction and must not be relabelled as a verbatim export. No ChatGPT export has been received, no public transcript has been reviewed and no timestamp has been issued (`provenance/README.md`). This RFC asks what the policy should be. Options:
-
-1. **Verbatim public edition with documented redactions.** Extract only this conversation from an account export, redact specific categories with `[REDACTED: category]`, keep a redaction log (category, reason, reviewer, date) and publish the file, its SHA-256 and an OpenTimestamps proof.
-2. **Shared-link snapshot only.** Link to an OpenAI-hosted shared conversation and archive a copy, accepting that the link can change or disappear.
-3. **Curated summary only.** Publish a human-written summary and say plainly that the full text is withheld.
-4. **Tiered release.** Publish a summary now, a redacted transcript after review, and decide separately whether to publish a private-extract hash.
-
-Sub-questions: which categories are redacted by default (credentials, private identifiers, third-party confidential information, security-sensitive detail)? Who reviews, and must the review be by someone other than the human initiator? Should timestamping the hash of a private source extract be done, given that only an authorised person can ever verify it? How do we word the claim so it is not read as proof of authorship or priority?
-
-#### Why does this matter for independence, freedom or user sovereignty?
-
-Honest attribution is part of the charter. A fabricated or silently edited "transcript" would destroy credibility; an over-redacted one defeats the point of transparency; an under-redacted one could expose private data. The policy also sets a precedent for how future agent sessions are published.
-
-#### Evidence and precedents
-
-- `provenance/README.md` separates three claims (file integrity, independent existence-by-time evidence, contextual provenance and authorship) and states that a completed OpenTimestamps proof shows existence no later than the attested time, not authorship or priority.
-- OpenAI's help pages on exporting history and on shared links, and the OpenTimestamps site and client, are listed in `provenance/README.md` as reference specifications.
-- `transparency/CONVERSATION-PUBLICATION.md` and `transparency/AI-PROVENANCE-POLICY.md` set the current publication policy.
-- `standard/AGENTIC-REPRODUCIBILITY.md` asks for sanitised prompts and transcripts with provenance and redaction indicators, and a public redaction policy that identifies protected categories.
-
-#### Strongest argument against this proposal
-
-Publishing a long personal conversation, even redacted, may reveal more about the people involved than they intend, and redaction decisions are themselves editorial. A summary is safer and cheaper. Hash-and-timestamp machinery can also lend an unearned air of authority to a document whose real value is narrative, and a pending proof is easy to misreport as a verified one.
-
-#### Impact on legal/technical compatibility, privacy, security and costs
-
-Privacy and security are the dominant concerns: the raw account export is an account-wide, sensitive input and must never enter a public repository or an unapproved service. Legal: the conversation may contain third-party material. Technical: extraction scripts, normalisation choices and byte-exact freezing matter because any change after hashing invalidates the digest. Costs: reviewer time is attention and should be logged under the attention-accounting rules.
-
-#### Suggested validation or experiment
-
-Rehearse the whole pipeline on a small, non-sensitive conversation chosen for the purpose: export, extract, redact, hash, stamp, upgrade, verify, and have an outsider follow `provenance/VERIFY.md` from scratch. Publish what confused them.
-
-#### Decision status
-
-Open. (Maintainers fill in.) Requires the human initiator's explicit approval of the exact public bytes before anything is published.
+A policy for publishing the founding conversation. Withdrawn on 2026-10-19, when the project stopped pursuing founding provenance. The numbering of the other RFCs is unchanged.
 
 ---
 

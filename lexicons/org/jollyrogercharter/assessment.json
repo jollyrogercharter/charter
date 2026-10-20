@@ -1,0 +1,161 @@
+{
+  "lexicon": 1,
+  "id": "org.jollyrogercharter.assessment",
+  "description": "A JRCv1 assessment of a software project, published by whoever made it. It records claims and scan results; it is not a certification. PROPOSED draft (jrc lexicons 0.1). Not yet published under the _lexicon DNS record; field names may change through RFC.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A JRCv1 assessment of a software project, published by whoever made it. It records claims and scan results; it is not a certification.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "subject",
+          "standard",
+          "kind",
+          "pillars",
+          "tool",
+          "independenceVerified",
+          "createdAt"
+        ],
+        "properties": {
+          "subject": {
+            "type": "ref",
+            "ref": "#subject",
+            "description": "URI fields may use any scheme; consumers must restrict schemes (e.g. https only) before linking."
+          },
+          "standard": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Standard and manifest spec, e.g. JRCv1/0.1."
+          },
+          "kind": {
+            "type": "string",
+            "knownValues": [
+              "self",
+              "independent",
+              "automated-scan",
+              "replayed-snapshot"
+            ],
+            "maxLength": 32,
+            "description": "Who assessed: the project itself, an unaffiliated person, an automated scan the tool fetched itself, or a scan of a snapshot someone supplied (which anyone can edit, so it proves nothing about the repository)."
+          },
+          "pillars": {
+            "type": "array",
+            "maxLength": 32,
+            "items": {
+              "type": "ref",
+              "ref": "#pillarResult"
+            }
+          },
+          "tool": {
+            "type": "ref",
+            "ref": "#tool"
+          },
+          "reportUri": {
+            "type": "string",
+            "format": "uri",
+            "description": "Where the full report is published."
+          },
+          "reportSha256": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 64,
+            "description": "Lowercase hex SHA-256 of the report bytes."
+          },
+          "snapshotSha256": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 64,
+            "description": "Lowercase hex SHA-256 of the canonical JSON evidence snapshot the scan read. Lets anyone holding the snapshot re-run the scan and compare."
+          },
+          "independenceVerified": {
+            "type": "boolean",
+            "description": "Always false unless an unaffiliated reviewer's own published record confirms it. Software alone never sets this to true."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "required": [
+        "repository"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 512
+        },
+        "commit": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "manifestSha256": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 64,
+          "description": "Lowercase hex SHA-256 of jrc.json."
+        }
+      }
+    },
+    "pillarResult": {
+      "type": "object",
+      "required": [
+        "pillar",
+        "status"
+      ],
+      "properties": {
+        "pillar": {
+          "type": "string",
+          "knownValues": [
+            "code_rights",
+            "development",
+            "data",
+            "operations",
+            "economics",
+            "governance"
+          ],
+          "maxLength": 32
+        },
+        "status": {
+          "type": "string",
+          "knownValues": [
+            "evidenced",
+            "partially-evidenced",
+            "missing",
+            "not-applicable",
+            "unknown"
+          ],
+          "maxLength": 32
+        },
+        "concerns": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 32
+        }
+      }
+    }
+  }
+}
