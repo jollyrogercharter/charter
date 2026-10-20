@@ -2,6 +2,12 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## 2026-10-20 — Social cards (branch `feat/og-images`, not deployed)
+
+- There are now 1200×630 share cards for the home, manifesto, stewardship, Get Involved and pilot pages. The default card covers every other page. There's also a 180×180 touch icon.
+- Every page sets `og:image` (with alt text) and uses a large Twitter card.
+- Card text lives in `site/_data/og.json`. `npm run og` re-renders the cards with local headless Chrome, and the PNGs are committed, so neither the build nor CI needs Chrome.
+
 ## 2026-10-20 — Pre-launch polish (branch `fix/prelaunch-polish`, not deployed)
 
 - **Contradictions fixed:** README, `legal/LICENSE-AND-RISK.md` and seed RFC 2 no longer imply CC0 is unapplied. They now distinguish the applied dedication, the missing legal review, third-party licences and future-software patent questions. The licence itself is unchanged.
