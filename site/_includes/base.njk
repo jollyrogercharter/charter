@@ -8,13 +8,21 @@
   <link rel="canonical" href="{{ siteUrl }}{{ page.url }}">
   <link rel="alternate" type="application/atom+xml" title="{{ site.title }} updates" href="/feed.xml">
   <link rel="icon" href="/assets/flag.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <link rel="stylesheet" href="/assets/site.css">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="{{ site.title }}">
   <meta property="og:title" content="{{ title or site.title }}">
   <meta property="og:description" content="{{ description or site.description }}">
   <meta property="og:url" content="{{ siteUrl }}{{ page.url }}">
-  <meta name="twitter:card" content="summary">
+  {%- set card = og[page.url] or og["/"] %}
+  <meta property="og:image" content="{{ siteUrl }}/assets/og/{{ card.file }}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Jolly Roger flag with the words &ldquo;{{ card.title }}&rdquo; and &ldquo;{{ card.line }}&rdquo;">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{ siteUrl }}/assets/og/{{ card.file }}">
   <meta name="generator" content="Eleventy">
   {%- if site.webmcpOriginTrialToken %}
   <meta http-equiv="origin-trial" content="{{ site.webmcpOriginTrialToken }}">
