@@ -1,13 +1,13 @@
 # Share Readiness
 
-Prepared 2026-10-20 for the founder, ahead of a first public announcement. It covers branch `fix/prelaunch-polish`, which is **not merged and not deployed**. The live site is `main` @ `972f495` (verified from the live footer on 2026-10-20). Until this branch merges, visitors see the previous navigation and wording.
+Prepared 2026-10-20 for the founder, ahead of a first public announcement. It covers #19 (`fix/prelaunch-polish`), which merged and deployed on 2026-10-20. The live footer shows `18c166a`, and `/get-involved/` returns 200.
 
 ## Where to send people
 
 - Manifesto: https://jollyrogercharter.org/manifesto/
 - Stewardship economy: https://jollyrogercharter.org/stewardship/
 - Pilot plan: https://jollyrogercharter.org/pilot/
-- Ways to take part (steward, customer, critic): https://jollyrogercharter.org/get-involved/ (live only after merge)
+- Ways to take part (steward, customer, critic): https://jollyrogercharter.org/get-involved/
 - Discussions: https://github.com/jollyrogercharter/charter/discussions (enabled, no posts yet)
 
 ## What's ready
@@ -34,14 +34,14 @@ Prepared 2026-10-20 for the founder, ahead of a first public announcement. It co
 - `npm test`: **131/131 pass** (build plus every suite).
 - New guards cover the primary nav, footer reachability, CC0 wording and hourly absolutes. All four **fail** when run against `main`'s text in a scratch copy, so they detect the regressions.
 - Headless Chrome 155, driven through the DevTools protocol (no visible window), against a local build: 10 pages × 4 viewports (1280, 768, 390, 360 wide) × light/dark = **80 combinations, 0 problems**. No horizontal overflow, console errors or broken images. Body background follows the theme. Screenshots were checked by eye for home, Get Involved, pilot and stewardship.
-- Every GitHub link on the participation pages resolves: 200, or a 302 to sign-in for forms. `community/GET-INVOLVED.md` on GitHub 404s until this branch merges.
+- Every GitHub link on the participation pages resolves: 200, or a 302 to sign-in for forms. `community/GET-INVOLVED.md` resolved on GitHub after the merge (200, 2026-10-20).
 - The diff contains no credentials, contact details, financial records or conversation exports (pattern scan plus the suite's secret scan).
 
 **Not tested:** real phones, Safari and Firefox, screen readers, keyboard-only navigation beyond the automated accessibility smoke test, and the live site after deployment.
 
 ## Manual actions before sharing
 
-1. **Review and merge** the draft PR, then confirm the live footer shows the new commit.
+1. ~~Review and merge #19~~: deployed 2026-10-20 (`18c166a`).
 2. ~~Enable private vulnerability reporting~~: done 2026-10-20.
 3. **Publish the discussion posts** in [`DISCUSSION-DRAFTS.md`](DISCUSSION-DRAFTS.md), at least posts 1–3. Then replace the three "start a discussion" links in `community/GET-INVOLVED.md` with the thread URLs.
 4. Decide who will answer replies, and how quickly. Interest posts with no response would hurt more than not inviting them.
@@ -51,7 +51,7 @@ Prepared 2026-10-20 for the founder, ahead of a first public announcement. It co
 
 **Blocker**
 
-- The branch isn't deployed. The live site still carries the CC0 contradiction and the old navigation.
+- None open. The deployment blocker cleared on 2026-10-20 (`18c166a` live).
 
 **Soon**
 
@@ -77,7 +77,7 @@ Prepared 2026-10-20 for the founder, ahead of a first public announcement. It co
 
 ## LinkedIn checklist
 
-- [ ] The PR is merged, and the live footer shows its commit.
+- [x] #19 is merged, and the live footer shows `18c166a`.
 - [ ] `/get-involved/` loads and its links work while you're signed out.
 - [x] Private vulnerability reporting is on (2026-10-20).
 - [ ] Discussion posts 1–3 are published and linked.
