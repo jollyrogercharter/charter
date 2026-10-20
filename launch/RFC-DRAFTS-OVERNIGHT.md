@@ -1,5 +1,7 @@
 # Overnight RFC and Discussion Drafts
 
+> **Superseded 2026-10-20 (historical record).** Written before the 2026-10-19 reorientation and the retirement of the founding-provenance work: its OpenTimestamps and provenance references describe files that no longer exist. For a first announcement, use [`SHARE-READINESS.md`](SHARE-READINESS.md) and [`DISCUSSION-DRAFTS.md`](DISCUSSION-DRAFTS.md).
+
 **Drafts for human approval. Nothing here has been posted.** Prepared by Claude on 2026-10-18 under Priority C of the overnight handoff. Each draft is paste-ready for a GitHub Discussion, but a human must read it, edit it and post it from their own account.
 
 GitHub Discussions is enabled at https://github.com/jollyrogercharter/charter/discussions, but the charter-specific categories proposed in [`RFC-SEEDS.md`](RFC-SEEDS.md) (Section A) do not exist yet. Until they do, post under the closest available category and move the thread later. Suggested homes: draft 1 in "What Would Make This Fail?", draft 2 in "Open Economics", draft 3 in "AT Protocol and Data Rights".

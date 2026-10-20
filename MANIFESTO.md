@@ -8,7 +8,7 @@ For a long time, the way to earn a living from software was to own it: lock the 
 
 **Code should be free.** Free to use, copy, modify, share, sell and improve. You can't pirate what belongs to everyone. Nobody should have to lock people in to make a living.
 
-**Stewardship should be rewarded.** Stewards are the people who look after software. They deserve to prosper by creating value, keeping software safe and reliable, supporting the people who use it and being accountable when things go wrong. Not by counting hours or restricting access. We are not against profit. We are against manufacturing dependence to extract it. A steward who uses AI to do excellent work faster should earn more, not less.
+**Stewardship should be rewarded.** Stewards are the people who look after software. They deserve to prosper by creating value, keeping software safe and reliable, supporting the people who use it and being accountable when things go wrong. Their living shouldn't have to depend on counting hours or restricting access. We are not against profit. We are against manufacturing dependence to extract it. A steward who uses AI to do excellent work faster should earn more, not less.
 
 **Human attention is precious.** Technology should give us more time, not demand more of it. Software should not spy on us, sell our focus or keep us hooked. As AI takes on more of the work, the human judgment, care and attention that remain should become more valuable, not less.
 

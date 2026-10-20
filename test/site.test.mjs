@@ -6,7 +6,7 @@ import path from "node:path";
 import { renderStatus } from "../scripts/render-status.mjs";
 
 const SITE = "_site";
-const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/", "/check/", "/spec/", "/spec/quartermaster/", "/agents/", "/stewardship/", "/pilot/", "/projects/", "/manifesto/v0-1/"];
+const ROUTES = ["/", "/manifesto/", "/charter/", "/challenge/", "/debate/", "/costs/", "/history/", "/adopt/", "/quartermaster/", "/governance/", "/updates/", "/status/", "/check/", "/spec/", "/spec/quartermaster/", "/agents/", "/stewardship/", "/pilot/", "/projects/", "/manifesto/v0-1/", "/get-involved/"];
 const SLOGANS = ["Free. Libre. Truly Free.", "You can't pirate what belongs to everyone.", "Free the code. Reward the stewards. Give people their time back."];
 const PRINCIPLES = ["Software should be free.", "Stewardship should be rewarded.", "Human attention is precious."];
 const FOUNDING_LINE = "If we can explain how to build it, we should explain how to run it. If we can explain how to run it, we should explain what it costs. And if someone can make it better or cheaper, they should be free to try.";
@@ -96,7 +96,7 @@ test("economic pages say the model is unproven and label every dollar figure", (
 });
 
 test("pages that left the primary navigation are still linked from every page", () => {
-  const formerPrimary = ["/manifesto/", "/charter/", "/adopt/", "/check/", "/challenge/", "/debate/", "/costs/"];
+  const formerPrimary = ["/manifesto/", "/charter/", "/adopt/", "/check/", "/challenge/", "/debate/", "/costs/", "/pilot/", "/projects/", "/status/", "/stewardship/", "/get-involved/"];
   for (const f of htmlFiles) {
     const html = read(f);
     for (const url of formerPrimary) assert.ok(html.includes(`href="${url}"`), `${f} no longer links ${url}`);
@@ -127,6 +127,23 @@ test("licence and notice are present and linked", () => {
   assert.match(read("LICENSE"), /CC0 1\.0 Universal/);
   assert.ok(existsSync("NOTICE.md"));
   for (const f of htmlFiles) assert.match(read(f), /blob\/main\/LICENSE">CC0 1\.0</, `${f} footer licence link`);
+});
+
+test("primary navigation is Manifesto, Stewardship, Get Involved", () => {
+  for (const f of htmlFiles) {
+    const nav = read(f).match(/<nav aria-label="Primary">([\s\S]*?)<\/nav>/)?.[1] ?? "";
+    assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map((m) => m[1]), ["/manifesto/", "/stewardship/", "/get-involved/"], f);
+  }
+});
+
+test("hourly work is never declared incompatible", () => {
+  const absolute = /\bno hourly billing|without hourly billing|not by (billing|counting) hours|hourly billing punishes/i;
+  for (const f of ["README.md", "MANIFESTO.md", "STEWARDSHIP-ECONOMY.md", "CHARTER.md", "community/GET-INVOLVED.md", ...htmlFiles]) assert.doesNotMatch(read(f), absolute, f);
+});
+
+test("current docs never call the applied CC0 dedication unapplied", () => {
+  const stale = /final `?LICENSE`? claiming CC0|No licence or CC0 dedication has been applied|\(Decision Pending\)|before license is finalized/i;
+  for (const f of ["README.md", "NOTICE.md", "OPEN-DEPENDENCIES.md", "DECISIONS-AND-QUESTIONS.md", "legal/LICENSE-AND-RISK.md", "launch/RFC-SEEDS.md", ...htmlFiles]) assert.doesNotMatch(read(f), stale, `${f} contradicts LICENSE`);
 });
 
 test("status has one source and every view agrees with it", () => {

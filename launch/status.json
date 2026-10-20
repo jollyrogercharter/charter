@@ -1,6 +1,6 @@
 {
   "schema": "jrc-status-0.1",
-  "as_of_utc": "2026-10-20T11:50Z",
+  "as_of_utc": "2026-10-20T14:55Z",
   "states": {
     "implemented": "Exists and was verified on the date shown.",
     "pending": "Started or requested, but not complete.",
@@ -107,8 +107,8 @@
       "title": "GitHub Discussions",
       "state": "implemented",
       "url": "https://github.com/jollyrogercharter/charter/discussions",
-      "evidence": "Enabled with GitHub's default categories; no posts yet.",
-      "verified_utc": "2026-10-18T04:51Z"
+      "evidence": "Enabled with GitHub's default categories; no posts yet. Drafts for five posts are in launch/DISCUSSION-DRAFTS.md, awaiting the founder.",
+      "verified_utc": "2026-10-20T14:00Z"
     },
     {
       "id": "discussion-categories",
@@ -136,7 +136,16 @@
       "state": "pending",
       "evidence": "Only the agent that built the site has reproduced it. No unrelated person has.",
       "verified_utc": "2026-10-18T04:51Z",
-      "next": "An unrelated person runs launch/FOUNDER-ABSENCE-TEST.md and files a report."
+      "next": "An unrelated person takes the Challenge (/challenge/, checklist on /get-involved/) and files a reproduction report."
+    },
+    {
+      "id": "security-reporting",
+      "area": "Community",
+      "title": "Private security reporting",
+      "state": "implemented",
+      "url": "https://github.com/jollyrogercharter/charter/security",
+      "evidence": "GitHub private vulnerability reporting enabled by the founder on 2026-10-20 (API returns enabled:true). SECURITY.md links the private advisory form and keeps a fallback.",
+      "verified_utc": "2026-10-20T14:55Z"
     },
     {
       "id": "social",
@@ -174,7 +183,7 @@
       "url": "https://jollyrogercharter.org/pilot/",
       "evidence": "STEWARDSHIP-PILOT.md (proposal) and STEWARDSHIP-ECONOMY.md (explanation). No steward, application, customers, revenue or results exist.",
       "verified_utc": "2026-10-19T20:45Z",
-      "next": "A human picks the steward, application, price, success thresholds, upstream share and reviewer, and publishes them first.",
+      "next": "The founder makes the seven decisions in STEWARDSHIP-PILOT.md (application, steward, target customers, price, success criteria, upstream share, independent reviewer) and publishes them first.",
       "owner": "human"
     },
     {
@@ -182,7 +191,7 @@
       "area": "Standard",
       "title": "JRCv1 conformance tool (jrc 0.1 draft)",
       "state": "implemented",
-      "evidence": "Offline CLI with init, check, report and challenge commands and a JSON Schema. 23 CLI tests, 10 of them regression tests from an independent code review and an adversarial review. This repository's own self-assessment is published at /check/.",
+      "evidence": "Offline CLI with init, check, report and challenge commands and a JSON Schema; later releases added tool, atproto and assess (assess reads public GitHub files). 23 CLI tests, 10 of them regression tests from an independent code review and an adversarial review. This repository's own self-assessment is published at /check/.",
       "verified_utc": "2026-10-18T06:30Z",
       "url": "https://jollyrogercharter.org/check/"
     },
@@ -192,7 +201,7 @@
       "title": "WebMCP tools for AI browser agents",
       "state": "pending",
       "url": "https://jollyrogercharter.org/agents/",
-      "evidence": "Read-only and prepare-only tools (29 after the interoperability work, 24 after the founding-provenance tools were retired on 2026-10-19) and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155 (2026-10-18), the original 13 tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable; the newer tools ran there only through the page forms. Native registration not yet verified: needs the flag or an origin-trial token.",
+      "evidence": "Read-only and prepare-only tools (24 since the founding-provenance tools were retired on 2026-10-19) and a static /api/v1 JSON API, built on the same engine as the CLI. Tested in Node and against a simulated modelContext. In real Chrome 155 (2026-10-18), the original 13 tools ran and matched the API, and the page fell back cleanly when WebMCP was unavailable; the newer tools ran there only through the page forms. Native registration not yet verified: needs the flag or an origin-trial token.",
       "verified_utc": "2026-10-18T18:30Z",
       "next": "Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.",
       "owner": "human"

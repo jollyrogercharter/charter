@@ -1,5 +1,7 @@
 # Organic Launch and AI-Led Communications Plan (No Paid Media)
 
+> **Partly superseded (2026-10-20):** the founding-provenance work it mentions was retired on 2026-10-19. See [`SHARE-READINESS.md`](SHARE-READINESS.md) for the current announcement checklist.
+
 **Goal:** motivate independent examination and participation, not just clicks. Public engagement should be earned through useful evidence, honest debate and transparent execution. Advertising budget: **$0**. Domain registration and approved essential operating expenses are separately recorded in open costs.
 
 ## Narrative architecture

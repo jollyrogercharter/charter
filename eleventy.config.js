@@ -25,6 +25,7 @@ const DOC_ROUTES = {
   "STEWARDSHIP-ECONOMY.md": "/stewardship/",
   "STEWARDSHIP-PILOT.md": "/pilot/",
   "PROJECTS.md": "/projects/",
+  "community/GET-INVOLVED.md": "/get-involved/",
   "history/MANIFESTO-v0.1-2026-10-17.md": "/manifesto/v0-1/",
   "launch/LAUNCH-STATUS.md": "/status/",
 };

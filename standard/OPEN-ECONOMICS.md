@@ -1,5 +1,7 @@
 # Open Economics and Open Infrastructure Manifest
 
+*Part of the JRCv1 draft, unchanged. The efficiency pledge and cost categories below are under review in [the stewardship-economy RFC](../launch/RFC-STEWARDSHIP-ECONOMY.md), which proposes allowing profit and aggregate steward pay.*
+
 ## Core statement
 
 Our books are open. Our infrastructure is open. Our future is open to contribution.

@@ -1,6 +1,6 @@
 # Deployment
 
-**Current state (2026-10-18):** not deployed anywhere. Nothing below has been run against a live host yet; `launch/LAUNCH-STATUS.md` records when that changes.
+**Current state:** live on Cloudflare Pages (Option A) at https://jollyrogercharter.org since 2026-10-18, rebuilt from `main` on every merge. No second host is deployed. [`launch/LAUNCH-STATUS.md`](launch/LAUNCH-STATUS.md) has the dated evidence.
 
 The site is plain static files. Any host that serves a directory works, and no step needs a secret, an API key or an account other than the host's own.
 
@@ -22,12 +22,12 @@ Two environment variables change output, both optional:
 | `SITE_URL` | `https://jollyrogercharter.org` | Canonical URLs, feed and sitemap. Set it when deploying to a temporary or alternative address. |
 | `REPO_URL` | `https://github.com/jollyrogercharter/charter` | Source, issue and commit links. Set it for a fork or if the org name changes. |
 
-## Option A: Cloudflare Pages (candidate primary host, free plan)
+## Option A: Cloudflare Pages (the current production host, free plan)
 
 Human steps, done in the Cloudflare dashboard by the account owner:
 
 1. Workers & Pages → Create → Pages → Connect to Git → select the `charter` repository.
-2. Build command `npm ci && npm run build`; output directory `_site`; environment variables `NODE_VERSION=22`, `SITE_URL=https://<project>.pages.dev` until the domain exists.
+2. Build command `npm ci && npm run build`; output directory `_site`; environment variables `NODE_VERSION=22`, `SITE_URL` set to the site's public URL (`https://<project>.pages.dev` if there's no custom domain).
 3. Leave Web Analytics off. The charter forbids forced tracking.
 4. Production branch `main`; preview deployments on pull requests are fine.
 

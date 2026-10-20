@@ -2,13 +2,13 @@
 
 **Can someone earn a living from software without making anyone dependent on them?**
 
-**Status: proposed, not started.** There are no pilot customers, no revenue and no results yet. Six decisions listed at the end need a human before anything begins.
+**Status: proposed, not started.** There are no pilot customers, no revenue and no results yet. Seven decisions, [listed below](#decisions-before-starting), need the founder before anything begins. None has been made.
 
 ## The idea
 
 One steward offers paid stewardship of one real, free, self-hostable application to five to ten real customers for about three months of service, inside an 18-week plan. We measure whether they pay, what they value, how much of the steward's time it takes, whether they could leave at any moment, and whether they get time back. We publish the results whether the idea works or not.
 
-This is a small experiment, not a platform. It could start within weeks of the six decisions below being made, using a spreadsheet and existing tools, with no new software required.
+This is a small experiment, not a platform. It could start within weeks of those decisions being made, using a spreadsheet and existing tools, with no new software required.
 
 ## Choosing the application
 
@@ -24,7 +24,7 @@ The upstream project should be told about the pilot. Its name must not be used i
 ## The offer
 
 - **One published price**, fixed before recruiting starts, with no discounts that depend on staying.
-- **Included:** hosting, updates, backups, monitoring, support with a stated response time, and a short monthly report of incidents handled and time saved.
+- **Included:** hosting, updates, backups, monitoring, support with a stated response time, and a short monthly report of incidents handled and the time customers say they spent on the covered tasks.
 - **Freedom promises, written into the agreement:** cancel any time with no exit fee; a full data export on request within a stated number of days; a written deployment guide good enough for the customer or another steward to take over.
 - **Ordinary payment** through a normal payment processor. Nothing about the pilot requires cryptocurrency.
 
@@ -80,11 +80,36 @@ The pilot can use the [Quartermaster ledger format](spec/quartermaster/QM-LEDGER
 - **Upstream fairness.** Earning from someone else's free software is allowed, but the steward should consider sharing revenue upstream and say whether they do.
 - **Legal and tax.** The steward needs whatever registration, contract terms and tax handling apply where they work.
 
-## Decisions a human must make before starting
+## For a prospective steward
 
-1. Who the steward is.
-2. Which application.
-3. The price.
-4. The success thresholds.
-5. Whether, and how much, revenue goes upstream.
-6. Who reviews the results independently.
+**What it involves.** About three months of looking after one free application for five to ten paying customers: hosting, updates, backups, monitoring and support at a published price. You'd keep a daily time log, run two data-export drills, and agree to have the results published whether or not they're flattering.
+
+**What you get.** The revenue from your customers, minus your costs, and evidence about whether this kind of work can be a living. Income is not guaranteed and may be small: five to ten customers at an unknown price is a test, not a business.
+
+**What's uncertain.** Whether anyone will pay, how much of your time it takes, and how you'd handle tax, contracts and liability where you live. Those are yours to arrange.
+
+**Interested?** See [Get Involved](community/GET-INVOLVED.md#1-i-want-to-become-a-steward).
+
+## For a prospective customer
+
+**What it involves.** Paying a published monthly price for one free application to be run for you, and answering a few short questions at the start, monthly and at the end.
+
+**What you get.** Hosting, updates, backups, monitoring and support with a stated response time. In writing, you can cancel at any time with no exit fee, get a full export of your data on request, and get a deployment guide that would let you or another steward take over.
+
+**What's not promised.** The pilot can't guarantee uptime beyond what the agreement states, security beyond ordinary good practice, or that you'll save time. Measuring that is the point. The service could also end after the pilot. If it does, you keep your data and the guide.
+
+**Interested?** See [Get Involved](community/GET-INVOLVED.md#2-i-might-pay-a-steward). Saying you're interested is not a commitment to pay.
+
+## Decisions before starting
+
+The founder makes each of these and publishes it here before recruiting begins. Nothing below has been decided.
+
+| Decision | What to settle | Decided |
+|---|---|---|
+| Application | Which existing free application, chosen against the criteria above, and whether its upstream has been told | No |
+| Steward | Who does the work, and how a founder acting as steward handles the conflict of interest | No |
+| Target customers | What kind of organization, how they'll be found, and how friends and free trials are kept separate | No |
+| Pricing | One published monthly price, plus any setup fee | No |
+| Success criteria | Final thresholds, starting from the proposal above, including the revenue-per-steward-hour target | No |
+| Upstream revenue sharing | Whether any revenue goes upstream, how much, and how it's reported | No |
+| Independent reviewer | Who outside the project reviews the results before they're called a finding | No |

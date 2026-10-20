@@ -9,7 +9,7 @@ Open a [GitHub security advisory](https://github.com/jollyrogercharter/charter/s
 - running code, fetching unexpected URLs, or writing files from manifest or repository content;
 - forging results in Markdown, SVG, terminal output or the website.
 
-For anything else, a normal issue is fine. Please don't include secrets or personal data in public issues.
+If the advisory form isn't available to you, open an issue that asks for a private contact, without describing the problem. For anything else, a normal issue is fine. Please don't include secrets or personal data in public issues.
 
 ## What's in scope
 

@@ -1,5 +1,7 @@
 # Overnight Report, 2026-10-18
 
+> **Historical record (2026-10-18).** PRs #4–#6 have since merged, and the provenance files it names were removed on 2026-10-19. Current state is in [`status.json`](status.json).
+
 **Bottom line:** JRCv1 now has a working, tested, offline tool. Anyone can run `jrc` against their repository, get an honest machine-readable assessment, and attempt the Jolly Roger Challenge without asking us. Everything is in three **draft PRs, not merged**. Nothing has been posted publicly.
 
 ## 1. What shipped (working code, draft PRs)

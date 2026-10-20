@@ -20,7 +20,7 @@ For the same reason people pay a mechanic even though repair manuals are free. S
 
 Writing code used to be the expensive part, so it made sense to bill by the hour or charge for copies. AI makes writing and changing code far cheaper. That pushes the price of code toward zero and squeezes anyone paid by the hour or by the copy.
 
-It doesn't shrink the value of reliable, accountable service. It shrinks the cost of delivering it. When stewards are paid for outcomes instead of hours, efficiency becomes their reward. Hourly billing punishes a steward for getting faster. Paying for results lets them keep the benefit.
+It doesn't shrink the value of reliable, accountable service. It shrinks the cost of delivering it. When stewards are paid for outcomes instead of hours, efficiency becomes their reward. A living that depends only on billed hours shrinks as the work gets faster. Paying for results lets stewards keep the benefit. This isn't a rule against hourly work: consulting by the hour is fine, and many stewards will mix it with other income. The point is that nobody's livelihood should have to depend on it.
 
 ## How a highly automated steward earns a good living
 

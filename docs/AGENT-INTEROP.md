@@ -56,7 +56,7 @@ Input handling:
 - **Repository text:** `list_debates` and `get_debate` return prose from repository files that outside pull requests can change, so they carry `untrustedContentHint: true` too.
 - **Untrusted echoes:** tools that can echo the caller's text carry `untrustedContentHint: true`. A test fills every input with a sentinel and fails if any tool echoes it without that hint.
 
-Output caps: about 2 KiB by default (Chrome's guidance is ~1.5K), with tool-specific caps of 16, 24, 32 and 48 KiB for drafts, packages and repository reports. Over the cap, the result is withheld with `OUTPUT_TOO_LARGE`. Prefilled GitHub links are cut to 7,000 characters; the full text is always in the draft itself.
+Output caps: 8 KiB by default, with default outputs tested to stay under about 2 KiB (Chrome's guidance is ~1.5K), with tool-specific caps of 16, 24, 32 and 48 KiB for drafts, packages and repository reports. Over the cap, the result is withheld with `OUTPUT_TOO_LARGE`. Prefilled GitHub links are cut to 7,000 characters; the full text is always in the draft itself.
 
 The site sends a Content-Security-Policy from `site/_headers` (Cloudflare Pages reads it; other hosts need the same headers configured their own way). It allows scripts and styles only from the site itself and network requests only to the site and the two GitHub hosts.
 

@@ -76,9 +76,9 @@ Open. (Maintainers fill in.)
 
 #### What should change?
 
-The founder prefers to place rights-controlled original works as fully into the public domain as the law allows. No licence or CC0 dedication has been applied yet, which means that by default all rights are reserved; `OPEN-DEPENDENCIES.md` lists this as the largest current gap. This RFC asks what instrument should apply to which material. Options:
+The founder prefers to place rights-controlled original works as fully into the public domain as the law allows. Since 2026-10-18 this repository's eligible original material is dedicated under CC0 1.0 (`LICENSE`, exclusions in `NOTICE.md`), by the initiator's decision and without independent legal review. This RFC asks whether that instrument is right for each kind of material, especially future software. Options:
 
-1. **CC0 for everything the project controls** (code, docs, specification, media), with its fallback licence, plus a patent statement.
+1. **Keep CC0 for everything the project controls** (code, docs, specification, media), with its fallback licence, plus a patent statement.
 2. **CC0 for text, specification and media; a permissive code licence with an express patent grant (for example Apache 2.0) for code.**
 3. **MIT or Apache 2.0 throughout**, accepting that contributors keep attribution.
 4. **A tiered scheme** in which contributors choose from a short list and a conformant project may use any item on it.

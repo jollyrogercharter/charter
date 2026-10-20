@@ -26,6 +26,13 @@ The founding line behind commitments 2 and 5:
 
 These commitments are the founder's proposed plain-language summary, offered for debate in [an RFC](launch/RFC-STEWARDSHIP-ECONOMY.md). They are not yet community consensus.
 
+## Money, in plain terms
+
+- **Stewards can earn a meaningful, even substantial, income.** Profit isn't prohibited, and nothing limits a steward to recovering costs.
+- **Open books don't mean personal finances.** A steward explains prices and spending in categories. Their own pay can be a single line.
+- **Customers can always move** to another steward, or run the software themselves.
+- **The detailed standard hasn't caught up yet.** Parts of the JRCv1 draft below still favor cost recovery and passing efficiencies on as lower prices. Those provisions await community review through the RFC and stay as published until it's decided.
+
 ## The detailed standard: JRCv1 (draft)
 
 For anyone who wants to check a project closely, the commitments map onto the six JRCv1 pillars below, with evidence definitions in the [conformance standard](standard/CONFORMANCE.md) and an offline checking tool, [`jrc`](spec/JRC-MANIFEST.md). Most people never need this layer.
