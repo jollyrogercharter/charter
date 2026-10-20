@@ -50,7 +50,7 @@ Independent editorial pass (30-second, income, attention, freedom, complexity, a
 
 ## Deployment / rollback
 
-Nothing deploys. Draft PR needs a push, which needs Albert's explicit yes. Rollback is dropping the branch.
+Code deployed 2026-10-20: merged to `main` in #17 (merge `4d5158a`, together with #13–#15 and the provenance retirement); Cloudflare Pages build finished 11:42Z, and `/`, `/stewardship/`, `/pilot/`, `/projects/` and `/manifesto/v0-1/` were checked live. No content scripts to apply. Rollback is reverting the merge on `main`.
 
 ## Open decisions for Albert
 

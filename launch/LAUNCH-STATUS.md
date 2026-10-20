@@ -2,7 +2,7 @@
 
 <!-- Generated from launch/status.json by scripts/render-status.mjs. Edit the JSON, then run `npm run status`. -->
 
-**As of 2026-10-19T22:00Z.** The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced. The stewardship economic model is untested: a pilot is proposed and has not started.
+**As of 2026-10-20T11:50Z.** The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced. The stewardship economic model is untested: a pilot is proposed and has not started.
 
 States: **implemented**: Exists and was verified on the date shown. **pending**: Started or requested, but not complete. **blocked**: Cannot proceed without a named person or decision. **historical**: True when written; kept as a record, not a current claim.
 
@@ -31,7 +31,7 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 | Standard | Local MCP server for any agent | **implemented** | <https://jollyrogercharter.org/agents/#mcp> | bin/jrc-mcp.mjs: stdio, protocol 2026-07-28 plus legacy initialize, all 24 tools, no dependencies. Protocol conformance and error paths are tested with real messages. Not yet tried with third-party MCP clients. | 2026-10-19T18:08Z | Try it with several MCP clients and record the results. |
 | Standard | Versioned capability manifest | **implemented** | <https://jollyrogercharter.org/api/v1/capabilities.json> | Every capability with schema, safety class, maturity and interfaces. Validated against spec/capabilities-0.1.schema.json; tests check each listed interface exists. | 2026-10-19T18:08Z | — |
 | Standard | AT Protocol Lexicons for JRC records | **pending** | <https://jollyrogercharter.org/spec/atproto/> | Proposed org.jollyrogercharter.{assessment,adoption,contribution} Lexicons and example records, validated with @atproto/lexicon. Not published for resolution; no records published. | 2026-10-19T18:08Z | RFC on naming, then the owner adds the _lexicon DNS record and publishes the schemas. |
-| Standard | Adoption journey | **pending** | <https://jollyrogercharter.org/adopt/> | On draft branch feat/adopt, not deployed. Scans public GitHub files at one commit (or a local checkout) and reports each pillar as evidenced, partially-evidenced, missing, not-applicable or unknown, with a roadmap and reviewable files. Live demo of this repository reproduced from its snapshot. Tested in Node with fixture, hostile and mutation tests; the page hasn't been driven in a real browser yet. | 2026-10-18T21:00Z | Human review of the draft PR; check /adopt/ in a browser; merge after the stack below it. |
+| Standard | Adoption journey | **pending** | <https://jollyrogercharter.org/adopt/> | Live at /adopt/ since 2026-10-20 (merged in #17). Scans public GitHub files at one commit (or a local checkout) and reports each pillar as evidenced, partially-evidenced, missing, not-applicable or unknown, with a roadmap and reviewable files. Live demo of this repository reproduced from its snapshot. Tested in Node with fixture, hostile and mutation tests; the page hasn't been driven in a real browser yet. | 2026-10-20T11:50Z | Drive /adopt/ in a real browser and record the result. |
 
 ## Needs the human
 

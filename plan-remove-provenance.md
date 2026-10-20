@@ -31,3 +31,7 @@ Item 4 of `standard/AGENTIC-REPRODUCIBILITY.md` (publish prompts and transcripts
 ## Tests
 
 Delete tests that enforce provenance publication; repoint adversarial tests that merely used a provenance tool (input injection, abort) to another tool; add tests that retired routes are absent from the build and sitemap, redirected, and that no page or API mentions them.
+
+## Deployment
+
+Code deployed 2026-10-20: merged to `main` in #17 (merge `4d5158a`); Cloudflare Pages build finished 11:42Z. Checked live: the four retired pages return 301 to `/`, `/api/v1/provenance.json` returns 404, and `/webmcp/data.json` is bundle version 2 with 24 capabilities in `/api/v1/capabilities.json`. No content scripts to apply. Rollback is reverting the merge on `main`.
