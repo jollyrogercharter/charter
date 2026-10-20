@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Draft RFC, open for criticism.** The editorial changes it describes are proposed alongside it on branch `feat/reorient`. The JRCv1 changes in section 4 are proposals only: no JRCv1 requirement, schema or tool changes until this RFC is reviewed. |
+| Status | **Draft RFC, open for criticism.** The editorial changes in section 3 were merged to `main` in #17 and are live. The JRCv1 changes in section 4 are proposals only: no JRCv1 requirement, schema or tool changes until this RFC is reviewed. |
 | Proposed by | The human founder, 2026-10-19. Drafted by Claude Opus 5.5 (AI agent) at the founder's request. |
 | Decision needed from | The community, through the process in [`community/GOVERNANCE-AND-DEBATE.md`](../community/GOVERNANCE-AND-DEBATE.md). A founder's proposal is not consensus. |
 
@@ -24,12 +24,13 @@ The founding drafts framed money narrowly: cost recovery, open operating expense
 
 **To:** "We are not trying to eliminate software profits. We are trying to separate them from artificial scarcity and dependency." Stewards may profit, including from AI-driven efficiency. Open books remain an accountability principle, not a cap on income and not a requirement to disclose personal finances.
 
-## 3. What changes now (editorial, branch `feat/reorient`)
+## 3. Editorial changes already made (merged in #17)
 
 - A one-page [manifesto](../MANIFESTO.md) (v0.2). The v0.1 founding draft is kept in [`history/`](../history/MANIFESTO-v0.1-2026-10-17.md).
 - A plain-language commitments section at the top of [`CHARTER.md`](../CHARTER.md). The JRCv1 text beneath it is unchanged.
 - New explanatory documents: [`STEWARDSHIP-ECONOMY.md`](../STEWARDSHIP-ECONOMY.md), [`STEWARDSHIP-PILOT.md`](../STEWARDSHIP-PILOT.md), [`PROJECTS.md`](../PROJECTS.md).
 - The website leads with the three principles; technical pages move to secondary navigation at unchanged URLs.
+- Clarified 2026-10-20: the movement doesn't oppose hourly work. Its position is that a software livelihood shouldn't *have to* depend on billable hours, restricted code or captive customers.
 
 None of this changes `jrc`, the manifest schema, the Quartermaster formats, the API, the WebMCP or MCP tools, or any conformance result.
 

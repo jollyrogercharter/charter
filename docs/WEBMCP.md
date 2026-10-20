@@ -2,7 +2,7 @@
 
 > **Update 2026-10-19:** there are now 24 tools (read-only and prepare-only), also served by a local MCP server and the CLI. See [`AGENT-INTEROP.md`](AGENT-INTEROP.md) for the full list and safety model. The five founding-provenance tools were retired the same day, so the tables below no longer list them. The sections below describe the original browser layer. Where they say thirteen (or seven project) tools, count one fewer: `get_provenance` is gone. The browser now registers all 24 the same way; the real-Chrome checks below covered the original 13 tools, and the newer tools only through the page forms.
 
-jollyrogercharter.org registers thirteen **read-only** tools with [WebMCP](https://webmachinelearning.github.io/webmcp/) (`document.modelContext`). Through structured calls instead of scraping, an AI agent in the browser can query the charter, status and costs, assess a `jrc.json`, and assess a public GitHub repository and prepare its adoption. The seven project tools are also available to any client as static JSON at `/api/v1/`. The six repository tools are described in [`docs/ADOPT.md`](ADOPT.md).
+When first written, jollyrogercharter.org registered thirteen tools, none of which writes anywhere, with [WebMCP](https://webmachinelearning.github.io/webmcp/) (`document.modelContext`). Through structured calls instead of scraping, an AI agent in the browser can query the charter, status and costs, assess a `jrc.json`, and assess a public GitHub repository and prepare its adoption. The seven project tools are also available to any client as static JSON at `/api/v1/`. The six repository tools are described in [`docs/ADOPT.md`](ADOPT.md).
 
 **Status:**
 - Implemented and tested in Node, including a spec-modelled *simulated* `modelContext`.
@@ -30,9 +30,9 @@ The two manifest tools are marked `untrustedContentHint: true` because their out
 
 ### Result conventions
 
-- `{ ok: true, tool, tools_version, data_commit, … }` on success. On failure, `{ ok: false, tool, error: { code, message, details? } }`, with codes `INVALID_INPUT`, `INPUT_TOO_LARGE`, `OUTPUT_TOO_LARGE` (about 2 KiB by default, up to 48 KiB for tools that return drafts or reports), `NOT_FOUND` or `TOOL_FAILED`. Cancellation rejects with `AbortError` instead of returning.
+- `{ ok: true, tool, tools_version, data_commit, … }` on success. On failure, `{ ok: false, tool, error: { code, message, details? } }`, with codes `INVALID_INPUT`, `INPUT_TOO_LARGE`, `OUTPUT_TOO_LARGE` (8 KiB by default, up to 48 KiB for tools that return drafts or reports), `NOT_FOUND` or `TOOL_FAILED`. Cancellation rejects with `AbortError` instead of returning.
 - Every fact carries a **`basis`**:
-  - `verified`: anyone can re-check it by a reproducible method (hash, block header).
+  - `verified`: anyone can re-check it by a reproducible method (a file-hash comparison).
   - `self-reported`: a claim, not checked independently.
   - `unchecked`: claimed with file evidence the browser couldn't read.
   - `missing`: not done or unknown.
@@ -135,7 +135,7 @@ For the tools to work for visitors without a flag, register the site for the [We
    - a strict `inputSchema` with `additionalProperties: false`, `enum`/`maxLength`/`pattern` on strings, and parameter descriptions of 150 characters or fewer;
    - honest annotations.
 3. Run `npm test`. The catalog, schema, budget, consistency and simulated-browser tests cover new tools automatically. Add a consistency test against the source it reads.
-4. Any tool that changes state needs `consequentialHint`, a confirmation design and an RFC first. All current tools are read-only by design.
+4. Any tool that changes state needs `consequentialHint`, a confirmation design and an RFC first. No current tool changes state: each one is read-only or prepare-only (it drafts text for a person to submit).
 
 ## Security notes
 

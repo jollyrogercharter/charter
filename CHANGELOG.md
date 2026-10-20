@@ -2,6 +2,17 @@
 
 Factual record of changes. Dates are UTC. Nothing here has been deployed unless the entry says so.
 
+## 2026-10-20 — Pre-launch polish (branch `fix/prelaunch-polish`, not deployed)
+
+- **Contradictions fixed:** README, `legal/LICENSE-AND-RISK.md` and seed RFC 2 no longer imply CC0 is unapplied. They now distinguish the applied dedication, the missing legal review, third-party licences and future-software patent questions. The licence itself is unchanged.
+- **Economics:** the charter gains a plain "Money, in plain terms" section, and `standard/OPEN-ECONOMICS.md` notes that its efficiency pledge is under review. No normative JRCv1 text changed. Wording about hourly work, in the manifesto, stewardship economy, README and home page, no longer reads as a ban.
+- **Participation:** a new `/get-involved/` page (`community/GET-INVOLVED.md`) offers three paths (steward, customer, critic), a reviewer checklist and a privacy note. `launch/DISCUSSION-DRAFTS.md` holds five unposted discussion drafts.
+- **Navigation:** the primary nav is now Manifesto · Stewardship · Get Involved; every other page moved to the footer, and no URL changed. The home page leads with five plain statements.
+- **Pilot:** participant descriptions and a seven-item decision checklist, all undecided.
+- **Stale claims:** fixed in `DEPLOYMENT.md`, WebMCP and interop docs (tool safety, 8 KiB cap, "block header"), status items, debate count, `NOTICE.md` and QM tool list. Dated launch documents are marked historical or superseded.
+- **Security:** `SECURITY.md` gives a fallback while private vulnerability reporting is disabled; new status item `security-reporting`.
+- **Readiness:** `launch/SHARE-READINESS.md`.
+
 ## 2026-10-20 — Founding provenance retired (founder decision)
 
 - **Removed:**

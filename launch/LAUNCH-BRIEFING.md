@@ -1,5 +1,7 @@
 # Launch Briefing
 
+> **Superseded 2026-10-20 (historical record).** Written before the 2026-10-19 reorientation and the retirement of the founding-provenance work: its OpenTimestamps and provenance references describe files that no longer exist. For a first announcement, use [`SHARE-READINESS.md`](SHARE-READINESS.md) and [`DISCUSSION-DRAFTS.md`](DISCUSSION-DRAFTS.md).
+
 **For human review. Nothing here has been posted.**
 
 Prepared by Claude on 2026-10-18 under Priority E of the overnight handoff. Every piece below is a draft for a human to read, rewrite in their own voice and publish (or not) from their own account. Nothing has been scheduled, automated or sent. Paid media: none. No bots, no vote coordination, no bulk messaging.

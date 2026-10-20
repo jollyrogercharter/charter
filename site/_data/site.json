@@ -1,22 +1,23 @@
 {
   "title": "Jolly Roger Charter",
   "tagline": "Free. Libre. Truly Free.",
-  "description": "Free the code. Reward the stewards. Give people their time back. A movement for earning a good living from free software, without hourly billing, locked-up code or captive customers.",
+  "description": "Free the code. Reward the stewards. Give people their time back. A movement for earning a good living from free software, without having to depend on billable hours, locked-up code or captive customers.",
   "webmcpOriginTrialToken": "",
   "status": "Early draft. The ideas are open for debate, the economic model is untested, and JRCv1 is a working standard, not a licence or a certification.",
   "nav": [
     { "url": "/manifesto/", "label": "Manifesto" },
-    { "url": "/charter/", "label": "Charter" },
     { "url": "/stewardship/", "label": "Stewardship" },
-    { "url": "/pilot/", "label": "Pilot" },
-    { "url": "/projects/", "label": "Projects" },
-    { "url": "/debate/", "label": "Debate" }
+    { "url": "/get-involved/", "label": "Get Involved" }
   ],
   "footerNav": [
+    { "url": "/charter/", "label": "Charter" },
+    { "url": "/pilot/", "label": "Pilot" },
+    { "url": "/projects/", "label": "Projects" },
+    { "url": "/challenge/", "label": "Challenge" },
+    { "url": "/debate/", "label": "Debate" },
     { "url": "/status/", "label": "Status" },
     { "url": "/adopt/", "label": "Adopt" },
     { "url": "/check/", "label": "Check" },
-    { "url": "/challenge/", "label": "Challenge" },
     { "url": "/costs/", "label": "Costs" },
     { "url": "/quartermaster/", "label": "Quartermaster" },
     { "url": "/agents/", "label": "For AI agents" },

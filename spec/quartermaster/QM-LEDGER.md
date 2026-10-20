@@ -3,7 +3,7 @@
 The first small, testable piece of [Quartermaster](../../product/QUARTERMASTER.md): a format for publishing a project's operating costs honestly, and a validator for it. It is **not** a billing integration. Nothing here connects to a provider, holds credentials or reads invoices automatically.
 
 - Schema: [`qm-0.1.schema.json`](qm-0.1.schema.json)
-- Tool: `node bin/qm.mjs validate | summary | csv2json`, local files only
+- Tool: `node bin/qm.mjs validate | summary | csv2json | compare | savings`, local files only
 - Live example: [`launch/costs.json`](../../launch/costs.json), rendered at https://jollyrogercharter.org/costs/
 
 ## Five categories, never added together

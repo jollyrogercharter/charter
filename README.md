@@ -8,7 +8,7 @@
 Jolly Roger is a movement to change how people earn a living from software, now that AI makes software easier and easier to create. It rests on three ideas:
 
 - **Software should be free.** Anyone may use, copy, modify, share, sell and build on it, and its future shouldn't depend on whoever wrote it first. You can't pirate what belongs to everyone.
-- **Stewardship should be rewarded.** People should earn a good, potentially substantial living by keeping software reliable, secure and supported and by taking responsibility for it. Not by billing hours, locking up code or trapping customers. We're not against profit. We're against manufacturing dependence to extract it.
+- **Stewardship should be rewarded.** People should earn a good, potentially substantial living by keeping software reliable, secure and supported and by taking responsibility for it. That living shouldn't have to depend on billable hours, locked-up code or trapped customers. We're not against profit. We're against manufacturing dependence to extract it.
 - **Human attention is precious.** Software should give people their time back, not track them, sell their focus or keep them hooked.
 
 ## Start here
@@ -21,19 +21,19 @@ Jolly Roger is a movement to change how people earn a living from software, now 
 
 ## What's real and what isn't
 
-**Built and working in this repository:** this website, a CC0 public-domain dedication, an offline conformance tool (`jrc`), a cost-ledger format with a validator, and read-only interfaces for AI agents. The [status file](launch/status.json) says which of these are live at https://jollyrogercharter.org and which are still on draft branches.
+**Built and working in this repository:** this website, a CC0 public-domain dedication, an offline conformance tool (`jrc`), a cost-ledger format with a validator, and read-only interfaces for AI agents. The [status file](launch/status.json) records which of these are live at https://jollyrogercharter.org, with dates and evidence. All of them are merged to `main`.
 
 **Not yet:** any evidence that the economic model works (the pilot hasn't started), anyone outside the project reproducing it, or legal review of the CC0 dedication. The 2026-10-19 reorientation is the founder's proposal, open for debate in [an RFC](launch/RFC-STEWARDSHIP-ECONOMY.md), not community consensus.
 
 ## Take part
 
-Read the manifesto and tell us where it's wrong. Propose changes through a [Charter RFC](https://github.com/jollyrogercharter/charter/issues/new?template=charter-rfc.md) or [GitHub Discussions](https://github.com/jollyrogercharter/charter/discussions). If you'd like to be a pilot steward or a pilot customer, say so in Discussions. To test whether a project can survive without its creator, take [the Challenge](community/THE-CHALLENGE.md): *Could your software survive without you?*
+Read the manifesto and tell us where it's wrong. Propose changes through a [Charter RFC](https://github.com/jollyrogercharter/charter/issues/new?template=charter-rfc.md) or [GitHub Discussions](https://github.com/jollyrogercharter/charter/discussions). If you'd like to be a pilot steward or a pilot customer, [Get Involved](community/GET-INVOLVED.md) explains how to say so. To test whether a project can survive without its creator, take [the Challenge](community/THE-CHALLENGE.md): *Could your software survive without you?*
 
 ## Important limits
 
-- This is not legal advice. Do **not** publish a final `LICENSE` claiming CC0 until rights in all included material are reviewed.
+- This is not legal advice. CC0 1.0 has been applied to the original material this project's contributors can dedicate (`LICENSE`, with exclusions in `NOTICE.md`). Third-party material and npm dependencies keep their own licences. The choice has not had independent legal review ([issue #11](https://github.com/jollyrogercharter/charter/issues/11)), and future software such as Quartermaster may need a different licence or a patent grant, since CC0 doesn't license patents.
 - User control of data cannot be created by a copyright waiver. It needs product architecture, consent, service terms and applicable legal safeguards.
-- Public AT Protocol repositories can be replicated; private records need separate protections. Spaces was alpha as of October 17, 2026.
+- Public AT Protocol repositories can be replicated; private records need separate protections. Spaces was alpha as of August 20, 2026 and still in development in October.
 - Publicly documenting development does not mean publishing secrets, user information, third-party licensed material or actionable vulnerabilities.
 - A cost-based stewardship pledge is voluntary for adopters, not a restriction attached to free code.
 - *As of 2026-10-17 (historical):* merely drafting documents here had **not** created a public Git repository, registered an organization or deployed any service. All three have since happened; see `launch/status.json`.
@@ -44,7 +44,7 @@ Details for each tool. [PROJECTS.md](PROJECTS.md) explains how they serve the th
 
 ### Check a project against JRCv1 (`jrc`, 0.1 draft)
 
-`jrc` is an offline command-line tool in this repository, with no dependencies and CC0. It checks a project's `jrc.json` self-assessment against the six pillars and writes a reproducible report. It never fetches URLs, runs manifest commands, or says "certified".
+`jrc` is an offline command-line tool in this repository, with no dependencies and CC0. It checks a project's `jrc.json` self-assessment against the six pillars and writes a reproducible report. It never fetches URLs or runs commands listed in a manifest, and never says "certified". (`jrc assess`, which reads a public GitHub repository, is the one command that goes online.)
 
 ```bash
 npx --yes --package=github:jollyrogercharter/charter jrc init     # starter jrc.json, never overwrites

@@ -12,7 +12,7 @@ Contributors so far are the human initiator and two AI systems used under the in
 
 | Material | Where | Status |
 |---|---|---|
-| Steve Wozniak's quoted line, as recounted by Steven Levy (WIRED, 2014) | `site/history.njk`, `site/index.njk` and founding docs that quote it | Short attributed quotation; not ours to dedicate |
+| Steve Wozniak's quoted line, as recounted by Steven Levy (WIRED, 2014) | `site/history.njk` and founding docs that quote it | Short attributed quotation; not ours to dedicate |
 | Thomas Jefferson's 1813 letter excerpt | Same places | Public domain already |
 | The CC0 legal text itself | `LICENSE` | Published by Creative Commons |
 | npm dependencies | `node_modules/` (not committed), `package-lock.json` | Each package keeps its own licence |

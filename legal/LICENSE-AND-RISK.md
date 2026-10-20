@@ -1,6 +1,6 @@
-# Rights, Licensing, Trust and Risk (Decision Pending)
+# Rights, Licensing, Trust and Risk
 
-**This is general planning, not legal advice.** Update 2026-10-18: the charter repository is now dedicated under CC0 1.0 by the initiator's decision; see `../NOTICE.md`. The review steps below still apply.
+**This is general planning, not legal advice.** On 2026-10-18 the initiator applied CC0 1.0 to the repository's eligible original material (`../LICENSE`, scope and exclusions in `../NOTICE.md`). No independent legal review has happened yet; the review below is still wanted ([#11](https://github.com/jollyrogercharter/charter/issues/11)).
 
 ## What is being proposed
 
@@ -34,8 +34,8 @@ Personal records can contain multiple people's information, public data, contrac
 - **Trademarks:** unrestricted code copying and protected project-origin identifiers can coexist, but any flag/certification rules should not become a gatekeeper to access or adoption.
 - **Operational liability:** publishing code is not a substitute for supply-chain security, privacy engineering, appropriate insurance, signed releases or incident response.
 
-## Launch gate before license is finalized
+## Review still owed on the applied dedication
 
-Get input from open-source and patent counsel; clarify ownership of all contributed work; choose licenses for code, docs, media and specs; verify dependencies; clarify volunteer contributor terms; then publish actual legally operative files. Do not assert OSI approval for a chosen tool without checking.
+Get input from open-source and patent counsel on the CC0 dedication already applied; clarify ownership of all contributed work; decide whether future software needs a different licence or a patent grant; verify dependencies; clarify volunteer contributor terms; then amend the legally operative files if review requires it. Do not assert OSI approval for a chosen tool without checking.
 
 Sources: https://creativecommons.org/public-domain/ ; https://creativecommons.org/faq/ ; https://opensource.org/osd ; https://www.copyright.gov/ai/

@@ -27,7 +27,7 @@ Captured October 17, 2026. **Confirmed** means the user explicitly favored the c
 - Hand initial execution to **Anthropic Claude**: register a **free** GitHub organization and initial repository, publish the existing archive, create a movement website using Eleventy or React, verify/register a suitable domain with user-controlled ownership, and organize **AI-led, organic, zero-paid-media** outreach.
 - *(Retired October 19, 2026.)* Preserve **the entire founding conversation** on the website and/or repository when an accurate source is available and the human approves the exact public edition. Do not silently replace a raw transcript with a reconstruction or leak private content.
 - Openly disclose agent participation and AI authorship throughout the project. Oppose misleading "human-only" credit for AI-assisted work, without erasing genuine human direction or accountability.
-- Intended GitHub organization candidate: `jollyrogercharter`; intended domain: `jollyrogercharter.org`. Neither is verified as acquired or registrable; fallback naming and trademark clearance remain open.
+- Intended GitHub organization candidate: `jollyrogercharter`; intended domain: `jollyrogercharter.org`. *(Both acquired October 18, 2026; see `launch/status.json`.)* Trademark clearance remains open.
 - Prefer **Eleventy** and a portable static host, to keep the site simple and operationally reproducible. This is an implementation recommendation, not yet a user-ratified framework decision.
 
 ## Candidate recommendations, not yet final
@@ -46,7 +46,7 @@ Captured October 17, 2026. **Confirmed** means the user explicitly favored the c
 ## Open decisions requiring debate
 
 1. **Naming and clearance:** Jolly Roger, Pirate Charter, Truly Free, Quartermaster and neutral standard name; trademark/domain search.
-2. **Licensing:** CC0 for original eligible work? How to address patents and non-waivable rights? What alternatives can an adopter use and still conform?
+2. **Licensing:** *(CC0 applied to this repository October 18, 2026, without legal review; see below.)* How to address patents and non-waivable rights? What alternatives can an adopter use and still conform?
 3. **Brand governance:** public-domain graphics vs controlled compliance mark; guard against fake compliance without centralizing control.
 4. **Atproto data model:** proposed Lexicon names and schema governance; shared/private organizational records; Spaces readiness.
 5. **Cost methodology:** what counts as stewardship cost, opportunity cost, salaries, volunteer labor, reserves, reimbursements and taxes; transparency granularity.
