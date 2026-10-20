@@ -1,6 +1,6 @@
 {
   "schema": "jrc-status-0.1",
-  "as_of_utc": "2026-10-20T14:00Z",
+  "as_of_utc": "2026-10-20T14:55Z",
   "states": {
     "implemented": "Exists and was verified on the date shown.",
     "pending": "Started or requested, but not complete.",
@@ -142,12 +142,10 @@
       "id": "security-reporting",
       "area": "Community",
       "title": "Private security reporting",
-      "state": "pending",
+      "state": "implemented",
       "url": "https://github.com/jollyrogercharter/charter/security",
-      "evidence": "SECURITY.md points to GitHub's private advisory form, but private vulnerability reporting is disabled on the repository, so outsiders can't use it. SECURITY.md gives a fallback: an issue asking for a private contact.",
-      "verified_utc": "2026-10-20T14:00Z",
-      "next": "A repository admin enables private vulnerability reporting.",
-      "owner": "human"
+      "evidence": "GitHub private vulnerability reporting enabled by the founder on 2026-10-20 (API returns enabled:true). SECURITY.md links the private advisory form and keeps a fallback.",
+      "verified_utc": "2026-10-20T14:55Z"
     },
     {
       "id": "social",

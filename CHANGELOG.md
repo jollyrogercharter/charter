@@ -10,7 +10,7 @@ Factual record of changes. Dates are UTC. Nothing here has been deployed unless 
 - **Navigation:** the primary nav is now Manifesto · Stewardship · Get Involved; every other page moved to the footer, and no URL changed. The home page leads with five plain statements.
 - **Pilot:** participant descriptions and a seven-item decision checklist, all undecided.
 - **Stale claims:** fixed in `DEPLOYMENT.md`, WebMCP and interop docs (tool safety, 8 KiB cap, "block header"), status items, debate count, `NOTICE.md` and QM tool list. Dated launch documents are marked historical or superseded.
-- **Security:** `SECURITY.md` gives a fallback while private vulnerability reporting is disabled; new status item `security-reporting`.
+- **Security:** the founder enabled private vulnerability reporting (verified 2026-10-20T14:55Z). `SECURITY.md` keeps a fallback, and a new status item `security-reporting` records it.
 - **Readiness:** `launch/SHARE-READINESS.md`.
 
 ## 2026-10-20 — Founding provenance retired (founder decision)

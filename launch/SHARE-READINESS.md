@@ -27,7 +27,7 @@ Prepared 2026-10-20 for the founder, ahead of a first public announcement. It co
 | Hourly absolutes | "No hourly billing" (home), "Hourly billing punishes…" (`STEWARDSHIP-ECONOMY.md`) | A livelihood shouldn't *have to* depend on billable hours; hourly consulting is fine |
 | Stale technical claims | `DEPLOYMENT.md` "not deployed anywhere"; README "draft branches"; WebMCP "thirteen read-only tools", "2 KiB" cap, "block header"; status "29 tools" | They match the code: 24 tools (15 read-only, 9 prepare-only), an 8 KiB default cap, and the live Cloudflare Pages host |
 | Retired provenance | OpenTimestamps "pending" in paste-ready drafts (`LAUNCH-BRIEFING.md`, `RFC-DRAFTS-OVERNIGHT.md`) | Marked superseded or historical; nothing revived |
-| Security channel | `SECURITY.md` links GitHub's private advisory form, but private vulnerability reporting is **disabled** on the repository | A fallback is documented, a status item was added, and the founder is asked to enable reporting (below) |
+| Security channel | `SECURITY.md` links GitHub's private advisory form, but private vulnerability reporting was **disabled** on the repository | The founder enabled reporting on 2026-10-20, and the API confirms `enabled:true`. `SECURITY.md` keeps a fallback |
 
 ## Test results (2026-10-20, this branch)
 
@@ -42,7 +42,7 @@ Prepared 2026-10-20 for the founder, ahead of a first public announcement. It co
 ## Manual actions before sharing
 
 1. **Review and merge** the draft PR, then confirm the live footer shows the new commit.
-2. **Enable private vulnerability reporting** (Settings → Code security, or `gh api -X PUT repos/jollyrogercharter/charter/private-vulnerability-reporting`).
+2. ~~Enable private vulnerability reporting~~: done 2026-10-20.
 3. **Publish the discussion posts** in [`DISCUSSION-DRAFTS.md`](DISCUSSION-DRAFTS.md), at least posts 1–3. Then replace the three "start a discussion" links in `community/GET-INVOLVED.md` with the thread URLs.
 4. Decide who will answer replies, and how quickly. Interest posts with no response would hurt more than not inviting them.
 5. Spot-check `/`, `/get-involved/` and `/pilot/` on your own phone, in light and dark mode.
@@ -52,7 +52,6 @@ Prepared 2026-10-20 for the founder, ahead of a first public announcement. It co
 **Blocker**
 
 - The branch isn't deployed. The live site still carries the CC0 contradiction and the old navigation.
-- There's no working private security channel until reporting is enabled.
 
 **Soon**
 
@@ -80,7 +79,7 @@ Prepared 2026-10-20 for the founder, ahead of a first public announcement. It co
 
 - [ ] The PR is merged, and the live footer shows its commit.
 - [ ] `/get-involved/` loads and its links work while you're signed out.
-- [ ] Private vulnerability reporting is on.
+- [x] Private vulnerability reporting is on (2026-10-20).
 - [ ] Discussion posts 1–3 are published and linked.
 - [ ] The post says "proposal" and "pilot not started", and promises no income, savings or security.
 - [ ] The post links the manifesto and Get Involved, not the technical pages.

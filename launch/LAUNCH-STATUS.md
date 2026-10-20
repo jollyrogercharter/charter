@@ -2,7 +2,7 @@
 
 <!-- Generated from launch/status.json by scripts/render-status.mjs. Edit the JSON, then run `npm run status`. -->
 
-**As of 2026-10-20T14:00Z.** The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced. The stewardship economic model is untested: a pilot is proposed and has not started.
+**As of 2026-10-20T14:55Z.** The site is live at https://jollyrogercharter.org and is rebuilt from the public repository on every merge to main. JRCv1 is a draft conformance standard, not a licence. Nothing has been independently reproduced. The stewardship economic model is untested: a pilot is proposed and has not started.
 
 States: **implemented**: Exists and was verified on the date shown. **pending**: Started or requested, but not complete. **blocked**: Cannot proceed without a named person or decision. **historical**: True when written; kept as a record, not a current claim.
 
@@ -22,7 +22,7 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 | Community | Charter discussion categories and seed RFCs | **blocked** | — | Categories proposed in launch/RFC-SEEDS.md are not created; GitHub only allows that in the web UI. Seed RFCs are drafted, not posted. | 2026-10-18T04:51Z | Human creates the categories and approves the RFC text for posting. |
 | Community | Jolly Roger Challenge | **implemented** | <https://jollyrogercharter.org/challenge/> | Published with issue template. | 2026-10-18T04:51Z | — |
 | Community | Independent reproduction of this project | **pending** | — | Only the agent that built the site has reproduced it. No unrelated person has. | 2026-10-18T04:51Z | An unrelated person takes the Challenge (/challenge/, checklist on /get-involved/) and files a reproduction report. |
-| Community | Private security reporting | **pending** | <https://github.com/jollyrogercharter/charter/security> | SECURITY.md points to GitHub's private advisory form, but private vulnerability reporting is disabled on the repository, so outsiders can't use it. SECURITY.md gives a fallback: an issue asking for a private contact. | 2026-10-20T14:00Z | A repository admin enables private vulnerability reporting. |
+| Community | Private security reporting | **implemented** | <https://github.com/jollyrogercharter/charter/security> | GitHub private vulnerability reporting enabled by the founder on 2026-10-20 (API returns enabled:true). SECURITY.md links the private advisory form and keeps a fallback. | 2026-10-20T14:55Z | — |
 | Community | Public announcements | **pending** | — | Nothing has been posted. | 2026-10-18T04:51Z | Human reviews and posts from their own accounts. |
 | Economics | Public cost ledger | **implemented** | <https://jollyrogercharter.org/costs/> | Validated qm 0.1 ledger: $8.50 known cash plus 3 unknown AI-usage items; domain renewal kept as a forecast; human attention unmeasured. The build fails if the ledger is invalid. | 2026-10-18T07:00Z | — |
 | Economics | Quartermaster: ledger format and billing integrations | **pending** | <https://jollyrogercharter.org/spec/quartermaster/> | Ledger format qm 0.1 (draft), with validator, CSV import and summary tool. The cost page is now built from the validated ledger. No provider integrations: no credentials-free public sample data was available to build one against. | 2026-10-18T07:00Z | — |
@@ -39,10 +39,9 @@ States: **implemented**: Exists and was verified on the date shown. **pending**:
 1. **Second organization owner** (pending): Invitee accepts; then raise required approvals on main to 1.
 2. **Legal review of the dedication** (pending): Find a volunteer or paid open-source licensing reviewer.
 3. **Charter discussion categories and seed RFCs** (blocked): Human creates the categories and approves the RFC text for posting.
-4. **Private security reporting** (pending): A repository admin enables private vulnerability reporting.
-5. **Public announcements** (pending): Human reviews and posts from their own accounts.
-6. **Stewardship pilot** (blocked): The founder makes the seven decisions in STEWARDSHIP-PILOT.md (application, steward, target customers, price, success criteria, upstream share, independent reviewer) and publishes them first.
-7. **WebMCP tools for AI browser agents** (pending): Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.
+4. **Public announcements** (pending): Human reviews and posts from their own accounts.
+5. **Stewardship pilot** (blocked): The founder makes the seven decisions in STEWARDSHIP-PILOT.md (application, steward, target customers, price, success criteria, upstream share, independent reviewer) and publishes them first.
+6. **WebMCP tools for AI browser agents** (pending): Verify with chrome://flags/#enable-webmcp-testing; the owner decides whether to join the origin trial.
 
 ## Historical records
 
